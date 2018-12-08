@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Blazor.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BehaviorTracker.Web
+namespace BehaviorTracker.Client
 {
     public class Startup
     {

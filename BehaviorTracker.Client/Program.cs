@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Blazor.Hosting;
 
-namespace BehaviorTracker.Web
+namespace BehaviorTracker.Client
 {
     public class Program
     {
