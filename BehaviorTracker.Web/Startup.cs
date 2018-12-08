@@ -12,6 +12,7 @@ namespace BehaviorTracker.Web
         public void Configure(IBlazorApplicationBuilder app)
         {
             app.AddComponent<App>("app");
+           
         }
     }
 }

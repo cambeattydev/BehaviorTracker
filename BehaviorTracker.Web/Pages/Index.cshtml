@@ -1,21 +1,2 @@
 ﻿@page "/"
-@{
-   var times = new List<string>
-   {
-      "Arrival"
-   };
-   for(int i =9; i < 15; i++)
-   {
-      times.Add(i <= 12 ? $"{i}:00-{i}:30" : $"{i-12}:00-{i-12}:30");
-      times.Add(i <= 12 ? $"{i}:30-{i+1}:00" : $"{i-12}:30-{i-11}:00");
-   }
-   times.AddRange(new []{$"3:00-3:30","Dismissal"});
-}
-<ul class="nav nav-tabs">
-   @foreach (var time in times)
-   {
-      <li class="nav-item">
-         <a class="nav-link">@time</a>
-      </li>
-   }
-</ul>
+<timesNavigation/>
