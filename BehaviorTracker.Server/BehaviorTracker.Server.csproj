@@ -12,6 +12,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\BehaviorTracker.Client\BehaviorTracker.Client.csproj" />
+        <ProjectReference Include="..\BehaviorTracker.Repository\BehaviorTracker.Repository.csproj" />
         <ProjectReference Include="..\BehaviorTracker.Shared\BehaviorTracker.Shared.csproj" />
     </ItemGroup>
 </Project>
