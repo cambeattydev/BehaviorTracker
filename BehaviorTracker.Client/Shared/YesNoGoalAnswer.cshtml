@@ -1,0 +1,16 @@
+<div class="form-group">
+    <label for="@GoalName">@GoalName</label>
+    <select class="form-control" id="@(GoalName)" bind="@Answer">
+        <option value=""></option>
+        <option value="True">Yes</option>
+        <option value="False">No</option>
+    </select>
+</div>
+
+@functions
+{
+    [Parameter]
+    string GoalName { get; set; } 
+    string Answer { get; set; }
+
+}

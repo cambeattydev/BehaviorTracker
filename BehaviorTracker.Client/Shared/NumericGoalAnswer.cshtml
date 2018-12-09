@@ -1,0 +1,12 @@
+<div class="form-group">
+    <label for="@GoalName">@GoalName</label>
+    <input type="number" class="form-control" id="@(GoalName)" bind="@Answer"/>
+</div>
+
+@functions
+{
+    [Parameter]
+    string GoalName { get; set; } 
+    string Answer { get; set; }
+
+}

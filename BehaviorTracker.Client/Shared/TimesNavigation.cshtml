@@ -19,10 +19,11 @@
                 <span class="sr-only">Previous</span>
             </a>
         </li>*@
-        @foreach (var time in times)
+        @for (var i = 0; i < times.Count; i++)
         {
-            <li class="page-item d-flex align-items-stretch ">
-                <a class="page-link" href="#">@time</a>
+            var index = i;
+            <li class="page-item d-flex align-items-stretch @(ActiveIndex == i ? "active" : "" )" onclick="@(() => SelectActiveIndex(index))">
+                <a class="page-link" href="">@times[i]</a>
             </li>
         }
         @*<li class="page-item">
@@ -33,3 +34,14 @@
         </li>*@
     </ul>
 </nav>
+
+@functions {
+    [Parameter]
+    int ActiveIndex { get; set; } 
+
+    void SelectActiveIndex(int i)
+    {
+        ActiveIndex = i;
+    }
+   
+}

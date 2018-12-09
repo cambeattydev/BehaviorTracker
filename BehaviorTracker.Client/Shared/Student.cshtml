@@ -1,0 +1,38 @@
+@using BehaviorTracker.Shared
+@inject HttpClient Http
+@if (StudentAndGoals != null)
+{
+    <table class="table">
+        <tbody>
+        @foreach (var studentAndGoal in StudentAndGoals)
+        {
+            <tr>
+                <td>@studentAndGoal.StudentName</td>
+                @foreach (var goal in studentAndGoal.Goals)
+                {
+                    <td>
+                        @if (goal.GoalType == GoalType.YesNo)
+                        {
+                            <YesNoGoalAnswer GoalName="@goal.Name"/>
+                        }
+                        else
+                        {
+                            <NumericGoalAnswer GoalName="@goal.Name"/>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+@functions {
+    StudentAndGoals[] StudentAndGoals;
+
+    protected override async Task OnInitAsync()
+    {
+        StudentAndGoals = await Http.GetJsonAsync<StudentAndGoals[]>("api/SampleData/StudentAndGoals");
+    }
+}
