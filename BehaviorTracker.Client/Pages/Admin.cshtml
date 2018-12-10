@@ -1,5 +1,5 @@
 @page "/Admin"
-@using System.Collections
+@using Student = BehaviorTracker.Client.Models.Student
 @inject HttpClient Http
 <h3>Students</h3>
 
@@ -8,7 +8,7 @@
     <div class="row">
         @foreach (var student in _students)
         {
-            <AdminStudent Model="@student"/>
+             <AdminStudent Model="@student" DeleteStudent="@DeleteStudent"/>
         }
     </div>
     <div class="row">
@@ -39,13 +39,24 @@ else
         {
             _students = new List<Models.Student>();
         }
-
         var minStudentKey = _students.Min(s => s.StudentKey);
-        _students.Add(new Models.Student
+        var newStudent = new Models.Student
         {
             StudentKey = minStudentKey > 0 ? 0 : minStudentKey,
-            //Goals = new List<Models.Goal>()
-        });
+            Goals = new List<Models.Goal>()
+        };
+
+        
+        _students.Add(newStudent);
+    }
+
+    void DeleteStudent(Models.Student student)
+    {
+        var deleted = _students.Remove(student);
+        if (deleted)
+        {
+            base.StateHasChanged();
+        }
     }
 
 }

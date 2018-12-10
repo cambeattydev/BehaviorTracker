@@ -2,7 +2,7 @@ using System;
 
 namespace BehaviorTracker.Client.Models
 {
-    public class GoalAnswer
+    public class GoalAnswer : Copyable<GoalAnswer>
     {
         public long GoalAnswerKey { get; set; }
         public long GoalKey { get; set; }

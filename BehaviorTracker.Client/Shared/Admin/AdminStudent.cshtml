@@ -16,24 +16,32 @@
                             <label for="LastName-@Model.StudentKey">Last Name</label>
                             <input type="text" class="form-control" id="LastName-@Model.StudentKey" aria-describedby="Last Name" placeholder="Last Name" bind="@Model.StudentLastName"/>
                         </div>
+                        <button type="button" class="btn btn-link" aria-label="Cancel" onclick="@Cancel">
+                            <span class="oi oi-x" style="color: red"></span>
+                        </button>
                         <button type="submit" class="btn btn-link" aria-label="Save">
-                            <span class="oi oi-check"></span>
+                            <span class="oi oi-check" style="color: green"></span>
                         </button>
                     </form>
                     <button class="btn btn-link @(_editMode ? "d-none" : "")" style="font-size: .75em;" onclick="@Edit" aria-label="Edit">
                         <span class="oi oi-pencil"></span>
+                    </button>
+                    <button class="btn btn-link @(_editMode ? "d-none" : "")" style="font-size: .75em; color: red" onclick="@Delete" aria-label="Delete">
+                        <span class="oi oi-trash"></span>
                     </button>
 
                 </h5>
             </div>
             <div id="StudentKey@(Model.StudentKey)Body" class="collapse show" aria-labelledby="StudentKey@(Model.StudentKey)Header" data-parent="#StudentKey@(Model.StudentKey)Accordion">
                 <div class="card-body">
+                    <h5>Goals</h5>
                     <ul>
-
-
-                        @foreach (var goal in Model.Goals)
+                        @if (Model.Goals != null)
                         {
-                            <li>@goal.GoalDescription</li>
+                            foreach (var goal in Model.Goals)
+                            {
+                                <li>@goal.GoalDescription</li>
+                            }
                         }
                     </ul>
                 </div>
@@ -47,23 +55,43 @@
 
     [Parameter]
     Client.Models.Student Model { get; set; }
+    
+    Client.Models.Student OriginalModel { get; set; }
+    
+    [Parameter]
+    Action<Models.Student> DeleteStudent { get; set; }
 
     bool _editMode;
 
     protected override void OnInit()
     {
-        if (Model == null || Model.StudentKey < 1)
+        if (Model == null)
+        {
+            Model = new Models.Student();
+           
+        }
+        if (Model.StudentKey < 1)
         {
             _editMode = true;
-            Model = new Models.Student();
         }
     }
 
     void Edit()
     {
         _editMode = true;
+        OriginalModel = Model.Copy();
     }
 
+    void Cancel()
+    {
+        Model = OriginalModel;
+        _editMode = false;
+    }
+
+    void Delete()
+    {
+        DeleteStudent(Model);
+    }
     async Task Save()
     {
         _editMode = false;

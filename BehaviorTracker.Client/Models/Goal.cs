@@ -3,7 +3,7 @@ using BehaviorTracker.Shared;
 
 namespace BehaviorTracker.Client.Models
 {
-    public class Goal
+    public class Goal : Copyable<Goal>
     {
         public long GoalKey { get; set; }
         public long StudentKey { get; set; }
