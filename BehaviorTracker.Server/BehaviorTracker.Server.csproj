@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Microsoft.AspNetCore.Blazor.Server" Version="0.7.0" />
         <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" />
@@ -12,7 +13,11 @@
 
     <ItemGroup>
         <ProjectReference Include="..\BehaviorTracker.Client\BehaviorTracker.Client.csproj" />
-        <ProjectReference Include="..\BehaviorTracker.Repository\BehaviorTracker.Repository.csproj" />
+        <ProjectReference Include="..\BehaviorTracker.Service\BehaviorTracker.Service.csproj" />
         <ProjectReference Include="..\BehaviorTracker.Shared\BehaviorTracker.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="BehaviorTracker.db" />
     </ItemGroup>
 </Project>

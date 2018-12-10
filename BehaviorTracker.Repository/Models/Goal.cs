@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using BehaviorTracker.Shared;
 
-namespace BehaviorTracker.Repository
+namespace BehaviorTracker.Repository.Models
 {
     public class Goal
     {
@@ -11,7 +11,7 @@ namespace BehaviorTracker.Repository
         public long GoalKey { get; set; }
         public long StudentKey { get; set; }
         public string GoalDescription { get; set; }
-        public int GoalType { get; set; }
+        public GoalType GoalType { get; set; }
         public Student Student { get; set; }
         [ForeignKey("GoalKey")]
         public ICollection<GoalAnswer> GoalAnswers { get; set; }

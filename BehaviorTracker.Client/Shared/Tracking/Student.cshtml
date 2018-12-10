@@ -1,23 +1,23 @@
-@using BehaviorTracker.Shared
 @inject HttpClient Http
-@if (StudentAndGoals != null)
+@using BehaviorTracker.Shared
+@if (_students != null)
 {
     <table class="table">
         <tbody>
-        @foreach (var studentAndGoal in StudentAndGoals)
+        @foreach (var student in _students)
         {
             <tr>
-                <td>@studentAndGoal.StudentName</td>
-                @foreach (var goal in studentAndGoal.Goals)
+                <td>@student.StudentFirstName @student.StudentLastName</td>
+                @foreach (var goal in student.Goals)
                 {
                     <td>
                         @if (goal.GoalType == GoalType.YesNo)
                         {
-                            <YesNoGoalAnswer GoalName="@goal.Name"/>
+                            <YesNoGoalAnswer GoalName="@goal.GoalDescription"/>
                         }
                         else
                         {
-                            <NumericGoalAnswer GoalName="@goal.Name"/>
+                            <NumericGoalAnswer GoalName="@goal.GoalDescription"/>
                         }
                     </td>
                 }
@@ -29,10 +29,10 @@
 
 
 @functions {
-    StudentAndGoals[] StudentAndGoals;
+    Models.Student[] _students;
 
     protected override async Task OnInitAsync()
     {
-        StudentAndGoals = await Http.GetJsonAsync<StudentAndGoals[]>("api/SampleData/StudentAndGoals");
+        _students = await Http.GetJsonAsync<Models.Student[]>("api/Student/Students");
     }
 }

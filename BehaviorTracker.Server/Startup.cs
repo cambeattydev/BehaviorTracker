@@ -1,11 +1,19 @@
 using System.Linq;
 using System.Net.Mime;
+using AutoMapper;
+using BehaviorTracker.Repository.Implementations;
+using BehaviorTracker.Repository.Interfaces;
+using BehaviorTracker.Server.Mappings;
+using BehaviorTracker.Service.Implementations;
+using BehaviorTracker.Service.Interfaces;
 using Microsoft.AspNetCore.Blazor.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace BehaviorTracker.Server
 {
@@ -18,7 +26,15 @@ namespace BehaviorTracker.Server
             services.AddDbContext<Repository.BehaviorTrackerDatabaseContext>(options => 
                 options.UseSqlite(Repository.BehaviorTrackerDatabaseContext.ConnectionString));
             
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
+            
+           AddAutoMapper(services);
+
+           services.AddScoped<IStudentService, StudentService>()
+               .AddScoped<IStudentRepository, StudentRepository>();
 
             services.AddResponseCompression(options =>
             {
@@ -38,9 +54,11 @@ namespace BehaviorTracker.Server
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<Repository.BehaviorTrackerDatabaseContext>();
-                //context.Database.EnsureCreated();
-                context.Database.Migrate();
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+                //context.Database.Migrate();
             }
+            
             
             app.UseResponseCompression();
 
@@ -54,6 +72,17 @@ namespace BehaviorTracker.Server
             app.UseBlazor<BehaviorTracker.Client.Startup>();
             
            
+        }
+
+        private static void AddAutoMapper(IServiceCollection services)
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfile<ServerToServiceProfile>();
+                cfg.AddProfile<Service.Mapping.ServiceToRepositoryProfile>();
+            });
+            
+            services.AddAutoMapper();
         }
     }
 }

@@ -1,2 +1,51 @@
 @page "/Admin"
+@using System.Collections
+@inject HttpClient Http
+<h3>Students</h3>
 
+@if (_students != null)
+{
+    <div class="row">
+        @foreach (var student in _students)
+        {
+            <AdminStudent Model="@student"/>
+        }
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <button onclick="@AddStudent" class="btn btn-primary">
+                Add Student <span class="oi oi-plus"></span>
+            </button>
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@functions
+{
+    IList<Models.Student> _students;
+
+    protected override async Task OnInitAsync()
+    {
+        _students = await Http.GetJsonAsync<IList<Models.Student>>("api/Student/GetStudentsWithGoalsAndAvailableAnswers");
+    }
+
+    void AddStudent()
+    {
+        if (_students == null)
+        {
+            _students = new List<Models.Student>();
+        }
+
+        var minStudentKey = _students.Min(s => s.StudentKey);
+        _students.Add(new Models.Student
+        {
+            StudentKey = minStudentKey > 0 ? 0 : minStudentKey,
+            //Goals = new List<Models.Goal>()
+        });
+    }
+
+}

@@ -1,11 +1,7 @@
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-
-namespace BehaviorTracker.Repository
+namespace BehaviorTracker.Client.Models
 {
     public class GoalAvailableAnswer
     {
-        [Key]
         public long GoalAvailableAnswerKey { get; set; }
         public long GoalKey { get; set; }
         public string OptionValue { get; set; }

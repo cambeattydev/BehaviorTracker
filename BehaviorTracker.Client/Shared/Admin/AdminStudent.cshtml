@@ -1,0 +1,81 @@
+@inject HttpClient Http
+<div class="col-12">
+    <div id="StudentKey@(Model.StudentKey)Accordion">
+        <div class="card">
+            <div class="card-header" id="StudentKey@(Model.StudentKey)Header">
+                <h5 class="mb-0">
+                    <button class="btn btn-link @(_editMode ? "d-none" : "")" data-toggle="collapse" data-target="#StudentKey@(Model.StudentKey)Body" aria-expanded="true" aria-controls="@Model.StudentFirstName @Model.StudentLastName">
+                        @Model.StudentFirstName @Model.StudentLastName
+                    </button>
+                    <form class="form-inline @(!_editMode ? "d-none" : "")" style="font-size: .75em;" onsubmit="@Save">
+                        <div class="form-group">
+                            <label for="FirstName-@Model.StudentKey">First Name</label>
+                            <input type="text" class="form-control" id="FirstName-@Model.StudentKey" aria-describedby="First Name" placeholder="First Name" bind="@Model.StudentFirstName"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="LastName-@Model.StudentKey">Last Name</label>
+                            <input type="text" class="form-control" id="LastName-@Model.StudentKey" aria-describedby="Last Name" placeholder="Last Name" bind="@Model.StudentLastName"/>
+                        </div>
+                        <button type="submit" class="btn btn-link" aria-label="Save">
+                            <span class="oi oi-check"></span>
+                        </button>
+                    </form>
+                    <button class="btn btn-link @(_editMode ? "d-none" : "")" style="font-size: .75em;" onclick="@Edit" aria-label="Edit">
+                        <span class="oi oi-pencil"></span>
+                    </button>
+
+                </h5>
+            </div>
+            <div id="StudentKey@(Model.StudentKey)Body" class="collapse show" aria-labelledby="StudentKey@(Model.StudentKey)Header" data-parent="#StudentKey@(Model.StudentKey)Accordion">
+                <div class="card-body">
+                    <ul>
+
+
+                        @foreach (var goal in Model.Goals)
+                        {
+                            <li>@goal.GoalDescription</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions
+{
+
+    [Parameter]
+    Client.Models.Student Model { get; set; }
+
+    bool _editMode;
+
+    protected override void OnInit()
+    {
+        if (Model == null || Model.StudentKey < 1)
+        {
+            _editMode = true;
+            Model = new Models.Student();
+        }
+    }
+
+    void Edit()
+    {
+        _editMode = true;
+    }
+
+    async Task Save()
+    {
+        _editMode = false;
+        try
+        {
+            var newModel = await Http.PostJsonAsync<Client.Models.Student>("/api/Student/Student", Model);
+            Model = newModel;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+}
