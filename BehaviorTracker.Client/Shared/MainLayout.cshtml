@@ -1,11 +1,22 @@
+@using BehaviorTracker.Client.Shared.Common
 @inherits BlazorLayoutComponent
 
+
 <div class="sidebar">
-    <NavMenu />
+    <NavMenu/>
 </div>
 
+<Modal ref="modalTest"/>
+
 <div class="main">
-    <div class="content px-4">
-        @Body
-    </div>
+    <CascadingValue Value="@modalTest">
+        <div class="content px-4">
+            @Body
+        </div>
+    </CascadingValue>
 </div>
+
+@functions
+{
+    Modal modalTest;
+}

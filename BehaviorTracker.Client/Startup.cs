@@ -1,3 +1,4 @@
+using BehaviorTracker.Client.Shared.Common;
 using Microsoft.AspNetCore.Blazor.Builder;
 using Microsoft.Extensions.DependencyInjection;
 

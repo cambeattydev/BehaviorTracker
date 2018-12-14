@@ -1,0 +1,42 @@
+<div class="modal" tabindex="-1" role="dialog" data-keyboard="false" id="@ElementId">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@ModalText</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="@OnCancel">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @BodyHtml
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="@OnCancel">Cancel</button>
+                <button type="button" class="btn @(IsDelete ? "btn-danger" : "btn-primary")" data-dismiss="modal" onclick="@OnSubmit">@ConfirmText</button>
+            </div>
+        </div>
+    </div>
+</div>
+@functions
+{
+
+    [Parameter] public string ModalText { get; set; }
+    
+    [Parameter] public string ConfirmText { get; set; }
+    
+    [Parameter] public RenderFragment BodyHtml { get; set; }
+    
+    [Parameter] public Action OnCancel { get; set; }
+    
+    [Parameter] public Action OnSubmit { get; set; }
+    
+    [Parameter] public bool IsDelete { get; set; }
+    
+    [Parameter]public  string ElementId { get; set; }
+
+    public void StateHasChanged()
+    {
+        base.StateHasChanged();
+    }
+
+}

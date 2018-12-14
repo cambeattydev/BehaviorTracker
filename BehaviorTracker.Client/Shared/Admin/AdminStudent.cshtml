@@ -1,4 +1,6 @@
 @inject HttpClient Http
+@using BehaviorTracker.Client.Shared.Common
+
 <div class="col-12">
     <div id="StudentKey@(Model.StudentKey)Accordion">
         <div class="card">
@@ -52,7 +54,7 @@
 
 @functions
 {
-
+    
     [Parameter]
     Client.Models.Student Model { get; set; }
     
@@ -60,6 +62,8 @@
     
     [Parameter]
     Action<Models.Student> DeleteStudent { get; set; }
+    
+    //[CascadingParameter] Modal _modal { get; set; }
 
     bool _editMode;
 
@@ -74,6 +78,12 @@
         {
             _editMode = true;
         }
+        
+    }
+
+    void Delete()
+    {
+        DeleteStudent(Model);
     }
 
     void Edit()
@@ -84,14 +94,36 @@
 
     void Cancel()
     {
-        Model = OriginalModel;
-        _editMode = false;
+        if (Model.StudentKey > 0)
+        {
+            Model = OriginalModel;
+            _editMode = false;
+        }
+        else
+        {
+            DeleteStudent(Model);
+
+        }
+
     }
 
-    void Delete()
-    {
-        DeleteStudent(Model);
-    }
+//    async Task ShowModal()
+//    {
+//        _modal.ElementId = $"DeleteStudent{Model.StudentKey}";
+//        _modal.BodyHtml = builder =>
+//        {
+//            builder.OpenElement(0, "p");
+//            builder.AddContent(1, $"Are you sure you want to delete {Model.StudentFirstName} {Model.StudentLastName}");
+//            builder.CloseElement();
+//        };
+//        _modal.IsDelete = true;
+//        _modal.ConfirmText = "Delete";
+//        _modal.OnSubmit = Delete;
+//        _modal.StateHasChanged();
+//        
+//        await JSRuntime.Current.InvokeAsync<string>("modal.show",_modal.ElementId );        
+//    }
+    
     async Task Save()
     {
         _editMode = false;

@@ -1,5 +1,7 @@
 @page "/Admin"
+@using BehaviorTracker.Client.Shared.Common
 @using Student = BehaviorTracker.Client.Models.Student
+
 @inject HttpClient Http
 <h3>Students</h3>
 
@@ -27,10 +29,17 @@ else
 @functions
 {
     IList<Models.Student> _students;
+    
+    [CascadingParameter] Modal _modal { get; set; }
 
     protected override async Task OnInitAsync()
     {
         _students = await Http.GetJsonAsync<IList<Models.Student>>("api/Student/GetStudentsWithGoalsAndAvailableAnswers");
+    }
+
+    protected override void OnAfterRender()
+    {
+        _modal.ElementId = "This is a test";
     }
 
     void AddStudent()
@@ -52,11 +61,16 @@ else
 
     void DeleteStudent(Models.Student student)
     {
+        Console.WriteLine("Begin DeleteStudent");
         var deleted = _students.Remove(student);
+        Console.WriteLine("StudentRemoved");
         if (deleted)
         {
+            Console.WriteLine("Student Deleted");
             base.StateHasChanged();
+            Console.WriteLine("StudentDeleted after StateHasChanged");
         }
+        Console.WriteLine("End StudentDeleted");
     }
 
 }
