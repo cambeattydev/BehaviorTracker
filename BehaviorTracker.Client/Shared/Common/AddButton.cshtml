@@ -1,0 +1,21 @@
+<div class="row" style="padding-top: 10px">
+    <div class="col-12">
+        <button onclick="@Add" class="btn btn-primary">
+            @ButtonText <span class="oi oi-plus"></span>
+        </button>
+    </div>
+</div>
+@functions{
+
+    [Parameter] Action OnAdd { get; set; }
+    
+    [Parameter] string ButtonText { get; set; }
+
+    void Add()
+    {
+        Console.WriteLine("Adding start");
+        OnAdd();
+        Console.WriteLine("Adding end");
+    }
+
+}

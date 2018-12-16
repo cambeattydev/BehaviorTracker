@@ -7,46 +7,40 @@
 
 @if (_students != null)
 {
-    <div class="row">
-        @foreach (var student in _students)
-        {
-             <AdminStudent Model="@student" DeleteStudent="@DeleteStudent"/>
-        }
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <button onclick="@AddStudent" class="btn btn-primary">
-                Add Student <span class="oi oi-plus"></span>
-            </button>
-        </div>
-    </div>
+       foreach (var student in _students)
+       {
+           <AdminStudent Model="@student" DeleteStudent="@DeleteStudent"/>
+       }
+    <AddButton OnAdd="@AddStudent" ButtonText="Add Student"/>
 }
 else
 {
-    <p>Loading...</p>
+    <spinner/>
 }
 
 @functions
 {
     IList<Models.Student> _students;
-    
-    [CascadingParameter] Modal _modal { get; set; }
 
     protected override async Task OnInitAsync()
     {
         _students = await Http.GetJsonAsync<IList<Models.Student>>("api/Student/GetStudentsWithGoalsAndAvailableAnswers");
     }
 
-    protected override void OnAfterRender()
-    {
-        _modal.ElementId = "This is a test";
-    }
-
     void AddStudent()
     {
-        if (_students == null)
+        if (_students == null || !_students.Any())
         {
-            _students = new List<Models.Student>();
+            _students = new List<Models.Student>
+            {
+                new Models.Student
+                {
+                    StudentKey = 0,
+                    Goals = new List<Models.Goal>()
+                }
+            };
+            base.StateHasChanged();
+            return;
         }
         var minStudentKey = _students.Min(s => s.StudentKey);
         var newStudent = new Models.Student
@@ -55,8 +49,9 @@ else
             Goals = new List<Models.Goal>()
         };
 
-        
+
         _students.Add(newStudent);
+        base.StateHasChanged();
     }
 
     void DeleteStudent(Models.Student student)
