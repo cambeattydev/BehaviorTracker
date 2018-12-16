@@ -1,0 +1,186 @@
+.spinner-container {
+    position: absolute;
+    left:50%;
+    top:40%;
+    width: 117px;
+    height: 117px;
+    margin: -49px 0 0 -49px;
+    text-align:left;
+    animation: spinner-rotate linear 2.56s infinite;
+    -o-animation: spinner-rotate linear 2.56s infinite;
+    -ms-animation: spinner-rotate linear 2.56s infinite;
+    -webkit-animation: spinner-rotate linear 2.56s infinite;
+    -moz-animation: spinner-rotate linear 2.56s infinite;
+}
+
+.spinner-sphere {
+    position: absolute;
+}
+.spinner-sphere:before,
+.spinner-sphere:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}
+.spinner-sphere:before {
+    top: 0;
+    border-radius: 974px 974px 0 0;
+    animation: spinner-top ease 0.64s alternate infinite;
+    -o-animation: spinner-top ease 0.64s alternate infinite;
+    -ms-animation: spinner-top ease 0.64s alternate infinite;
+    -webkit-animation: spinner-top ease 0.64s alternate infinite;
+    -moz-animation: spinner-top ease 0.64s alternate infinite;
+}
+.spinner-sphere:after {
+    bottom: 0;
+    border-radius: 0 0 974px 974px;
+    animation: spinner-bottom ease 0.64s alternate infinite;
+    -o-animation: spinner-bottom ease 0.64s alternate infinite;
+    -ms-animation: spinner-bottom ease 0.64s alternate infinite;
+    -webkit-animation: spinner-bottom ease 0.64s alternate infinite;
+    -moz-animation: spinner-bottom ease 0.64s alternate infinite;
+    background: linear-gradient(180deg, #3a0647 0%, rgb(5, 39, 103) 70%);
+}
+
+.spinner-s-1 { top:0; right:0; bottom:0; left:0; }
+.spinner-s-2 { top:10px; right:10px; bottom:10px; left:10px; }
+.spinner-s-3 { top:19px; right:19px; bottom:19px; left:19px; }
+.spinner-s-4 { top:29px; right:29px; bottom:29px; left:29px; }
+.spinner-s-5 { top:39px; right:39px; bottom:39px; left:39px; }
+.spinner-s-gold { top:49px; right:49px; bottom:49px; left:49px; }
+
+.spinner-s-2:before,
+.spinner-s-2:after {
+    background: rgb(119, 119, 116);
+    animation-delay: 40ms;
+    -o-animation-delay: 40ms;
+    -ms-animation-delay: 40ms;
+    -webkit-animation-delay: 40ms;
+    -moz-animation-delay: 40ms;
+}
+.spinner-s-3:before,
+.spinner-s-3:after {
+    animation-delay: 80ms;
+    -o-animation-delay: 80ms;
+    -ms-animation-delay: 80ms;
+    -webkit-animation-delay: 80ms;
+    -moz-animation-delay: 80ms;
+}
+.spinner-s-4:before,
+.spinner-s-4:after {
+    background: rgb(119, 119, 116);
+    animation-delay: 120ms;
+    -o-animation-delay: 120ms;
+    -ms-animation-delay: 120ms;
+    -webkit-animation-delay: 120ms;
+    -moz-animation-delay: 120ms;
+}
+.spinner-s-5:before,
+.spinner-s-5:after {
+    animation-delay: 160ms;
+    -o-animation-delay: 160ms;
+    -ms-animation-delay: 160ms;
+    -webkit-animation-delay: 160ms;
+    -moz-animation-delay: 160ms;
+}
+.spinner-s-gold:before,
+.spinner-s-gold:after {
+    background: black;
+    box-shadow: 0 0 49px black;
+    animation: none;
+    -o-animation: none;
+    -ms-animation: none;
+    -webkit-animation: none;
+    -moz-animation: none;
+}
+
+.spinner-backdrop{
+    position: absolute;
+    background: black;
+    opacity: .3;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+
+
+
+@keyframes spinner-rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+
+@-o-keyframes spinner-rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+
+@-ms-keyframes spinner-rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+
+@-webkit-keyframes spinner-rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+
+@-moz-keyframes spinner-rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+
+@keyframes spinner-top {
+    from {top:0;}
+    to {top:-60%;}
+}
+
+@-o-keyframes spinner-top {
+    from {top:0;}
+    to {top:-60%;}
+}
+
+@-ms-keyframes spinner-top {
+    from {top:0;}
+    to {top:-60%;}
+}
+
+@-webkit-keyframes spinner-top {
+    from {top:0;}
+    to {top:-60%;}
+}
+
+@-moz-keyframes spinner-top {
+    from {top:0;}
+    to {top:-60%;}
+}
+
+@keyframes spinner-bottom {
+    from {bottom:0;}
+    to {bottom:-60%;}
+}
+
+@-o-keyframes spinner-bottom {
+    from {bottom:0;}
+    to {bottom:-60%;}
+}
+
+@-ms-keyframes spinner-bottom {
+    from {bottom:0;}
+    to {bottom:-60%;}
+}
+
+@-webkit-keyframes spinner-bottom {
+    from {bottom:0;}
+    to {bottom:-60%;}
+}
+
+@-moz-keyframes spinner-bottom {
+    from {bottom:0;}
+    to {bottom:-60%;}
+}
