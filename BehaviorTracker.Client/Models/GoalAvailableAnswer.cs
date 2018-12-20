@@ -1,6 +1,6 @@
 namespace BehaviorTracker.Client.Models
 {
-    public class GoalAvailableAnswer : Copyable<GoalAvailableAnswer>
+    public class GoalAvailableAnswer
     {
         public long GoalAvailableAnswerKey { get; set; }
         public long GoalKey { get; set; }

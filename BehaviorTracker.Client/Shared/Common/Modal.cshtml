@@ -20,21 +20,21 @@
 @functions
 {
 
-    [Parameter] public string ModalText { get; set; }
+    [Parameter] string ModalText { get; set; }
     
-    [Parameter] public string ConfirmText { get; set; }
+    [Parameter] string ConfirmText { get; set; }
     
-    [Parameter] public RenderFragment BodyHtml { get; set; }
+    [Parameter] RenderFragment BodyHtml { get; set; }
     
-    [Parameter] public Action OnCancel { get; set; }
+    [Parameter] Action OnCancel { get; set; }
     
-    [Parameter] public Action OnSubmit { get; set; }
+    [Parameter] Action OnSubmit { get; set; }
     
-    [Parameter] public bool IsDelete { get; set; }
+    [Parameter] bool IsDelete { get; set; }
     
-    [Parameter]public  string ElementId { get; set; }
+    [Parameter] string ElementId { get; set; }
 
-    public void StateHasChanged()
+    public new void StateHasChanged()
     {
         base.StateHasChanged();
     }

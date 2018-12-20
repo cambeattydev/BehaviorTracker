@@ -21,6 +21,7 @@ namespace BehaviorTracker.Repository
         {
             modelBuilder.Entity<Student>().HasData(ListOfStudents);
             modelBuilder.Entity<Goal>().HasData(ListOfGoals);
+            modelBuilder.Entity<GoalAvailableAnswer>().HasData(_availableAnswers);
         }
 
         private static Student[] ListOfStudents => new[]
@@ -75,6 +76,66 @@ namespace BehaviorTracker.Repository
                 GoalType = GoalType.YesNo,
                 StudentKey = 3
             }
+        };
+
+        private static GoalAvailableAnswer[] _availableAnswers => new[]
+        {
+            //Goal 2
+            new GoalAvailableAnswer
+            {
+                GoalKey = 2,
+                GoalAvailableAnswerKey = 1,
+                OptionValue = "1"
+            }, 
+            new GoalAvailableAnswer
+            {
+                GoalKey = 2,
+                GoalAvailableAnswerKey = 2,
+                OptionValue = "2"
+            }, 
+            new GoalAvailableAnswer
+            {
+                GoalKey = 2,
+                GoalAvailableAnswerKey = 3,
+                OptionValue = "3"
+            }, 
+            new GoalAvailableAnswer
+            {
+                GoalKey = 2,
+                GoalAvailableAnswerKey = 4,
+                OptionValue = "4"
+            }, 
+            //Goal 3
+            new GoalAvailableAnswer
+            {
+                GoalKey = 3,
+                GoalAvailableAnswerKey = 5,
+                OptionValue = "0"
+            }, 
+            new GoalAvailableAnswer
+            {
+                GoalKey = 3,
+                GoalAvailableAnswerKey = 6,
+                OptionValue = "0.5"
+            }, 
+            new GoalAvailableAnswer
+            {
+                GoalKey = 3,
+                GoalAvailableAnswerKey = 7,
+                OptionValue = "1"
+            }, 
+            new GoalAvailableAnswer
+            {
+                GoalKey = 3,
+                GoalAvailableAnswerKey = 8,
+                OptionValue = "1.5"
+            },
+            new GoalAvailableAnswer
+            {
+                GoalKey = 3,
+                GoalAvailableAnswerKey = 9,
+                OptionValue = "2"
+            }, 
         };
     }
 }

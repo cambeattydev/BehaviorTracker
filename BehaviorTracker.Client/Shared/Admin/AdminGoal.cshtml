@@ -7,13 +7,20 @@
         <div class="card">
             <div class="card-header" id="GoalKey@(Model.GoalKey)Header">
                 <h5 class="mb-0">
-                    <button class="btn btn-link @(_editMode ? "d-none" : "") collapsed" data-toggle="collapse" data-target="#GoalKey@(Model.GoalKey)Body" aria-expanded="false" aria-controls="@Model.GoalDescription">
-                        @Model.GoalDescription
-                    </button>
+                    @if (Model.GoalType == GoalType.Numeric)
+                    {
+                        <button class="btn btn-link @(_editMode ? "d-none" : "") collapsed" data-toggle="collapse" data-target="#GoalKey@(Model.GoalKey)Body" aria-expanded="false" aria-controls="@Model.GoalDescription">
+                            @Model.GoalDescription
+                        </button>
+                    }
+                    else
+                    {
+                        <span style="font-size: 1rem; line-height: 1.5; padding: .375rem .75rem;" class="@(_editMode ? "d-none" : "") collapsed">@Model.GoalDescription</span>
+                    }
                     <form class="form-inline @(!_editMode ? "d-none" : "")" style="font-size: .75em;" onsubmit="@Save">
                         <div class="form-group">
                             <label for="Description-@Model.GoalKey">Goal</label>
-                            <input type="text" class="form-control" id="Description-@Model.GoalKey" aria-describedby="Goal" placeholder="Goal" bind="@Model.GoalDescription" style="width:350px;"/>
+                            <input type="text" class="form-control" id="Description-@Model.GoalKey" aria-describedby="Goal" placeholder="Goal" bind="@Model.GoalDescription" style="width: 350px;"/>
                         </div>
                         <div class="form-group">
                             <label for="GoalType-@Model.GoalKey">Goal Type</label>
@@ -36,38 +43,31 @@
                     <button class="btn btn-link @(_editMode ? "d-none" : "")" style="font-size: .75em; color: red" onclick="@Delete" aria-label="Delete">
                         <span class="oi oi-trash"></span>
                     </button>
-
                 </h5>
             </div>
-            <div id="GoalKey@(Model.GoalKey)Body" class="collapse" aria-labelledby="GoalKey@(Model.GoalKey)Header" data-parent="#GoalKey@(Model.GoalKey)Accordion">
-                <div class="card-body">
-                    <h5>Available Answers</h5>
-                    <ul>
-                        @if (Model.AvailableAnswers != null)
-                        {
-                            foreach (var answer in Model.AvailableAnswers)
-                            {
-                                <li>@answer.OptionValue</li>
-                            }
-                        }
-                    </ul>
+            @if (Model.GoalType == GoalType.Numeric)
+            {
+                <div id="GoalKey@(Model.GoalKey)Body" class="collapse" aria-labelledby="GoalKey@(Model.GoalKey)Header" data-parent="#GoalKey@(Model.GoalKey)Accordion">
+                    <div class="card-body">
+                        <AdminNumericOptionValue Goal="@Model"/>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
 </div>
 
 @functions
 {
-    
+
     [Parameter]
     Client.Models.Goal Model { get; set; }
-    
+
     Client.Models.Goal OriginalModel { get; set; }
-    
+
     [Parameter]
     Action<Models.Goal> DeleteGoal { get; set; }
-    
+
     //[CascadingParameter] Modal _modal { get; set; }
 
     bool _editMode;
@@ -78,13 +78,11 @@
         if (Model == null)
         {
             Model = new Goal();
-           
         }
         if (Model.GoalKey < 1)
         {
             _editMode = true;
         }
-        
     }
 
     void Delete()
@@ -108,11 +106,9 @@
         else
         {
             DeleteGoal(Model);
-
         }
-
     }
-    
+
     async Task Save()
     {
         _editMode = false;
