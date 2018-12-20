@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using BehaviorTracker.Service.Models;
 
 namespace BehaviorTracker.Service.Interfaces
 {
@@ -7,5 +9,6 @@ namespace BehaviorTracker.Service.Interfaces
         IEnumerable<Models.Student> GetStudents();
 
         IEnumerable<Models.Student> GetStudentsWithGoalsAndAvailableAnswers();
+        Task<Student> SaveAsync(Student student);
     }
 }

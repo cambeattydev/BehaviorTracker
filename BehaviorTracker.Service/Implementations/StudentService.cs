@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Repository.Interfaces;
 using BehaviorTracker.Service.Interfaces;
@@ -25,6 +26,13 @@ namespace BehaviorTracker.Service.Implementations
         public IEnumerable<Student> GetStudentsWithGoalsAndAvailableAnswers()
         {
             return _studentRepository.GetStudentsWithGoalsAndAvailableAnswers().Select(_mapper.Map<Models.Student>);
+        }
+
+        public async Task<Student> SaveAsync(Student student)
+        {
+            var repositoryStudent = _mapper.Map<Repository.Models.Student>(student);
+            var savedStudent = await _studentRepository.SaveAsync(repositoryStudent).ConfigureAwait(false);
+            return _mapper.Map<Student>(savedStudent);
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Service.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -27,14 +28,18 @@ namespace BehaviorTracker.Server.Controllers
             _studentService.GetStudentsWithGoalsAndAvailableAnswers().Select(_mapper.Map<Client.Models.Student>);
 
         [HttpPost("[action]")]
-        public IActionResult Student([FromBody] Client.Models.Student studentModel)
+        public async Task<IActionResult> Student([FromBody] Client.Models.Student studentModel)
         {
+            
             var student = _mapper.Map<Service.Models.Student>(studentModel);
             if (student == null)
             {
                 return BadRequest();
             }
-            return Ok(studentModel);
+
+            var savedStudent  = await _studentService.SaveAsync(student).ConfigureAwait(false);
+            _mapper.Map<Client.Models.Student>(savedStudent);
+            return Ok(savedStudent);
         }
     }
 }

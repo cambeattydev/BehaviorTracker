@@ -1,5 +1,9 @@
 @inject HttpClient Http
+@using System.Collections
 @using BehaviorTracker.Client.Shared.Common
+@using BehaviorTracker.Client.Validators
+@using FluentValidation
+@using FluentValidation.Internal
 
 <div class="row">
     <div class="col-12">
@@ -13,7 +17,15 @@
                         <form class="form-inline @(!_editMode ? "d-none" : "")" style="font-size: .75em;" onsubmit="@Save">
                             <div class="form-group">
                                 <label for="FirstName-@Model.StudentKey">First Name</label>
-                                <input type="text" class="form-control" id="FirstName-@Model.StudentKey" aria-describedby="First Name" placeholder="First Name" bind="@Model.StudentFirstName"/>
+                                <input type="text" class="form-control" id="FirstName-@Model.StudentKey" aria-describedby="First Name" placeholder="First Name" bind="@Model.StudentFirstName" onblur="@(() => Validate(nameof(Model.StudentFirstName)))"/>
+                                @* TODO Need to add logic to make this stuff a base class of some time so I dont have to write this a bunch of times *@
+                                @if (Errors.ContainsKey(nameof(Model.StudentFirstName)) && Errors[nameof(Model.StudentFirstName)].Any())
+                                {
+                                    foreach (var error in Errors[nameof(Model.StudentFirstName)])
+                                    {
+                                      <span class="text-danger">@error</span>  
+                                    }
+                                }
                             </div>
                             <div class="form-group">
                                 <label for="LastName-@Model.StudentKey">Last Name</label>
@@ -63,6 +75,12 @@
 
     [Parameter]
     Action<Models.Student> DeleteStudent { get; set; }
+    
+    StudentValidator _studentValidator  = new StudentValidator();
+
+    bool _validated;
+    //TODO Move to base class
+    IDictionary<string, IEnumerable<string>> Errors = new Dictionary<string, IEnumerable<string>>();
 
     //[CascadingParameter] Modal _modal { get; set; }
 
@@ -146,6 +164,15 @@
             Model.Goals = goals;
             base.StateHasChanged();
         }
+    }
+
+    //TODO Move to base class
+    async Task Validate(string propertyName)
+    {
+        var context = new ValidationContext<Student>(Model, new PropertyChain(), new MemberNameValidatorSelector(new []{propertyName}));
+        var validationResult =  await _studentValidator.ValidateAsync(context);
+        Console.WriteLine(validationResult.ToString());
+        Errors[propertyName] = validationResult.Errors.Where(error => error.PropertyName == propertyName).Select(s => s.ErrorMessage);
     }
 
     //    async Task ShowModal()

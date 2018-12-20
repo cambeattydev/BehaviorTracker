@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using BehaviorTracker.Repository.Interfaces;
 using BehaviorTracker.Repository.Models;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,17 @@ namespace BehaviorTracker.Repository.Implementations
         public IEnumerable<Student> GetStudentsWithGoalsAndAvailableAnswers()
         {
             return _dbContext.Students.Include(s => s.Goals).ThenInclude(s => s.AvailableAnswers);
+        }
+
+        public async Task<Student> SaveAsync(Student student)
+        {
+            
+            var savedStudent = student.StudentKey < 1 ?
+                _dbContext.Students.Add(student) : 
+                _dbContext.Students.Update(student);
+
+            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            return savedStudent.Entity;
         }
     }
 }
