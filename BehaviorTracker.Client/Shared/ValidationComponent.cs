@@ -11,11 +11,14 @@ namespace BehaviorTracker.Client.Shared
 {
     public class ValidationComponent<T> : BlazorComponent
     {
-        private IValidator<T> _studentValidator;
+        [Inject]
+        private IValidatorFactory _validatorFactory { get; set; }
+        
+        private readonly IValidator<T> _validator;
 
-        public ValidationComponent(IValidatorFactory validationFactory)
+        public ValidationComponent()
         {
-            _studentValidator = validationFactory.GetValidator<T>();
+            _validator = _validatorFactory.GetValidator<T>();
         }
 
         protected IDictionary<string, IEnumerable<string>> Errors = new Dictionary<string, IEnumerable<string>>();
@@ -25,7 +28,7 @@ namespace BehaviorTracker.Client.Shared
         protected  async Task Validate(string propertyName)
         {
             var context = new ValidationContext<T>(Model, new PropertyChain(), new MemberNameValidatorSelector(new[] {propertyName}));
-            var validationResult = await _studentValidator.ValidateAsync(context);
+            var validationResult = await _validator.ValidateAsync(context);
             if (validationResult.IsValid)
             {
                 Errors[propertyName] = new string[0];
@@ -38,7 +41,7 @@ namespace BehaviorTracker.Client.Shared
 
         protected  async Task Validate()
         {
-            var validationResult = await _studentValidator.ValidateAsync(Model);
+            var validationResult = await _validator.ValidateAsync(Model);
             if (validationResult.IsValid)
             {
                 Errors.Clear();

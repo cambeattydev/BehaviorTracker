@@ -11,30 +11,26 @@ using Microsoft.AspNetCore.Blazor.Components;
 
 namespace BehaviorTracker.Client.Shared.Admin
 {
-    public class AdminStudentModel : ValidationComponent<Student>
+    public class AdminStudentModel  : ValidationComponent<Student>
     {
-        private readonly HttpClient _httpClient;
-        public AdminStudentModel(IValidatorFactory validationFactory, HttpClient httpClient) : base(validationFactory)
+        [Inject]
+        private HttpClient _httpClient { get; set; }
+        
+        public AdminStudentModel() : base()
         {
-            _httpClient = httpClient;
         }
         
-         [Parameter]
-    Client.Models.Student Model { get; set; }
-
-    Client.Models.Student OriginalModel { get; set; }
+    protected Client.Models.Student OriginalModel { get; set; }
 
     [Parameter]
-    Action<Models.Student> DeleteStudent { get; set; }
+    protected Action<Models.Student> DeleteStudent { get; set; }
     
-    StudentValidator _studentValidator  = new StudentValidator();
-
-    bool _validated;
+    protected bool _validated;
 
 
     //[CascadingParameter] Modal _modal { get; set; }
 
-    bool _editMode;
+    protected bool _editMode;
 
     protected override void OnInit()
     {
@@ -48,18 +44,18 @@ namespace BehaviorTracker.Client.Shared.Admin
         }
     }
 
-    void Delete()
+    protected void Delete()
     {
         DeleteStudent(Model);
     }
 
-    void Edit()
+    protected void Edit()
     {
         _editMode = true;
         OriginalModel = Model.Copy();
     }
 
-    void Cancel()
+    protected void Cancel()
     {
         if (Model.StudentKey > 0)
         {
@@ -72,7 +68,7 @@ namespace BehaviorTracker.Client.Shared.Admin
         }
     }
 
-    void AddGoal()
+    protected void AddGoal()
     {
         if (Model.Goals == null || !Model.Goals.Any())
         {
@@ -105,7 +101,7 @@ namespace BehaviorTracker.Client.Shared.Admin
         base.StateHasChanged();
     }
 
-    void DeleteGoal(Models.Goal goal)
+    protected void DeleteGoal(Models.Goal goal)
     {
         var goals = Model.Goals.ToList();
         var deleted = goals.Remove(goal);
@@ -133,7 +129,7 @@ namespace BehaviorTracker.Client.Shared.Admin
     //        await JSRuntime.Current.InvokeAsync<string>("modal.show",_modal.ElementId );        
     //    }
 
-    async Task Save()
+    protected async Task Save()
     {
         _editMode = false;
         try
