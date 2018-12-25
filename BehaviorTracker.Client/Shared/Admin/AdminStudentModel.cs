@@ -12,23 +12,15 @@ using Microsoft.AspNetCore.Blazor.Components;
 
 namespace BehaviorTracker.Client.Shared.Admin
 {
-    public class AdminStudentModel : BlazorComponent
+    public class AdminStudentModel : ValidationComponent<Student>
     {
         [Inject] protected HttpClient _httpClient { get; set; }
 
         [Inject] protected IValidator<Student> _studentValidator { get; set; }
-        [Parameter] protected Client.Models.Student Model { get; set; }
 
         Client.Models.Student OriginalModel { get; set; }
 
         [Parameter] Action<Models.Student> DeleteStudent { get; set; }
-
-
-
-        bool _validated;
-
-        //TODO Move to base class
-        protected IDictionary<string, IEnumerable<string>> Errors = new Dictionary<string, IEnumerable<string>>();
 
         //[CascadingParameter] Modal _modal { get; set; }
 
@@ -45,6 +37,8 @@ namespace BehaviorTracker.Client.Shared.Admin
             {
                 _editMode = true;
             }
+            
+            
         }
 
         protected void Delete()

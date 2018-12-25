@@ -12,6 +12,7 @@ namespace BehaviorTracker.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IValidator<Student>, StudentValidator>();
+            services.AddSingleton<IValidatorFactory, ValidatorFactory>();
         }
 
         public void Configure(IBlazorApplicationBuilder app)
