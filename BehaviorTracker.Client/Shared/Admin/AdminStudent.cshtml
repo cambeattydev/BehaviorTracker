@@ -9,18 +9,20 @@
                         <button class="btn btn-link @(_editMode ? "d-none" : "")" data-toggle="collapse" data-target="#StudentKey@(Model.StudentKey)Body" aria-expanded="true" aria-controls="@Model.StudentFirstName @Model.StudentLastName">
                             @Model.StudentFirstName @Model.StudentLastName
                         </button>
-                        <form class="form-inline @(!_editMode ? "d-none" : "")" style="font-size: .75em;" onsubmit="@Save">
-                            <div class="form-group">
-                                <label for="FirstName-@Model.StudentKey">First Name</label>
-                                <input type="text" class="form-control" id="FirstName-@Model.StudentKey" aria-describedby="First Name" placeholder="First Name" bind="@Model.StudentFirstName" onblur="@(() => Validate(nameof(Model.StudentFirstName)))"/>
+                        <form class="form-inline @(!_editMode ? "d-none" : "")" style="font-size: .75em;" onsubmit="@Save" novalidate="true">
+                            
+                        <label for="FirstName-@Model.StudentKey">First Name</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control @ValidationClassName(nameof(Model.StudentFirstName))" id="FirstName-@Model.StudentKey" aria-describedby="First Name" placeholder="First Name" bind="@Model.StudentFirstName" onblur="@(() => Validate(nameof(Model.StudentFirstName)))"/>
                                 @* TODO Need to add logic to make this stuff a base class of some time so I dont have to write this a bunch of times *@
-                                @if (Errors.ContainsKey(nameof(Model.StudentFirstName)) && Errors[nameof(Model.StudentFirstName)].Any())
+                                @if (IsInvalid(nameof(Model.StudentFirstName)))
                                 {
-                                    foreach (var error in Errors[nameof(Model.StudentFirstName)])
-                                    {
-                                      <span class="text-danger">@error</span>  
-                                    }
+                                    <div class="invalid-feedback">
+                                        @string.Join("<br/>", Errors[nameof(Model.StudentFirstName)])
+                                    </div>
                                 }
+
+
                             </div>
                             <div class="form-group">
                                 <label for="LastName-@Model.StudentKey">Last Name</label>
@@ -59,4 +61,3 @@
         </div>
     </div>
 </div>
-
