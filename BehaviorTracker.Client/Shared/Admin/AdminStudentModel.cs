@@ -28,6 +28,10 @@ namespace BehaviorTracker.Client.Shared.Admin
 
         protected override void OnInit()
         {
+            Console.WriteLine("Before call to base.OnInit");
+            base.OnInit();
+            Console.WriteLine("After call to base.OnInit");
+            
             if (Model == null)
             {
                 Model = new Models.Student();
