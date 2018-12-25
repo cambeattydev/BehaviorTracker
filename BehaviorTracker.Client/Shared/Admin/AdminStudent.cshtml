@@ -1,8 +1,3 @@
-@using System.Collections
-@using BehaviorTracker.Client.Shared.Common
-@using BehaviorTracker.Client.Validators
-@using FluentValidation
-@using FluentValidation.Internal
 @inherits AdminStudentModel
 
 <div class="row">
@@ -18,7 +13,14 @@
                             <div class="form-group">
                                 <label for="FirstName-@Model.StudentKey">First Name</label>
                                 <input type="text" class="form-control" id="FirstName-@Model.StudentKey" aria-describedby="First Name" placeholder="First Name" bind="@Model.StudentFirstName" onblur="@(() => Validate(nameof(Model.StudentFirstName)))"/>
-                               
+                                @* TODO Need to add logic to make this stuff a base class of some time so I dont have to write this a bunch of times *@
+                                @if (Errors.ContainsKey(nameof(Model.StudentFirstName)) && Errors[nameof(Model.StudentFirstName)].Any())
+                                {
+                                    foreach (var error in Errors[nameof(Model.StudentFirstName)])
+                                    {
+                                      <span class="text-danger">@error</span>  
+                                    }
+                                }
                             </div>
                             <div class="form-group">
                                 <label for="LastName-@Model.StudentKey">Last Name</label>

@@ -1,3 +1,4 @@
+using BehaviorTracker.Client.Models;
 using BehaviorTracker.Client.Shared.Common;
 using BehaviorTracker.Client.Validators;
 using FluentValidation;
@@ -10,7 +11,7 @@ namespace BehaviorTracker.Client
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IValidatorFactory,ValidationFactory>();
+            services.AddTransient<IValidator<Student>, StudentValidator>();
         }
 
         public void Configure(IBlazorApplicationBuilder app)
