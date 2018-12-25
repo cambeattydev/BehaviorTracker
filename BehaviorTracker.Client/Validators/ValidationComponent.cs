@@ -14,8 +14,6 @@ namespace BehaviorTracker.Client.Validators
 
         private IValidator<T> _validator;
 
-        private bool _wasValidated;
-
         protected IDictionary<string, IEnumerable<string>> Errors;
 
 
@@ -49,8 +47,6 @@ namespace BehaviorTracker.Client.Validators
                     .Select(s => s.ErrorMessage);
             else
                 Errors[propertyName] = new string[0];
-            
-            _wasValidated = true;
         }
 
         protected async Task Validate()
@@ -72,8 +68,6 @@ namespace BehaviorTracker.Client.Validators
                     Errors[propertyName] = new string[0];
                 }
             }
-
-            _wasValidated = true;
         }
     }
 }
