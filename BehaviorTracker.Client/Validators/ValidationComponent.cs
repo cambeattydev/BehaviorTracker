@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Internal;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Blazor.Components;
 
 namespace BehaviorTracker.Client.Validators
@@ -32,12 +33,15 @@ namespace BehaviorTracker.Client.Validators
             Errors.ContainsKey(propertyName) && Errors[propertyName].Any();
 
         protected string ValidationClassName(string propertyName) =>
-            IsValid(propertyName) ? "is-valid" : IsInvalid(propertyName) ? "is-invalid" : "";
+            IsValid(propertyName) ? "is-valid" : IsInvalid(propertyName) ? "is-invalid" : string.Empty;
+
+        protected IEnumerable<string> ErrorsOf(string propertyName) =>
+            Errors.ContainsKey(propertyName) ? Errors[propertyName] : new string[0];
 
         //protected string ValidationHasHappened => _wasValidated ? "was-validated" : "";
         
         
-        protected async Task Validate(string propertyName)
+        protected async Task<ValidationResult> ValidateAsync(string propertyName)
         {
             var context = new ValidationContext<T>(Model, new PropertyChain(),
                 new MemberNameValidatorSelector(new[] {propertyName}));
@@ -47,11 +51,14 @@ namespace BehaviorTracker.Client.Validators
                     .Select(s => s.ErrorMessage);
             else
                 Errors[propertyName] = new string[0];
+
+            return validationResult;
         }
 
-        protected async Task Validate()
+        protected async Task<ValidationResult> ValidateAsync()
         {
             var validationResult = await _validator.ValidateAsync(Model);
+            Console.WriteLine($"ValidationResult.IsValid:{validationResult.IsValid}");
             var propertyNames = Model.GetType().GetProperties().Select(s => s.Name);
             Console.WriteLine("------------PropertyNames-------------");
             Console.WriteLine(string.Join("\n", propertyNames));
@@ -59,6 +66,7 @@ namespace BehaviorTracker.Client.Validators
             foreach (var propertyName in propertyNames)
             {
                 var propertyErrors = validationResult.Errors.Where(error => error.PropertyName == propertyName);
+                Console.WriteLine($"Errors for [{propertyName}]: {propertyErrors.Count()}");
                 if (propertyErrors.Any())
                 {
                     Errors[propertyName] = propertyErrors.Select(s => s.ErrorMessage);
@@ -68,6 +76,8 @@ namespace BehaviorTracker.Client.Validators
                     Errors[propertyName] = new string[0];
                 }
             }
+            Console.WriteLine($"After setting Errors ValidationResult.IsValid:{validationResult.IsValid}");
+            return validationResult;
         }
     }
 }

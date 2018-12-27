@@ -13,18 +13,13 @@
                             
                         <label for="FirstName-@Model.StudentKey">First Name</label>
                             <div class="input-group">
-                                <input type="text" class="form-control @ValidationClassName(nameof(Model.StudentFirstName))" id="FirstName-@Model.StudentKey" aria-describedby="First Name" placeholder="First Name" bind="@Model.StudentFirstName" onblur="@(() => Validate(nameof(Model.StudentFirstName)))"/>
-                                @* TODO Need to add logic to make this stuff a base class of some time so I dont have to write this a bunch of times *@
-                                @if (IsInvalid(nameof(Model.StudentFirstName)))
-                                {
-                                    <div class="invalid-feedback">
-                                        @string.Join("<br/>", Errors[nameof(Model.StudentFirstName)])
-                                    </div>
-                                }
+                                <input type="text" class="form-control @ValidationClassName(nameof(Model.StudentFirstName))" id="FirstName-@Model.StudentKey" aria-describedby="First Name" placeholder="First Name" bind="@Model.StudentFirstName" onblur="@(() => ValidateAsync(nameof(Model.StudentFirstName)))"/>
+                                <ValidationMessages IsInvalid="@(() => IsInvalid(nameof(Model.StudentFirstName)))" Errors="@ErrorsOf(nameof(Model.StudentFirstName))" />
                             </div>
-                            <div class="form-group">
-                                <label for="LastName-@Model.StudentKey">Last Name</label>
-                                <input type="text" class="form-control" id="LastName-@Model.StudentKey" aria-describedby="Last Name" placeholder="Last Name" bind="@Model.StudentLastName"/>
+                            <label for="LastName-@Model.StudentKey">Last Name</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control @ValidationClassName(nameof(Model.StudentFirstName))" id="LastName-@Model.StudentKey" aria-describedby="Last Name" placeholder="Last Name" bind="@Model.StudentLastName" onblur="@(() => ValidateAsync(nameof(Model.StudentLastName)))"/>
+                                <ValidationMessages IsInvalid="@(() => IsInvalid(nameof(Model.StudentLastName)))" Errors="@ErrorsOf(nameof(Model.StudentLastName))" />
                             </div>
                             <button type="button" class="btn btn-link" aria-label="Cancel" onclick="@Cancel">
                                 <span class="oi oi-x" style="color: red"></span>

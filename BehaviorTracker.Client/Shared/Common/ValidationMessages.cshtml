@@ -1,18 +1,17 @@
  
  @* TODO Need to add logic to make this stuff a base class of some time so I dont have to write this a bunch of times *@
- @if (Errors.ContainsKey(ParameterToValidate) && Errors[ParameterToValidate].Any())
+ @if (IsInvalid.Invoke())
  {
-     foreach (var error in Errors[ParameterToValidate])
-     {
-         <span class="text-danger">@error</span>  
-     }
+     <div class="invalid-feedback">
+         @string.Join("<br/>", Errors)
+     </div>
  }
 
 @functions
 {
-
-    [Parameter] string ParameterToValidate { get; set; }
     
-    [Parameter] IDictionary<string, IEnumerable<string>> Errors { get; set; }
+    [Parameter] IEnumerable<string> Errors { get; set; }
+    
+    [Parameter] Func<bool> IsInvalid { get; set; }
     
 }

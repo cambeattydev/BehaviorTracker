@@ -16,8 +16,6 @@ namespace BehaviorTracker.Client.Shared.Admin
     {
         [Inject] protected HttpClient _httpClient { get; set; }
 
-        [Inject] protected IValidator<Student> _studentValidator { get; set; }
-
         Client.Models.Student OriginalModel { get; set; }
 
         [Parameter] Action<Models.Student> DeleteStudent { get; set; }
@@ -130,15 +128,21 @@ namespace BehaviorTracker.Client.Shared.Admin
 
         protected async Task Save()
         {
-            _editMode = false;
-            try
+            var validationResult = await ValidateAsync();
+            Console.WriteLine($"On Component ValidationResult.IsValid:{validationResult.IsValid}");
+            if (validationResult.IsValid)
             {
-                var newModel = await _httpClient.PostJsonAsync<Client.Models.Student>("/api/Student/Student", Model);
-                Model = newModel;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+                try
+                {
+                    var newModel =
+                        await _httpClient.PostJsonAsync<Client.Models.Student>("/api/Student/Student", Model);
+                    Model = newModel;
+                    _editMode = false;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
     }
