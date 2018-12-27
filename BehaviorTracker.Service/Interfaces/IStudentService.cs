@@ -10,5 +10,6 @@ namespace BehaviorTracker.Service.Interfaces
 
         IEnumerable<Models.Student> GetStudentsWithGoalsAndAvailableAnswers();
         Task<Student> SaveAsync(Student student);
+        Task<Models.Student> DeletedAsync(long studentKey);
     }
 }

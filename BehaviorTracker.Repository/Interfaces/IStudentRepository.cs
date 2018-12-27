@@ -10,5 +10,6 @@ namespace BehaviorTracker.Repository.Interfaces
         IEnumerable<Student> GetStudents();
         IEnumerable<Student> GetStudentsWithGoalsAndAvailableAnswers();
         Task<Student> SaveAsync(Student student);
+        Task<Student> DeleteStudentAsync(long studentKey);
     }
 }

@@ -1,6 +1,7 @@
 @page "/Admin"
 @using BehaviorTracker.Client.Shared.Common
 @using Student = BehaviorTracker.Client.Models.Student
+@using Microsoft.JSInterop;
 
 @inject HttpClient Http
 <h3>Students</h3>
@@ -9,7 +10,7 @@
 {
        foreach (var student in _students)
        {
-           <AdminStudent Model="@student" DeleteStudent="@DeleteStudent"/>
+           <AdminStudent Model="@student" DeleteStudentAsync="@DeleteStudentAsync"/>
        }
     <AddButton OnAdd="@AddStudent" ButtonText="Add Student"/>
 }
@@ -20,11 +21,11 @@ else
 
 @functions
 {
-    IList<Models.Student> _students;
+    List<Models.Student> _students;
 
     protected override async Task OnInitAsync()
     {
-        _students = await Http.GetJsonAsync<IList<Models.Student>>("api/Student/GetStudentsWithGoalsAndAvailableAnswers");
+        _students = await Http.GetJsonAsync<List<Models.Student>>("api/Student/GetStudentsWithGoalsAndAvailableAnswers");
     }
 
     void AddStudent()
@@ -54,18 +55,21 @@ else
         base.StateHasChanged();
     }
 
-    void DeleteStudent(Models.Student student)
+    async Task DeleteStudentAsync(Models.Student student)
     {
-        Console.WriteLine("Begin DeleteStudent");
-        var deleted = _students.Remove(student);
-        Console.WriteLine("StudentRemoved");
-        if (deleted)
+        var deletedStudentMessage = await Http.DeleteAsync($"api/Student/Delete/{student.StudentKey}");
+        if (deletedStudentMessage.IsSuccessStatusCode)
         {
-            Console.WriteLine("Student Deleted");
-            base.StateHasChanged();
-            Console.WriteLine("StudentDeleted after StateHasChanged");
+            var stringDeletedStudent = await deletedStudentMessage.Content.ReadAsStringAsync();
+            var deletedStudent = Json.Deserialize<Models.Student>(stringDeletedStudent);
+            var deleted = _students.RemoveAll(listStudent => listStudent.StudentKey == deletedStudent.StudentKey);
+            Console.WriteLine($"Deleted:{deleted}");
+            if (deleted > 0)
+            {
+                base.StateHasChanged();
+            }
         }
-        Console.WriteLine("End StudentDeleted");
+
     }
 
 }

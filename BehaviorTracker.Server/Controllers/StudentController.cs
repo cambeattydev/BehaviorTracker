@@ -41,5 +41,18 @@ namespace BehaviorTracker.Server.Controllers
             _mapper.Map<Client.Models.Student>(savedStudent);
             return Ok(savedStudent);
         }
+        
+        [HttpDelete("[action]/{studentKey}")]
+        public async Task<IActionResult> Delete(long studentKey)
+        {
+            var deletedStudent = await _studentService.DeletedAsync(studentKey);
+            if (deletedStudent == null)
+            {
+                return BadRequest();
+            }
+
+            var mappedDeletedStudent = _mapper.Map<Client.Models.Student>(deletedStudent);
+            return Ok(mappedDeletedStudent);
+        }
     }
 }

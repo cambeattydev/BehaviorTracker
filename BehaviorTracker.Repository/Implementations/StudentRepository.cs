@@ -36,5 +36,19 @@ namespace BehaviorTracker.Repository.Implementations
             await _dbContext.SaveChangesAsync().ConfigureAwait(false);
             return savedStudent.Entity;
         }
+
+        public async Task<Student> DeleteStudentAsync(long studentKey)
+        {
+            var studentToDelete = await _dbContext.Students.FirstOrDefaultAsync(student => student.StudentKey == studentKey);
+            if (studentToDelete != null)
+            {
+                _dbContext.Students.Remove(studentToDelete);
+                await _dbContext.SaveChangesAsync();
+
+                return studentToDelete;
+            }
+
+            return null;
+        }
     }
 }

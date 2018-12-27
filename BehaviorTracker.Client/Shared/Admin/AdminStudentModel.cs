@@ -18,7 +18,7 @@ namespace BehaviorTracker.Client.Shared.Admin
 
         Client.Models.Student OriginalModel { get; set; }
 
-        [Parameter] Action<Models.Student> DeleteStudent { get; set; }
+        [Parameter] Func<Models.Student,Task> DeleteStudentAsync { get; set; }
 
         //[CascadingParameter] Modal _modal { get; set; }
 
@@ -43,9 +43,9 @@ namespace BehaviorTracker.Client.Shared.Admin
             
         }
 
-        protected void Delete()
+        protected async Task Delete()
         {
-            DeleteStudent(Model);
+            await DeleteStudentAsync(Model);
         }
 
         protected void Edit()
@@ -63,7 +63,7 @@ namespace BehaviorTracker.Client.Shared.Admin
             }
             else
             {
-                DeleteStudent(Model);
+                DeleteStudentAsync(Model);
             }
         }
 

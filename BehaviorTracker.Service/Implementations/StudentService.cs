@@ -12,15 +12,17 @@ namespace BehaviorTracker.Service.Implementations
     {
         private readonly IMapper _mapper;
         private readonly IStudentRepository _studentRepository;
+
         public StudentService(IMapper mapper, IStudentRepository studentRepository)
         {
             _mapper = mapper;
             _studentRepository = studentRepository;
         }
+
         public IEnumerable<Models.Student> GetStudents()
         {
-           var repositoryStudents = _studentRepository.GetStudents();
-           return repositoryStudents.Select(_mapper.Map<Models.Student>);
+            var repositoryStudents = _studentRepository.GetStudents();
+            return repositoryStudents.Select(_mapper.Map<Models.Student>);
         }
 
         public IEnumerable<Student> GetStudentsWithGoalsAndAvailableAnswers()
@@ -34,7 +36,12 @@ namespace BehaviorTracker.Service.Implementations
             var savedStudent = await _studentRepository.SaveAsync(repositoryStudent).ConfigureAwait(false);
             return _mapper.Map<Student>(savedStudent);
         }
-    }
 
-   
+        public async Task<Student> DeletedAsync(long studentKey)
+        {
+            var repositoryStudent = await _studentRepository.DeleteStudentAsync(studentKey);
+            var deletedStudent = _mapper.Map<Models.Student>(repositoryStudent);
+            return deletedStudent;
+        }
+    }
 }
