@@ -3,6 +3,7 @@ using AutoMapper;
 using BehaviorTracker.Repository.Interfaces;
 using BehaviorTracker.Service.Interfaces;
 using BehaviorTracker.Service.Models;
+using BehaviorTracker.Shared;
 
 namespace BehaviorTracker.Service.Implementations
 {
@@ -28,6 +29,10 @@ namespace BehaviorTracker.Service.Implementations
         {
             var repositoryGoal = _mapper.Map<Repository.Models.Goal>(goal);
             var savedGoal = await _goalRepository.SaveAsync(repositoryGoal).ConfigureAwait(false);
+            if (savedGoal.GoalType != GoalType.Numeric)
+            {
+                //Delete the goal available answers
+            }
             return _mapper.Map<Goal>(savedGoal);
         }
     }

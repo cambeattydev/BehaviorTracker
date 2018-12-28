@@ -1,116 +1,46 @@
-@using System.Globalization
-    <h5>Available Answers
-        <button class="btn btn-link @(_editMode ? "d-none" : "")" style="font-size: .75em;" onclick="@Edit" aria-label="Edit">
+@inherits AdminNumericOptionValueModel
+
+<h5>
+    Available Answers
+    <button class="btn btn-link @(_editMode ? "d-none" : "")" style="font-size: .75em;" onclick="@Edit" aria-label="Edit">
         <span class="oi oi-pencil"></span>
     </button>
-    <button class="btn btn-link @(!canDelete || _editMode  ? "d-none" : "")" style="font-size: .75em; color: red" onclick="@Delete" aria-label="Delete">
+    <button class="btn btn-link @(!canDelete || _editMode ? "d-none" : "")" style="font-size: .75em; color: red" onclick="@Delete" aria-label="Delete">
         <span class="oi oi-trash"></span>
     </button>
-    </h5> 
-    @if (!_editMode)
-    {
-        <ul>
-            @if (Goal.AvailableAnswers != null)
-            {
-                foreach (var answer in Goal.AvailableAnswers)
-                {
-                    <li>@answer.OptionValue</li>
-                }
-            }
-        </ul>
-    }
-    else
-    {
-        <form class="form @(!_editMode ? "d-none" : "")" style="font-size: .75em;" onsubmit="@Save">
-            <div class="form-group">
-                <label for="StartValue-@Model.GoalKey">Goal</label>
-                <input type="number" class="form-control" id="StartValue-@Model.GoalKey" aria-describedby="Start Value" bind="@Model.StartValue"/>
-            </div>
-            <div class="form-group">
-                <label for="EndValue-@Model.GoalKey">Goal Type</label>
-                <input type="number" class="form-control" id="EndValue-@Model.GoalKey" aria-describedby="End Value" bind="@Model.EndValue"/>
-            </div>
-            <div class="form-group">
-                <label for="StepAmount-@Model.GoalKey">Goal Type</label>
-                <input type="number" class="form-control" id="StepAmount-@Model.GoalKey" aria-describedby="Step Amount" step="@Model.StepAmount" bind="@Model.StepAmount"/>
-            </div>
-            <button type="button" class="btn btn-link" aria-label="Cancel" onclick="@Cancel">
-                <span class="oi oi-x" style="color: red"></span>
-            </button>
-            <button type="submit" class="btn btn-link" aria-label="Save">
-                <span class="oi oi-check" style="color: green"></span>
-            </button>
-        </form>
-    }
-
-
-@functions
+</h5>
+@if (!_editMode)
 {
-
-    [Parameter] Goal Goal { get; set; }
-
-    GoalAvailableAnswerEditModel Model = new GoalAvailableAnswerEditModel();
-
-    GoalAvailableAnswerEditModel OriginalModel;
-
-    bool _editMode;
-
-    bool canDelete;
-
-    protected override void OnInit()
-    {
-        if (Goal != null)
+    <ul>
+        @if (Goal.AvailableAnswers != null)
         {
-            var parsedOptions = new List<float>();
-            if (Goal.AvailableAnswers != null)
+            foreach (var answer in Goal.AvailableAnswers)
             {
-                parsedOptions.AddRange(Goal.AvailableAnswers.Select(s => float.TryParse(s.OptionValue, out var parsedInt) ? parsedInt : 0));
-                parsedOptions = parsedOptions.OrderBy(s => s).ToList();
+                <li>@answer.OptionValue</li>
             }
-            Console.WriteLine($"Model = {Model}");
-            Model.StartValue = parsedOptions.Any() ? parsedOptions.Min() : 0;
-            Model.EndValue = parsedOptions.Any() ? parsedOptions.Max() : 0;
-            Console.WriteLine("Found min and max");
-            Model.StepAmount = parsedOptions.Count() > 1 ? Math.Abs(parsedOptions.FirstOrDefault() - parsedOptions.ElementAtOrDefault(1)) : 0;
-            Model.GoalKey = Goal.GoalKey;
-            canDelete = Goal.AvailableAnswers?.Any() ?? false;
         }
-        base.OnInit();
-    }
-
-    void Edit()
-    {
-        OriginalModel = Model.Copy();
-        _editMode = true;
-    }
-
-    void Delete()
-    {
-        Goal.AvailableAnswers = new List<GoalAvailableAnswer>();
-        Model = new GoalAvailableAnswerEditModel();
-    }
-
-    void Cancel()
-    {
-        Model = OriginalModel;
-        _editMode = false;
-        
-    }
-
-    void Save()
-    {
-        _editMode = false;
-        var savedOptions = new List<GoalAvailableAnswer>();
-        for (var i = Model.StartValue; i <= Model.EndValue; i = i + Model.StepAmount)
-        {
-            savedOptions.Add(new GoalAvailableAnswer
-            {
-                Goal = Goal,
-                GoalKey = Goal.GoalKey,
-                OptionValue = i.ToString(CultureInfo.InvariantCulture)
-            });
-        }
-        Goal.AvailableAnswers = savedOptions;
-        Console.WriteLine("Saved");
-    }
+    </ul>
+}
+else
+{
+    <form class="form @(!_editMode ? "d-none" : "")" style="font-size: .75em;" onsubmit="@Save">
+        <div class="form-group">
+            <label for="StartValue-@Model.GoalKey">Goal</label>
+            <input type="number" class="form-control" id="StartValue-@Model.GoalKey" aria-describedby="Start Value" bind="@Model.StartValue"/>
+        </div>
+        <div class="form-group">
+            <label for="EndValue-@Model.GoalKey">Goal Type</label>
+            <input type="number" class="form-control" id="EndValue-@Model.GoalKey" aria-describedby="End Value" bind="@Model.EndValue"/>
+        </div>
+        <div class="form-group">
+            <label for="StepAmount-@Model.GoalKey">Goal Type</label>
+            <input type="number" class="form-control" id="StepAmount-@Model.GoalKey" aria-describedby="Step Amount" step="@Model.StepAmount" bind="@Model.StepAmount"/>
+        </div>
+        <button type="button" class="btn btn-link" aria-label="Cancel" onclick="@Cancel">
+            <span class="oi oi-x" style="color: red"></span>
+        </button>
+        <button type="submit" class="btn btn-link" aria-label="Save">
+            <span class="oi oi-check" style="color: green"></span>
+        </button>
+    </form>
 }
