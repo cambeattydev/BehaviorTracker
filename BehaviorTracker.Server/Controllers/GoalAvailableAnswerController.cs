@@ -22,14 +22,10 @@ namespace BehaviorTracker.Server.Controllers
         [HttpDelete("[action]/{goalKey}")]
         public async Task<IActionResult> DeleteAllForGoal(long goalKey)
         {
-            var deletedGoal = await _goalAvailableAnswerService.DeleteAllForGoal(goalKey).ConfigureAwait(false);
-            if (deletedGoal == null)
-            {
-                return BadRequest();
-            }
+            var deletedGoalAvailableAnswers = await _goalAvailableAnswerService.DeleteAllForGoal(goalKey).ConfigureAwait(false);
 
-            var mappedDeletedGoal = _mapper.Map<Client.Models.Goal>(deletedGoal);
-            return Ok(mappedDeletedGoal);
+            var mappedDeletedGoalAvailableAnswers = deletedGoalAvailableAnswers.Select(_mapper.Map<Client.Models.GoalAvailableAnswer>);
+            return Ok(mappedDeletedGoalAvailableAnswers);
         }
         
         [HttpPost("[action]")]

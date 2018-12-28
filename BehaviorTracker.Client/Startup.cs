@@ -15,6 +15,7 @@ namespace BehaviorTracker.Client
         {
             services.AddTransient<IValidator<Student>, StudentValidator>();
             services.AddTransient<IValidator<Goal>, GoalValidator>();
+            services.AddTransient<IValidator<GoalAvailableAnswerEditModel>, GoalAvailableAnswerEditModelValidator>();
             services.AddSingleton<IValidatorFactory, ValidatorFactory>();
         }
 

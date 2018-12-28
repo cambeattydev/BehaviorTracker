@@ -16,8 +16,6 @@ namespace BehaviorTracker.Client.Shared.Admin
         [Inject] protected HttpClient _httpClient { get; set; }
         [Parameter] protected Goal Goal { get; set; }
 
-        GoalAvailableAnswerEditModel Model = new GoalAvailableAnswerEditModel();
-
         GoalAvailableAnswerEditModel OriginalModel;
 
         protected bool _editMode;
@@ -27,7 +25,10 @@ namespace BehaviorTracker.Client.Shared.Admin
         protected override void OnInit()
         {
             base.OnInit();
-
+            if (Model == null)
+            {
+                Model = new GoalAvailableAnswerEditModel();
+            }
             if (Goal != null)
             {
                 var parsedOptions = new List<float>();
@@ -61,7 +62,10 @@ namespace BehaviorTracker.Client.Shared.Admin
             if (deleteResponse.IsSuccessStatusCode)
             {
                 Goal.AvailableAnswers = new List<GoalAvailableAnswer>();
-                Model = new GoalAvailableAnswerEditModel();
+                Model = new GoalAvailableAnswerEditModel
+                {
+                    GoalKey = Goal.GoalKey
+                };
             }
         }
 

@@ -33,10 +33,7 @@ namespace BehaviorTracker.Server
             
            AddAutoMapper(services);
 
-           services.AddScoped<IStudentService, StudentService>()
-               .AddScoped<IStudentRepository, StudentRepository>()
-               .AddScoped<IGoalService, GoalService>()
-               .AddScoped<IGoalRepository, GoalRepository>();
+           IocConfiguration.ConfigureIoc(services);
 
             services.AddResponseCompression(options =>
             {
@@ -86,5 +83,6 @@ namespace BehaviorTracker.Server
             
             services.AddAutoMapper();
         }
+        
     }
 }

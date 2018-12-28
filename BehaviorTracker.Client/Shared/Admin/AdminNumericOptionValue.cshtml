@@ -24,17 +24,21 @@
 else
 {
     <form class="form @(!_editMode ? "d-none" : "")" style="font-size: .75em;" onsubmit="@Save">
-        <div class="form-group">
-            <label for="StartValue-@Model.GoalKey">Goal</label>
-            <input type="number" class="form-control" id="StartValue-@Model.GoalKey" aria-describedby="Start Value" bind="@Model.StartValue"/>
+        
+        <label for="StartValue-@Model.GoalKey">Start Value</label>
+        <div class="input-group">
+            <input type="number" class="form-control @ValidationClassName(nameof(Model.StartValue))" id="StartValue-@Model.GoalKey" aria-describedby="Start Value" bind="@Model.StartValue" onblur="@(() => ValidateAsync(nameof(Model.StartValue)))"/>
+            <ValidationMessages IsInvalid="@(() => IsInvalid(nameof(Model.StartValue)))" Errors="@ErrorsOf(nameof(Model.StartValue))"/>
         </div>
-        <div class="form-group">
-            <label for="EndValue-@Model.GoalKey">Goal Type</label>
-            <input type="number" class="form-control" id="EndValue-@Model.GoalKey" aria-describedby="End Value" bind="@Model.EndValue"/>
+        <label for="EndValue-@Model.GoalKey">End Value</label>
+        <div class="input-group">
+            <input type="number" class="form-control @ValidationClassName(nameof(Model.EndValue))" id="EndValue-@Model.GoalKey" aria-describedby="End Value" bind="@Model.EndValue" onblur="@(() => ValidateAsync(nameof(Model.EndValue)))"/>
+            <ValidationMessages IsInvalid="@(() => IsInvalid(nameof(Model.EndValue)))" Errors="@ErrorsOf(nameof(Model.EndValue))"/>
         </div>
-        <div class="form-group">
-            <label for="StepAmount-@Model.GoalKey">Goal Type</label>
-            <input type="number" class="form-control" id="StepAmount-@Model.GoalKey" aria-describedby="Step Amount" step="@Model.StepAmount" bind="@Model.StepAmount"/>
+        <label for="StepAmount-@Model.GoalKey">Step Amount</label>
+        <div class="input-group">
+            <input type="number" class="form-control @ValidationClassName(nameof(Model.StepAmount))" id="StepAmount-@Model.GoalKey" aria-describedby="Step Amount" step="@Model.StepAmount" bind="@Model.StepAmount" onblur="@(() => ValidateAsync(nameof(Model.StepAmount)))"/>
+            <ValidationMessages IsInvalid="@(() => IsInvalid(nameof(Model.StepAmount)))" Errors="@ErrorsOf(nameof(Model.StepAmount))"/>
         </div>
         <button type="button" class="btn btn-link" aria-label="Cancel" onclick="@Cancel">
             <span class="oi oi-x" style="color: red"></span>

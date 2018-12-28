@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BehaviorTracker.Repository.Interfaces;
 using BehaviorTracker.Repository.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BehaviorTracker.Repository.Implementations
 {
@@ -31,9 +32,13 @@ namespace BehaviorTracker.Repository.Implementations
             {
                 throw  new ArgumentNullException(nameof(goalAvailableAnswers));
             }
-
-
+            //Do this so we only save the goalAvailableAnswers and not also the goal
+            foreach (var goalAvailableAnswer in goalAvailableAnswers)
+            {
+                goalAvailableAnswer.Goal = null;
+            }
             var addAvailableAnswersTask = _behaviorTrackerDatabaseContext.GoalAvailableAnswer.AddRangeAsync(goalAvailableAnswers);
+
             var saveChangesTask = _behaviorTrackerDatabaseContext.SaveChangesAsync();
 
             await Task.WhenAll(addAvailableAnswersTask, saveChangesTask).ConfigureAwait(false);
