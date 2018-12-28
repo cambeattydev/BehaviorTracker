@@ -1,6 +1,5 @@
-@inject HttpClient Http
-@using BehaviorTracker.Client.Shared.Tracking
 @using BehaviorTracker.Shared
+@inherits AdminGoalModel
 
 <div class="col-12">
     <div id="GoalKey@(Model.GoalKey)Accordion">
@@ -18,17 +17,19 @@
                         <span style="font-size: 1rem; line-height: 1.5; padding: .375rem .75rem;" class="@(_editMode ? "d-none" : "") collapsed">@Model.GoalDescription</span>
                     }
                     <form class="form-inline @(!_editMode ? "d-none" : "")" style="font-size: .75em;" onsubmit="@Save">
-                        <div class="form-group">
-                            <label for="Description-@Model.GoalKey">Goal</label>
-                            <input type="text" class="form-control" id="Description-@Model.GoalKey" aria-describedby="Goal" placeholder="Goal" bind="@Model.GoalDescription" style="width: 350px;"/>
+                        <label for="Description-@Model.GoalKey">Goal</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control @ValidationClassName(nameof(Model.GoalDescription))" id="Description-@Model.GoalKey" aria-describedby="Goal" placeholder="Goal" bind="@Model.GoalDescription" style="width: 350px;" onblur="@(() => ValidateAsync(nameof(Model.GoalDescription)))"/>
+                            <ValidationMessages IsInvalid="@(() => IsInvalid(nameof(Model.GoalDescription)))" Errors="@ErrorsOf(nameof(Model.GoalDescription))" />
                         </div>
-                        <div class="form-group">
-                            <label for="GoalType-@Model.GoalKey">Goal Type</label>
-                            <select class="form-control" id="GoalType-@Model.GoalKey" aria-describedby="Goal Type" bind="@Model.GoalType">
+                        <label for="GoalType-@Model.GoalKey">Goal Type</label>
+                        <div class="input-group">
+                            <select class="form-control @ValidationClassName(nameof(Model.GoalType))" id="GoalType-@Model.GoalKey" aria-describedby="Goal Type" bind="@Model.GoalType" onblur="@(() => ValidateAsync(nameof(Model.GoalType)))">
                                 <option value="@GoalType.None" selected="selected"></option>
                                 <option value="@GoalType.YesNo">Yes/No</option>
                                 <option value="@GoalType.Numeric">Numeric</option>
                             </select>
+                            <ValidationMessages IsInvalid="@(() => IsInvalid(nameof(Model.GoalType)))" Errors="@ErrorsOf(nameof(Model.GoalType))" />
                         </div>
                         <button type="button" class="btn btn-link" aria-label="Cancel" onclick="@Cancel">
                             <span class="oi oi-x" style="color: red"></span>
@@ -56,75 +57,3 @@
         </div>
     </div>
 </div>
-
-@functions
-{
-
-    [Parameter]
-    Client.Models.Goal Model { get; set; }
-
-    Client.Models.Goal OriginalModel { get; set; }
-
-    [Parameter]
-    Func<Models.Goal,Task> DeleteGoalAsync { get; set; }
-    
-    [Parameter]
-    Action<Models.Goal> SavedGoalAsync { get; set; }
-
-    //[CascadingParameter] Modal _modal { get; set; }
-
-    bool _editMode;
-
-    protected override void OnInit()
-    {
-        if (Model == null)
-        {
-            Model = new Goal();
-        }
-        if (Model.GoalKey < 1)
-        {
-            _editMode = true;
-        }
-    }
-
-    async Task Delete()
-    {
-      await DeleteGoalAsync(Model);
-    }
-
-    void Edit()
-    {
-        _editMode = true;
-        OriginalModel = Model.Copy();
-    }
-
-    async Task Cancel()
-    {
-        if (Model.GoalKey > 0)
-        {
-            Model = OriginalModel;
-            _editMode = false;
-        }
-        else
-        {
-            await DeleteGoalAsync(Model);
-        }
-    }
-
-    async Task Save()
-    {
-        _editMode = false;
-        try
-        {
-            var newModel = await Http.PostJsonAsync<Client.Models.Goal>("/api/Goal/Goal", Model);
-            Model = newModel;
-            base.StateHasChanged();
-            SavedGoalAsync?.Invoke(Model);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-    }
-
-}

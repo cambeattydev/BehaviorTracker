@@ -57,6 +57,14 @@ else
 
     async Task DeleteStudentAsync(Models.Student student)
     {
+        if (student.StudentKey < 1)
+        {
+            var deleted = _students.Remove(student);
+            if (deleted)
+                base.StateHasChanged();
+            return;
+
+        }
         var deletedStudentMessage = await Http.DeleteAsync($"api/Student/Delete/{student.StudentKey}");
         if (deletedStudentMessage.IsSuccessStatusCode)
         {

@@ -22,8 +22,10 @@ namespace BehaviorTracker.Client.Validators
 
         protected override void OnInit()
         {
+            Console.WriteLine("Begin on init of ValidationComponent");
             _validator = _validatorFactory.GetValidator<T>();
             Errors = new Dictionary<string, IEnumerable<string>>();
+            Console.WriteLine("End on init of ValidationComponent");
         }
 
         protected bool IsValid(string propertyName) =>

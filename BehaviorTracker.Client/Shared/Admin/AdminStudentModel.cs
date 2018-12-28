@@ -13,7 +13,7 @@ namespace BehaviorTracker.Client.Shared.Admin
 {
     public class AdminStudentModel : ValidationComponent<Student>
     {
-        [Inject] protected HttpClient _httpClient { get; set; }
+        [Inject] private HttpClient _httpClient { get; set; }
 
         Client.Models.Student OriginalModel { get; set; }
 
@@ -25,10 +25,8 @@ namespace BehaviorTracker.Client.Shared.Admin
 
         protected override void OnInit()
         {
-            Console.WriteLine("Before call to base.OnInit");
             base.OnInit();
-            Console.WriteLine("After call to base.OnInit");
-            
+            Console.WriteLine("AdminStudentModel: Begin of OnInit");
             if (Model == null)
             {
                 Model = new Models.Student();
@@ -38,7 +36,7 @@ namespace BehaviorTracker.Client.Shared.Admin
             {
                 _editMode = true;
             }
-            
+            Console.WriteLine("AdminStudentModel: End of OnInit");
             
         }
 
@@ -91,14 +89,19 @@ namespace BehaviorTracker.Client.Shared.Admin
                 GoalKey = minGoalKey > 0 ? 0 : minGoalKey
             };
 
-            var goals = Model.Goals.ToList();
-            goals.Add(newGoal);
-            Model.Goals = goals;
+            Model.Goals.Add(newGoal);
             base.StateHasChanged();
         }
 
         protected async Task DeleteGoalAsync(Models.Goal goal)
         {
+            if (goal.GoalKey < 1)
+            {
+                var deleted = Model.Goals.Remove(goal);
+                if (deleted)
+                    base.StateHasChanged();
+                return;
+            }
             var deletedGoalMessage = await _httpClient.DeleteAsync($"api/Goal/Delete/{goal.GoalKey}");
             if (deletedGoalMessage.IsSuccessStatusCode)
             {
@@ -111,17 +114,6 @@ namespace BehaviorTracker.Client.Shared.Admin
                     base.StateHasChanged();
                 }
             }
-        }
-
-        protected void SavedGoalAsync(Goal goal)
-        {
-            Console.WriteLine($"Saved Goal: {Json.Serialize(goal)}");
-            Console.WriteLine("----------------- Current Goals -----------------");
-            foreach (var modelGoals in Model.Goals)
-            {
-             Console.WriteLine(Json.Serialize(modelGoals));   
-            }
-            Console.WriteLine("----------------- End Current Goals -----------------");
         }
 
         //    async Task ShowModal()
@@ -151,7 +143,7 @@ namespace BehaviorTracker.Client.Shared.Admin
                 {
                     var newModel =
                         await _httpClient.PostJsonAsync<Client.Models.Student>("/api/Student/Student", Model);
-                    Model = newModel;
+                    Model.StudentKey = newModel.StudentKey;
                     _editMode = false;
                 }
                 catch (Exception ex)

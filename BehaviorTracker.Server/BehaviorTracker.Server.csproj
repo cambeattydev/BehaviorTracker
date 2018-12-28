@@ -16,6 +16,7 @@
         <ProjectReference Include="..\BehaviorTracker.Service\BehaviorTracker.Service.csproj" />
         <ProjectReference Include="..\BehaviorTracker.Shared\BehaviorTracker.Shared.csproj" />
         <Watch Include="../**/*.cshtml" />
+        <Watch Remove="..\BehaviorTracker.Client\**" />
     </ItemGroup>
 
     <ItemGroup>
