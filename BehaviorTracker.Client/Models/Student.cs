@@ -9,6 +9,6 @@ namespace BehaviorTracker.Client.Models
         public long StudentKey { get; set; }
         public string StudentFirstName { get; set; }
         public string StudentLastName { get; set; }
-        public IEnumerable<Goal> Goals { get; set; }
+        public List<Goal> Goals { get; set; }
     }
 }

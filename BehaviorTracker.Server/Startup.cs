@@ -34,7 +34,9 @@ namespace BehaviorTracker.Server
            AddAutoMapper(services);
 
            services.AddScoped<IStudentService, StudentService>()
-               .AddScoped<IStudentRepository, StudentRepository>();
+               .AddScoped<IStudentRepository, StudentRepository>()
+               .AddScoped<IGoalService, GoalService>()
+               .AddScoped<IGoalRepository, GoalRepository>();
 
             services.AddResponseCompression(options =>
             {

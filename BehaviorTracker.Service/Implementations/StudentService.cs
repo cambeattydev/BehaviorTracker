@@ -37,9 +37,9 @@ namespace BehaviorTracker.Service.Implementations
             return _mapper.Map<Student>(savedStudent);
         }
 
-        public async Task<Student> DeletedAsync(long studentKey)
+        public async Task<Student> DeleteAsync(long studentKey)
         {
-            var repositoryStudent = await _studentRepository.DeleteStudentAsync(studentKey);
+            var repositoryStudent = await _studentRepository.DeleteStudentAsync(studentKey).ConfigureAwait(false);
             var deletedStudent = _mapper.Map<Models.Student>(repositoryStudent);
             return deletedStudent;
         }

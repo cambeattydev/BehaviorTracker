@@ -44,7 +44,7 @@
                         {
                             foreach (var goal in Model.Goals)
                             {
-                                <AdminGoal DeleteGoal="@DeleteGoal" Model="@goal"/>
+                                <AdminGoal DeleteGoalAsync="@DeleteGoalAsync" Model="@goal" SavedGoalAsync="@SavedGoalAsync"/>
                             }
                             <AddButton OnAdd="@AddGoal" ButtonText="Add Goal"/>
                         }

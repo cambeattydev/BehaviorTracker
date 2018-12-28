@@ -66,7 +66,10 @@
     Client.Models.Goal OriginalModel { get; set; }
 
     [Parameter]
-    Action<Models.Goal> DeleteGoal { get; set; }
+    Func<Models.Goal,Task> DeleteGoalAsync { get; set; }
+    
+    [Parameter]
+    Action<Models.Goal> SavedGoalAsync { get; set; }
 
     //[CascadingParameter] Modal _modal { get; set; }
 
@@ -84,9 +87,9 @@
         }
     }
 
-    void Delete()
+    async Task Delete()
     {
-        DeleteGoal(Model);
+      await DeleteGoalAsync(Model);
     }
 
     void Edit()
@@ -95,7 +98,7 @@
         OriginalModel = Model.Copy();
     }
 
-    void Cancel()
+    async Task Cancel()
     {
         if (Model.GoalKey > 0)
         {
@@ -104,7 +107,7 @@
         }
         else
         {
-            DeleteGoal(Model);
+            await DeleteGoalAsync(Model);
         }
     }
 
@@ -115,6 +118,8 @@
         {
             var newModel = await Http.PostJsonAsync<Client.Models.Goal>("/api/Goal/Goal", Model);
             Model = newModel;
+            base.StateHasChanged();
+            SavedGoalAsync?.Invoke(Model);
         }
         catch (Exception ex)
         {

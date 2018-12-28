@@ -5,10 +5,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using BehaviorTracker.Client.Models;
 using BehaviorTracker.Client.Validators;
-using FluentValidation;
-using FluentValidation.Internal;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Components;
+using Microsoft.JSInterop;
 
 namespace BehaviorTracker.Client.Shared.Admin
 {
@@ -98,15 +97,31 @@ namespace BehaviorTracker.Client.Shared.Admin
             base.StateHasChanged();
         }
 
-        protected void DeleteGoal(Models.Goal goal)
+        protected async Task DeleteGoalAsync(Models.Goal goal)
         {
-            var goals = Model.Goals.ToList();
-            var deleted = goals.Remove(goal);
-            if (deleted)
+            var deletedGoalMessage = await _httpClient.DeleteAsync($"api/Goal/Delete/{goal.GoalKey}");
+            if (deletedGoalMessage.IsSuccessStatusCode)
             {
-                Model.Goals = goals;
-                base.StateHasChanged();
+                var stringDeletedGoal = await deletedGoalMessage.Content.ReadAsStringAsync();
+                var deletedGoal = Json.Deserialize<Models.Goal>(stringDeletedGoal);
+                var deleted = Model.Goals.RemoveAll(listGoal => listGoal.GoalKey == deletedGoal.GoalKey);
+                Console.WriteLine($"Deleted:{deleted}");
+                if (deleted > 0)
+                {
+                    base.StateHasChanged();
+                }
             }
+        }
+
+        protected void SavedGoalAsync(Goal goal)
+        {
+            Console.WriteLine($"Saved Goal: {Json.Serialize(goal)}");
+            Console.WriteLine("----------------- Current Goals -----------------");
+            foreach (var modelGoals in Model.Goals)
+            {
+             Console.WriteLine(Json.Serialize(modelGoals));   
+            }
+            Console.WriteLine("----------------- End Current Goals -----------------");
         }
 
         //    async Task ShowModal()

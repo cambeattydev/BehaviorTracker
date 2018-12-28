@@ -45,7 +45,7 @@ namespace BehaviorTracker.Server.Controllers
         [HttpDelete("[action]/{studentKey}")]
         public async Task<IActionResult> Delete(long studentKey)
         {
-            var deletedStudent = await _studentService.DeletedAsync(studentKey);
+            var deletedStudent = await _studentService.DeleteAsync(studentKey).ConfigureAwait(false);
             if (deletedStudent == null)
             {
                 return BadRequest();
