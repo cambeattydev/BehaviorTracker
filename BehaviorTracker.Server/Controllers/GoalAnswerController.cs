@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -6,21 +7,30 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BehaviorTracker.Server.Controllers
 {
+    [Route("api/[controller]")]
     public class GoalAnswerController : Controller
     {
         private readonly IGoalAnswerService _goalAnswerService;
         private readonly IMapper _mapper;
 
-        public GoalAvailableAnswerController(IGoalAnswerService goalAnswerService, IMapper mapper)
+        public GoalAnswerController(IGoalAnswerService goalAnswerService, IMapper mapper)
         {
             _goalAnswerService = goalAnswerService;
             _mapper = mapper;
         }
         
-        [HttpGet("[action]/{goalKey}")]
-        public async Task<IActionResult> DeleteAllForGoal(long goalKey)
+        [HttpGet("[action]/{studentKey}/{datetime}")]
+        public async Task<IActionResult> StudentGoalAnswers(long studentKey, DateTime dateTime)
         {
-            
+            var studentGoalAnswers = await _goalAnswerService.GetStudentGoalAnswers(studentKey, dateTime);
+            if (studentGoalAnswers == null || studentGoalAnswers.Count < 1)
+            {
+                return NotFound();
+            }
+
+            return Ok(studentGoalAnswers.ToDictionary(goalAnswer => goalAnswer.Key,
+                goalAnswer => _mapper.Map<Client.Models.GoalAnswer>(goalAnswer)));
+
         }
     }
 }

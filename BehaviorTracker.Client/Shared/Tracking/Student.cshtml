@@ -13,7 +13,7 @@
                     <td>
                         @if (goal.GoalType == GoalType.YesNo)
                         {
-                            <YesNoGoalAnswer GoalName="@goal.GoalDescription"/>
+                            <YesNoGoalAnswer GoalName="@goal.GoalDescription" GoalAnswer=""/>
                         }
                         else
                         {
@@ -30,9 +30,17 @@
 
 @functions {
     Models.Student[] _students;
+    IDictionary<long, IEnumerable<GoalAnswer>> _studentGoalAnswers;
 
     protected override async Task OnInitAsync()
     {
         _students = await Http.GetJsonAsync<Models.Student[]>("api/Student/Students");
+
+        _studentGoalAnswers = _students.ToDictionary(student => student.StudentKey,
+            student =>
+                Http.GetJsonAsync<IEnumerable<GoalAnswer>>(
+                    $"api/GoalAnswer/StudentGoalAnswers/{student.StudentKey}/{DateTime.Now.ToLocalTime().AddHours(-6)}")
+                    .GetAwaiter().GetResult());
     }
+
 }
