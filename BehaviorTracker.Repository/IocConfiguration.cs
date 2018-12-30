@@ -10,7 +10,8 @@ namespace BehaviorTracker.Repository
         {
             services.AddScoped<IStudentRepository, StudentRepository>()
                 .AddScoped<IGoalRepository, GoalRepository>()
-                .AddScoped<IGoalAvailableAnswerRepository, GoalAvailableAnswerRepository>();
+                .AddScoped<IGoalAvailableAnswerRepository, GoalAvailableAnswerRepository>()
+                .AddScoped<IGoalAnswerRepository, GoalAnswerRepository>();
         }
     }
 }
