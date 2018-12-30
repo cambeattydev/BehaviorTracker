@@ -1,3 +1,37 @@
 ﻿@page "/"
-<timesNavigation ActiveIndex="0"/>
+@using NodaTime
+<div class="form-group">
+    <label>Date</label>
+    <div class="input-group">
+        <input class="form-control" type="text" onfocus=@focussed bind="@CurrentDate" format-value="MM-dd-yyyy"/>
+        <DatePicker Visible=@visible Selected=@selected DaysOfWeekDisabled=@(new[] {IsoDayOfWeek.Saturday, IsoDayOfWeek.Sunday}) ShowClose=@true/>
+    </div>
+</div>
+<timesNavigation/>
 <Student/>
+
+@functions
+{
+    DateTime CurrentDate;
+
+    bool visible = false;
+
+    protected override void OnInit()
+    {
+        //Add hours is used here since toLocalTime doesn't work
+        CurrentDate = DateTime.Now.ToLocalTime().AddHours(-6).Date;
+    }
+
+    void focussed(UIFocusEventArgs e)
+    {
+        visible = true;
+    }
+
+    void selected(LocalDate localDate)
+    {
+        CurrentDate = localDate.ToDateTimeUnspecified().Date;
+        visible = false;
+        StateHasChanged();
+    }
+
+}
