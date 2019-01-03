@@ -1,4 +1,7 @@
 @inject HttpClient Http
+@using System.Globalization
+@using System.Net
+@using System.Web
 @using BehaviorTracker.Shared
 @if (_students != null)
 {
@@ -10,37 +13,77 @@
                 <td>@student.StudentFirstName @student.StudentLastName</td>
                 @foreach (var goal in student.Goals)
                 {
-                    <td>
-                        @if (goal.GoalType == GoalType.YesNo)
-                        {
-                            <YesNoGoalAnswer GoalName="@goal.GoalDescription" GoalAnswer=""/>
-                        }
-                        else
-                        {
-                            <NumericGoalAnswer GoalName="@goal.GoalDescription"/>
-                        }
-                    </td>
+                    if (_studentGoalAnswers.ContainsKey(student.StudentKey) && _studentGoalAnswers[student.StudentKey].ContainsKey(goal.GoalKey))
+                    {
+                        <td>
+                            @if (goal.GoalType == GoalType.YesNo)
+                            {
+                                <YesNoGoalAnswer GoalName="@goal.GoalDescription" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey]"/>
+                            }
+                            else
+                            {
+                                <NumericGoalAnswer GoalName="@goal.GoalDescription" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey]"/>
+                            }
+                        </td>
+                    }
                 }
             </tr>
         }
         </tbody>
     </table>
 }
-
+else
+{
+    <p>Loading...</p>
+}
 
 @functions {
     Models.Student[] _students;
-    IDictionary<long, IEnumerable<GoalAnswer>> _studentGoalAnswers;
+    IDictionary<long, IDictionary<long, GoalAnswer>> _studentGoalAnswers = new Dictionary<long, IDictionary<long, GoalAnswer>>();
 
     protected override async Task OnInitAsync()
     {
         _students = await Http.GetJsonAsync<Models.Student[]>("api/Student/Students");
+        //TODO Need to be able to get student answers on load some how
+    }
 
-        _studentGoalAnswers = _students.ToDictionary(student => student.StudentKey,
-            student =>
-                Http.GetJsonAsync<IEnumerable<GoalAnswer>>(
-                    $"api/GoalAnswer/StudentGoalAnswers/{student.StudentKey}/{DateTime.Now.ToLocalTime().AddHours(-6)}")
-                    .GetAwaiter().GetResult());
+    public async Task OnCurrentDateChanged(DateTime currentDate)
+    {
+        await GetStudentAnswers(currentDate);
+        base.StateHasChanged();
+    }
+
+    private async Task GetStudentAnswers(DateTime currentDate)
+    {
+        try
+        {
+            foreach (var student in _students)
+            {
+                var responseMessage = await Http.GetAsync(
+                    $"api/GoalAnswer/StudentGoalAnswers/{student.StudentKey}/{HttpUtility.UrlEncode(currentDate.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture))}");
+                Console.WriteLine($"ResponseMessage.StatusCode:{responseMessage.StatusCode.ToString()}");
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    _studentGoalAnswers[student.StudentKey] = Microsoft.JSInterop.Json.Deserialize<IDictionary<long,GoalAnswer>>(await responseMessage.Content.ReadAsStringAsync());
+                }
+                else
+                {
+                    _studentGoalAnswers[student.StudentKey] = student.Goals.ToDictionary(goal => goal.GoalKey, goal => new GoalAnswer
+                    {
+                        Date = currentDate,
+                        GoalKey = goal.GoalKey,
+                        Goal = goal
+                    });
+                }
+            }
+           
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.GetType());
+            throw;
+        }
+        Console.WriteLine("End of GetStudentAnswers");
     }
 
 }

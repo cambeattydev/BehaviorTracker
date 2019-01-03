@@ -1,6 +1,6 @@
 <div class="form-group">
-    <label for="@GoalName">@GoalName</label>
-    <select class="form-control" id="@(GoalName)" bind="@Answer">
+    <label for="@Answer.GoalKey-Answer">@GoalName</label>
+    <select class="form-control" id="@Answer.GoalKey-Answer" bind="@Answer.Answer">
         <option value=""></option>
         <option value="True">Yes</option>
         <option value="False">No</option>
@@ -11,6 +11,7 @@
 {
     [Parameter]
     string GoalName { get; set; } 
-    string Answer { get; set; }
+    [Parameter]
+    GoalAnswer Answer { get; set; }
 
 }

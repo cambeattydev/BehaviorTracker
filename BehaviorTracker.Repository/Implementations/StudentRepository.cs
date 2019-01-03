@@ -18,7 +18,7 @@ namespace BehaviorTracker.Repository.Implementations
 
         public IEnumerable<Student> GetStudents()
         {
-            return _dbContext.Students.Include(s => s.Goals);
+            return _dbContext.Students.Include(s => s.Goals).AsEnumerable();
         }
         
         public IEnumerable<Student> GetStudentsWithGoalsAndAvailableAnswers()

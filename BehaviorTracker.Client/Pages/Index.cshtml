@@ -1,5 +1,7 @@
 ﻿@page "/"
+@using BehaviorTracker.Client.Shared.Tracking
 @using NodaTime
+@using Student = BehaviorTracker.Client.Shared.Tracking.Student
 <div class="form-group">
     <label>Date</label>
     <div class="input-group">
@@ -7,12 +9,16 @@
         <DatePicker Visible=@visible Selected=@selected DaysOfWeekDisabled=@(new[] {IsoDayOfWeek.Saturday, IsoDayOfWeek.Sunday}) ShowClose=@true/>
     </div>
 </div>
-<timesNavigation/>
-<Student/>
-
+<timesNavigation OnTimeChanged="@CurrentTimeChanged"/>
+<Student ref="StudentComponent"/>
+@* Get spinner to work when loading things  *@
 @functions
 {
+   [Parameter] Student StudentComponent { get; set; }   
+    
     DateTime CurrentDate;
+
+    private TimeSpan _currentTime;
 
     bool visible = false;
 
@@ -20,6 +26,28 @@
     {
         //Add hours is used here since toLocalTime doesn't work
         CurrentDate = DateTime.Now.ToLocalTime().AddHours(-6).Date;
+    }
+
+    protected override void OnParametersSet()
+    {
+        CurrentDateOrTimeChanged();
+    }
+
+
+    void CurrentTimeChanged(TimeSpan currentTime)
+    {
+        _currentTime = currentTime;
+        CurrentDateOrTimeChanged();
+        Console.WriteLine("End of CurrentTimeChanged");
+    }
+
+    void CurrentDateOrTimeChanged()
+    {
+    //TODO Need to be able to get student answers on load some how
+        if (StudentComponent == null) return;
+        var currentDateTime = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, _currentTime.Hours, _currentTime.Minutes, 0);
+        Task.Run(async () => await StudentComponent.OnCurrentDateChanged(currentDateTime));
+        Console.WriteLine("End of CurrentDateOrTimeChanged");
     }
 
     void focussed(UIFocusEventArgs e)
@@ -32,6 +60,7 @@
         CurrentDate = localDate.ToDateTimeUnspecified().Date;
         visible = false;
         StateHasChanged();
+        CurrentDateOrTimeChanged();
     }
 
 }

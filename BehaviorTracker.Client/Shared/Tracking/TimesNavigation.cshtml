@@ -26,10 +26,11 @@
 
 @functions {
 
-    protected IDictionary<TimeSpan, string> timesDictionary;
+    private IDictionary<TimeSpan, string> timesDictionary;
     
-    [Parameter]
-    int ActiveIndex { get; set; }
+    private int ActiveIndex { get; set; }
+    
+    [Parameter] Action<TimeSpan> OnTimeChanged { get; set; }
 
     protected override void OnInit()
     {
@@ -48,17 +49,18 @@
         FindIndexBasedOnNow();
     }
 
+    protected override void OnParametersSet()
+    {
+        OnTimeChanged?.Invoke(timesDictionary.Keys.ElementAt(ActiveIndex));
+    }
+
     void FindIndexBasedOnNow()
     {
         //Add hours is used here since toLocalTime doesn't work
-        var now = DateTime.Now.ToLocalTime().AddHours(-6);
-        var timeSpan = now.TimeOfDay;
-        Console.WriteLine($"Now: {now}");
-        Console.WriteLine($"timeSpan: {timeSpan}");
+        var timeSpan = DateTime.Now.ToLocalTime().AddHours(-6).TimeOfDay;
         for (int i = 0; i < timesDictionary.Count ; i++)
         {
             var kvp = timesDictionary.ElementAt(i);
-            Console.WriteLine($"Checking: {kvp.Key}");
             if (timeSpan.CompareTo(kvp.Key) > 0)
             {
                 ActiveIndex = i;
@@ -73,6 +75,9 @@
     void SelectActiveIndex(int i)
     {
         ActiveIndex = i;
+        OnTimeChanged?.Invoke(timesDictionary.Keys.ElementAt(ActiveIndex));
     }
+
+    
    
 }
