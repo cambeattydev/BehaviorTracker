@@ -41,26 +41,41 @@ else
     Models.Student[] _students;
     IDictionary<long, IDictionary<long, GoalAnswer>> _studentGoalAnswers = new Dictionary<long, IDictionary<long, GoalAnswer>>();
 
+    private DateTime _currentDateTime;
+    [Parameter] DateTime CurrentDateTime
+    {
+        get => _currentDateTime;
+        set
+        {
+            Console.WriteLine($"_currentDateTime:{_currentDateTime}/value:{value}");
+            if (_currentDateTime != value)
+            {
+                _currentDateTime = value;
+                Task.Run(async () => await GetStudentAnswers());
+            }
+        }
+    }
+
     protected override async Task OnInitAsync()
     {
         _students = await Http.GetJsonAsync<Models.Student[]>("api/Student/Students");
-        //TODO Need to be able to get student answers on load some how
+        if (CurrentDateTime > DateTime.MinValue)
+        {
+            await GetStudentAnswers();
+        }
+        Console.WriteLine("On Init for student finished");
     }
 
-    public async Task OnCurrentDateChanged(DateTime currentDate)
+    private async Task GetStudentAnswers()
     {
-        await GetStudentAnswers(currentDate);
-        base.StateHasChanged();
-    }
-
-    private async Task GetStudentAnswers(DateTime currentDate)
-    {
+        if (_students == null){return;}
+        
         try
         {
             foreach (var student in _students)
             {
                 var responseMessage = await Http.GetAsync(
-                    $"api/GoalAnswer/StudentGoalAnswers/{student.StudentKey}/{HttpUtility.UrlEncode(currentDate.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture))}");
+                    $"api/GoalAnswer/StudentGoalAnswers/{student.StudentKey}/{HttpUtility.UrlEncode(CurrentDateTime.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture))}");
                 Console.WriteLine($"ResponseMessage.StatusCode:{responseMessage.StatusCode.ToString()}");
                 if (responseMessage.IsSuccessStatusCode)
                 {
@@ -70,7 +85,7 @@ else
                 {
                     _studentGoalAnswers[student.StudentKey] = student.Goals.ToDictionary(goal => goal.GoalKey, goal => new GoalAnswer
                     {
-                        Date = currentDate,
+                        Date = CurrentDateTime,
                         GoalKey = goal.GoalKey,
                         Goal = goal
                     });
@@ -80,10 +95,10 @@ else
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.GetType());
+            Console.WriteLine($"ex.GetType:{ex.GetType()}\nex.Message:{ex.Message}");
             throw;
         }
-        Console.WriteLine("End of GetStudentAnswers");
+        base.StateHasChanged();
     }
 
 }

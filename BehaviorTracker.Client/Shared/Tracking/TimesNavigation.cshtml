@@ -47,10 +47,6 @@
         timesDictionary.Add(new TimeSpan(15, 30, 0), "Dismissal");
         
         FindIndexBasedOnNow();
-    }
-
-    protected override void OnParametersSet()
-    {
         OnTimeChanged?.Invoke(timesDictionary.Keys.ElementAt(ActiveIndex));
     }
 

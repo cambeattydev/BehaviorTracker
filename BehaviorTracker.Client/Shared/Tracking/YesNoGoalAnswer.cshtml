@@ -1,6 +1,7 @@
+@inject HttpClient _httpClient
 <div class="form-group">
     <label for="@Answer.GoalKey-Answer">@GoalName</label>
-    <select class="form-control" id="@Answer.GoalKey-Answer" bind="@Answer.Answer">
+    <select class="form-control" id="@Answer.GoalKey-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">
         <option value=""></option>
         <option value="True">Yes</option>
         <option value="False">No</option>
@@ -13,5 +14,18 @@
     string GoalName { get; set; } 
     [Parameter]
     GoalAnswer Answer { get; set; }
+
+    async Task SaveAnswer()
+    {
+        if (Answer.GoalAnswerKey < 1)
+        {
+            var response = await _httpClient.PostJsonAsync<GoalAnswer>("/api/GoalAnswer/", Answer);
+            Answer.GoalAnswerKey = response.GoalAnswerKey;
+        }
+        else
+        {
+            Console.WriteLine("Going to have to put this one");
+        }
+    }
 
 }

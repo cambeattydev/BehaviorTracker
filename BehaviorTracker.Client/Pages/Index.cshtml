@@ -10,7 +10,7 @@
     </div>
 </div>
 <timesNavigation OnTimeChanged="@CurrentTimeChanged"/>
-<Student ref="StudentComponent"/>
+<Student CurrentDateTime="@CurrentDateTime"/>
 @* Get spinner to work when loading things  *@
 @functions
 {
@@ -20,6 +20,8 @@
 
     private TimeSpan _currentTime;
 
+    DateTime CurrentDateTime;
+
     bool visible = false;
 
     protected override void OnInit()
@@ -27,12 +29,6 @@
         //Add hours is used here since toLocalTime doesn't work
         CurrentDate = DateTime.Now.ToLocalTime().AddHours(-6).Date;
     }
-
-    protected override void OnParametersSet()
-    {
-        CurrentDateOrTimeChanged();
-    }
-
 
     void CurrentTimeChanged(TimeSpan currentTime)
     {
@@ -43,11 +39,8 @@
 
     void CurrentDateOrTimeChanged()
     {
-    //TODO Need to be able to get student answers on load some how
-        if (StudentComponent == null) return;
-        var currentDateTime = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, _currentTime.Hours, _currentTime.Minutes, 0);
-        Task.Run(async () => await StudentComponent.OnCurrentDateChanged(currentDateTime));
-        Console.WriteLine("End of CurrentDateOrTimeChanged");
+        CurrentDateTime = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, _currentTime.Hours, _currentTime.Minutes, 0);
+        base.StateHasChanged();
     }
 
     void focussed(UIFocusEventArgs e)
