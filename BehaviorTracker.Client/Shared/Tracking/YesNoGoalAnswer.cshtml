@@ -19,7 +19,7 @@
     {
         if (Answer.GoalAnswerKey < 1)
         {
-            var response = await _httpClient.PostJsonAsync<GoalAnswer>("/api/GoalAnswer/", Answer);
+            var response = await _httpClient.PostJsonAsync<GoalAnswer>("/api/GoalAnswer/GoalAnswer", Answer);
             Answer.GoalAnswerKey = response.GoalAnswerKey;
         }
         else

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BehaviorTracker.Repository.Interfaces;
 using BehaviorTracker.Repository.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BehaviorTracker.Repository.Implementations
 {
@@ -20,6 +21,30 @@ namespace BehaviorTracker.Repository.Implementations
             return await _behaviorTrackerDatabaseContext.GoalAnswers
                 .Where(goalAnswer => goalAnswer.Date == dateTime && goalAnswer.Goal.StudentKey == studentKey)
                 .ToDictionaryAsync(goalAnswer => goalAnswer.GoalKey, goalAnswer => goalAnswer);
+        }
+
+        public async Task<GoalAnswer> SaveAsync(GoalAnswer goalAnswer)
+        {
+            try
+            {
+                EntityEntry<GoalAnswer> savedGoalAnswer = default(EntityEntry<GoalAnswer>);
+                if (goalAnswer.GoalAnswerKey > 1)
+                {
+                    savedGoalAnswer = await _behaviorTrackerDatabaseContext.GoalAnswers.AddAsync(goalAnswer);
+                }
+                else
+                {
+                    savedGoalAnswer = _behaviorTrackerDatabaseContext.Update(goalAnswer);
+                }
+
+                await _behaviorTrackerDatabaseContext.SaveChangesAsync();
+                return savedGoalAnswer.Entity;
+            }
+            catch (Exception ex)
+            {
+                var test = ex;
+                throw;
+            }
         }
     }
 }

@@ -8,5 +8,6 @@ namespace BehaviorTracker.Repository.Interfaces
     public interface IGoalAnswerRepository
     {
         Task<IDictionary<long, GoalAnswer>> GetStudentGoalAnswers(long studentKey, DateTime dateTime);
+        Task<GoalAnswer> SaveAsync(GoalAnswer goalAnswer);
     }
 }

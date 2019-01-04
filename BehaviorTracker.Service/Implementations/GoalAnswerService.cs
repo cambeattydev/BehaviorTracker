@@ -19,11 +19,18 @@ namespace BehaviorTracker.Service.Implementations
             _mapper = mapper;
             _goalAnswerRepository = goalAnswerRepository;
         }
-        public async Task<IDictionary<long, GoalAnswer>> GetStudentGoalAnswers(long studentKey, DateTime dateTime)
+        public async Task<IDictionary<long, Service.Models.GoalAnswer>> GetStudentGoalAnswers(long studentKey, DateTime dateTime)
         {
             var repositoryStudentGoalAnswers = await _goalAnswerRepository.GetStudentGoalAnswers(studentKey, dateTime);
             return repositoryStudentGoalAnswers.ToDictionary(goalAnswer => goalAnswer.Key,
-                goalAnswer => _mapper.Map<GoalAnswer>(goalAnswer));
+                goalAnswer => _mapper.Map<Service.Models.GoalAnswer>(goalAnswer));
+        }
+
+        public async Task<Service.Models.GoalAnswer> SaveAsync(Service.Models.GoalAnswer goalAnswer)
+        {
+            var mappedGoalAnswer = _mapper.Map<Repository.Models.GoalAnswer>(goalAnswer);
+            var savedGoalAnswer = await _goalAnswerRepository.SaveAsync(mappedGoalAnswer);
+            return _mapper.Map<Service.Models.GoalAnswer>(savedGoalAnswer);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace BehaviorTracker.Service.Interfaces
 {
     public interface IGoalAnswerService
     {
-        Task<IDictionary<long, GoalAnswer>> GetStudentGoalAnswers(long studentKey, DateTime dateTime);
+        Task<IDictionary<long, Models.GoalAnswer>> GetStudentGoalAnswers(long studentKey, DateTime dateTime);
+        Task<Service.Models.GoalAnswer> SaveAsync(Service.Models.GoalAnswer goalAnswer);
     }
 }

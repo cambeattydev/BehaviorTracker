@@ -32,5 +32,16 @@ namespace BehaviorTracker.Server.Controllers
                 goalAnswer => _mapper.Map<Client.Models.GoalAnswer>(goalAnswer)));
 
         }
+        
+        
+        [HttpPost("[action]")]
+        public async Task<IActionResult> GoalAnswer([FromBody] Client.Models.GoalAnswer goalAnswer)
+        {
+            var mappedGoalAnswer = _mapper.Map<Service.Models.GoalAnswer>(goalAnswer);
+            var savedGoalAnswer = await _goalAnswerService.SaveAsync(mappedGoalAnswer);
+            
+            return Ok(_mapper.Map<Client.Models.GoalAnswer>(savedGoalAnswer));
+
+        }
     }
 }
