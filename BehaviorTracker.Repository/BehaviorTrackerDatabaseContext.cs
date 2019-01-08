@@ -1,3 +1,4 @@
+using System;
 using BehaviorTracker.Repository.Models;
 using BehaviorTracker.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,8 @@ namespace BehaviorTracker.Repository
             modelBuilder.Entity<Student>().HasData(ListOfStudents);
             modelBuilder.Entity<Goal>().HasData(ListOfGoals);
             modelBuilder.Entity<GoalAvailableAnswer>().HasData(_availableAnswers);
+            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour > 15 ? 15 : DateTime.Now.Hour , DateTime.Now.Hour > 15 ? 30 : DateTime.Now.Minute >= 30 ? 30 : 0, 0);
+            modelBuilder.Entity<GoalAnswer>().HasData(ListOfGoalAnswers(date));
         }
 
         private static Student[] ListOfStudents => new[]
@@ -44,6 +47,31 @@ namespace BehaviorTracker.Repository
                 StudentFirstName = "Student",
                 StudentLastName = "3"
             }
+        };
+
+        private static GoalAnswer[] ListOfGoalAnswers(DateTime date) => new[]
+        {
+            new GoalAnswer
+            {
+                GoalAnswerKey = 1,
+                Answer = "True",
+                GoalKey = 1,
+                Date = date,
+            },
+            new GoalAnswer
+            {
+                GoalAnswerKey = 2,
+                GoalKey = 2,
+                Answer = "1",
+                Date = date
+            },
+            new GoalAnswer
+            {
+                GoalAnswerKey = 3,
+                GoalKey = 3,
+                Answer = "2",
+                Date = date
+            },
         };
 
         private static Goal[] ListOfGoals => new[]

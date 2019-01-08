@@ -15,6 +15,11 @@
     [Parameter]
     GoalAnswer Answer { get; set; }
 
+    protected override void OnInit()
+    {
+        Console.WriteLine($"Answer:{Answer?.Answer}");
+    }
+
     async Task SaveAnswer()
     {
         if (Answer.GoalAnswerKey < 1)
@@ -27,5 +32,4 @@
             Console.WriteLine("Going to have to put this one");
         }
     }
-
 }

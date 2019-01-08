@@ -13,16 +13,16 @@
                 <td>@student.StudentFirstName @student.StudentLastName</td>
                 @foreach (var goal in student.Goals)
                 {
-                    if (_studentGoalAnswers.ContainsKey(student.StudentKey) && _studentGoalAnswers[student.StudentKey].ContainsKey(goal.GoalKey))
+                    if (_studentGoalAnswers.ContainsKey(student.StudentKey) && _studentGoalAnswers[student.StudentKey].ContainsKey(goal.GoalKey.ToString()))
                     {
                         <td>
                             @if (goal.GoalType == GoalType.YesNo)
                             {
-                                <YesNoGoalAnswer GoalName="@goal.GoalDescription" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey]"/>
+                                <YesNoGoalAnswer GoalName="@goal.GoalDescription" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]"/>
                             }
                             else
                             {
-                                <NumericGoalAnswer GoalName="@goal.GoalDescription" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey]"/>
+                                <NumericGoalAnswer GoalName="@goal.GoalDescription" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]"/>
                             }
                         </td>
                     }
@@ -39,7 +39,8 @@ else
 
 @functions {
     Models.Student[] _students;
-    IDictionary<long, IDictionary<long, GoalAnswer>> _studentGoalAnswers = new Dictionary<long, IDictionary<long, GoalAnswer>>();
+    //Todo this has to be a string right now because of how deserialization works with wasm
+    IDictionary<long, IDictionary<string, GoalAnswer>> _studentGoalAnswers = new Dictionary<long, IDictionary<string, GoalAnswer>>();
 
     private DateTime _currentDateTime;
     [Parameter] DateTime CurrentDateTime
@@ -59,10 +60,10 @@ else
     protected override async Task OnInitAsync()
     {
         _students = await Http.GetJsonAsync<Models.Student[]>("api/Student/Students");
-        if (CurrentDateTime > DateTime.MinValue)
-        {
-            await GetStudentAnswers();
-        }
+//        if (CurrentDateTime > DateTime.MinValue)
+//        {
+//            await GetStudentAnswers();
+//        }
         Console.WriteLine("On Init for student finished");
     }
 
@@ -79,11 +80,11 @@ else
                 Console.WriteLine($"ResponseMessage.StatusCode:{responseMessage.StatusCode.ToString()}");
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    _studentGoalAnswers[student.StudentKey] = Microsoft.JSInterop.Json.Deserialize<IDictionary<long,GoalAnswer>>(await responseMessage.Content.ReadAsStringAsync());
+                    _studentGoalAnswers[student.StudentKey] = Microsoft.JSInterop.Json.Deserialize<IDictionary<string,GoalAnswer>>(await responseMessage.Content.ReadAsStringAsync());
                 }
                 else
                 {
-                    _studentGoalAnswers[student.StudentKey] = student.Goals.ToDictionary(goal => goal.GoalKey, goal => new GoalAnswer
+                    _studentGoalAnswers[student.StudentKey] = student.Goals.ToDictionary(goal => goal.GoalKey.ToString(), goal => new GoalAnswer
                     {
                         Date = CurrentDateTime,
                         GoalKey = goal.GoalKey,

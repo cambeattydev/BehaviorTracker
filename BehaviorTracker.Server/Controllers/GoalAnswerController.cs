@@ -29,7 +29,7 @@ namespace BehaviorTracker.Server.Controllers
             }
 
             return Ok(studentGoalAnswers.ToDictionary(goalAnswer => goalAnswer.Key,
-                goalAnswer => _mapper.Map<Client.Models.GoalAnswer>(goalAnswer)));
+                kvp => _mapper.Map<Client.Models.GoalAnswer>(kvp.Value)));
 
         }
         

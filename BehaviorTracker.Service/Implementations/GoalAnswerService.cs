@@ -23,7 +23,7 @@ namespace BehaviorTracker.Service.Implementations
         {
             var repositoryStudentGoalAnswers = await _goalAnswerRepository.GetStudentGoalAnswers(studentKey, dateTime);
             return repositoryStudentGoalAnswers.ToDictionary(goalAnswer => goalAnswer.Key,
-                goalAnswer => _mapper.Map<Service.Models.GoalAnswer>(goalAnswer));
+                kvp => _mapper.Map<Service.Models.GoalAnswer>(kvp.Value));
         }
 
         public async Task<Service.Models.GoalAnswer> SaveAsync(Service.Models.GoalAnswer goalAnswer)
