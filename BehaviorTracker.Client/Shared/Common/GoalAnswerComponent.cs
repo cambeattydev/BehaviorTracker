@@ -16,8 +16,10 @@ namespace BehaviorTracker.Client.Shared.Common
         [Inject] HttpClient _httpClient { get; set; }
         protected async Task SaveAnswer()
         {
-            if (Answer.GoalAnswerKey < 1)
+            if (Answer.GoalAnswerKey < 1 )
             {
+                if (string.IsNullOrWhiteSpace(Answer.Answer)) return;
+
                 var response = await _httpClient.PostJsonAsync<GoalAnswer>("/api/GoalAnswer/GoalAnswer", Answer);
                 Answer.GoalAnswerKey = response.GoalAnswerKey;
             }
