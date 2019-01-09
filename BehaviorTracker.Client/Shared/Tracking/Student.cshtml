@@ -60,10 +60,10 @@ else
     protected override async Task OnInitAsync()
     {
         _students = await Http.GetJsonAsync<Models.Student[]>("api/Student/Students");
-//        if (CurrentDateTime > DateTime.MinValue)
-//        {
-//            await GetStudentAnswers();
-//        }
+        if (CurrentDateTime > DateTime.MinValue)
+        {
+            await GetStudentAnswers();
+        }
         Console.WriteLine("On Init for student finished");
     }
 

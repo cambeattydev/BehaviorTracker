@@ -54,7 +54,7 @@ namespace BehaviorTracker.Repository
             new GoalAnswer
             {
                 GoalAnswerKey = 1,
-                Answer = "True",
+                Answer = true.ToString(),
                 GoalKey = 1,
                 Date = date,
             },

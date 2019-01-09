@@ -1,24 +1,35 @@
+@using Microsoft.AspNetCore.Blazor.RenderTree
 @inject HttpClient _httpClient
 <div class="form-group">
-    <label for="@Answer.GoalKey-Answer">@GoalName</label>
-    <select class="form-control" id="@Answer.GoalKey-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">
-        <option value=""></option>
-        <option value="True">Yes</option>
-        <option value="False">No</option>
-    </select>
+    <label for="GoalKey@(Answer.GoalKey)-Answer">@GoalName</label>
+    @if (Answer != null)
+    {
+        <select class="form-control" id="GoalKey@(Answer.GoalKey)-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">
+            @* For now this must be done, because blazor won't be able to render correctly on init *@
+            @foreach (var option in options)
+            {
+                <option value="@option">@option</option>
+            }
+        </select>
+    }
+    else
+    {
+        <p>Answer is null</p>
+    }
 </div>
 
 @functions
 {
+
+    private readonly string[] options = new[]
+    {
+        string.Empty, true.ToString(), false.ToString()
+    };
+    
     [Parameter]
     string GoalName { get; set; } 
     [Parameter]
     GoalAnswer Answer { get; set; }
-
-    protected override void OnInit()
-    {
-        Console.WriteLine($"Answer:{Answer?.Answer}");
-    }
 
     async Task SaveAnswer()
     {
@@ -31,5 +42,5 @@
         {
             Console.WriteLine("Going to have to put this one");
         }
-    }
+    }    
 }
