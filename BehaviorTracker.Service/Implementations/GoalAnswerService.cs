@@ -6,6 +6,7 @@ using AutoMapper;
 using BehaviorTracker.Repository.Interfaces;
 using BehaviorTracker.Repository.Models;
 using BehaviorTracker.Service.Interfaces;
+using GoalAnswer = BehaviorTracker.Service.Models.GoalAnswer;
 
 namespace BehaviorTracker.Service.Implementations
 {
@@ -31,6 +32,14 @@ namespace BehaviorTracker.Service.Implementations
             var mappedGoalAnswer = _mapper.Map<Repository.Models.GoalAnswer>(goalAnswer);
             var savedGoalAnswer = await _goalAnswerRepository.SaveAsync(mappedGoalAnswer);
             return _mapper.Map<Service.Models.GoalAnswer>(savedGoalAnswer);
+        }
+
+        /// <inheritdoc />
+        public async Task<GoalAnswer> DeleteAsync(long goalAnswerKey)
+        {
+            var deletedGoalAnswer = await _goalAnswerRepository.DeleteAsync(goalAnswerKey);
+            var mappedDeletedGoalAnswer = _mapper.Map<GoalAnswer>(deletedGoalAnswer);
+            return mappedDeletedGoalAnswer;
         }
     }
 }

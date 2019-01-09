@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using BehaviorTracker.Client.Models;
 using BehaviorTracker.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,6 +36,7 @@ namespace BehaviorTracker.Server.Controllers
         
         
         [HttpPost("[action]")]
+        [HttpPut("[action]")]
         public async Task<IActionResult> GoalAnswer([FromBody] Client.Models.GoalAnswer goalAnswer)
         {
             var mappedGoalAnswer = _mapper.Map<Service.Models.GoalAnswer>(goalAnswer);
@@ -42,6 +44,19 @@ namespace BehaviorTracker.Server.Controllers
             
             return Ok(_mapper.Map<Client.Models.GoalAnswer>(savedGoalAnswer));
 
+        }
+
+        [HttpDelete("[action]/{goalAnswerKey}")]
+        public async Task<IActionResult> GoalAnswer(long goalAnswerKey)
+        {
+            var deletedGoalAnswer = await _goalAnswerService.DeleteAsync(goalAnswerKey);
+            if (deletedGoalAnswer == null)
+            {
+                return NotFound();
+            }
+
+            var mappedDeletedGoalAnswer = _mapper.Map<GoalAnswer>(deletedGoalAnswer);
+            return Ok(mappedDeletedGoalAnswer);
         }
     }
 }

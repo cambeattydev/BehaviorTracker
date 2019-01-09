@@ -23,7 +23,9 @@ namespace BehaviorTracker.Repository
             modelBuilder.Entity<Student>().HasData(ListOfStudents);
             modelBuilder.Entity<Goal>().HasData(ListOfGoals);
             modelBuilder.Entity<GoalAvailableAnswer>().HasData(_availableAnswers);
-            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour > 15 ? 15 : DateTime.Now.Hour , DateTime.Now.Hour > 15 ? 30 : DateTime.Now.Minute >= 30 ? 30 : 0, 0);
+            //Creates goalAnswer test data for the time you are testing
+            var currentHour = DateTime.Now.Hour > 15 ? 15: DateTime.Now.Hour < 8 ? 8 : DateTime.Now.Hour;
+            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, currentHour , currentHour >= 15 || currentHour == 8  ? 30 : DateTime.Now.Minute >= 30 ? 30 : 0, 0);
             modelBuilder.Entity<GoalAnswer>().HasData(ListOfGoalAnswers(date));
         }
 

@@ -1,13 +1,5 @@
+@inherits BehaviorTracker.Client.Shared.Common.GoalAnswerComponent
 <div class="form-group">
     <label for="@Answer.GoalKey-Answer">@GoalName</label>
-    <input type="number" class="form-control" id="@Answer.GoalKey-Answer" bind="@Answer.Answer"/>
+    <input type="number" class="form-control" id="@Answer.GoalKey-Answer" bind="@Answer.Answer" onblur="@SaveAnswer"/>
 </div>
-
-@functions
-{
-    [Parameter]
-    string GoalName { get; set; } 
-    [Parameter]
-    GoalAnswer Answer { get; set; }
-
-}

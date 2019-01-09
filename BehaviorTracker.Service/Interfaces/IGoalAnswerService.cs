@@ -9,5 +9,6 @@ namespace BehaviorTracker.Service.Interfaces
     {
         Task<IDictionary<long, Models.GoalAnswer>> GetStudentGoalAnswers(long studentKey, DateTime dateTime);
         Task<Service.Models.GoalAnswer> SaveAsync(Service.Models.GoalAnswer goalAnswer);
+        Task<Service.Models.GoalAnswer> DeleteAsync(long goalAnswerKey);
     }
 }

@@ -25,8 +25,6 @@ namespace BehaviorTracker.Repository.Implementations
 
         public async Task<GoalAnswer> SaveAsync(GoalAnswer goalAnswer)
         {
-            try
-            {
                 EntityEntry<GoalAnswer> savedGoalAnswer = default(EntityEntry<GoalAnswer>);
                 if (goalAnswer.GoalAnswerKey > 1)
                 {
@@ -39,12 +37,18 @@ namespace BehaviorTracker.Repository.Implementations
 
                 await _behaviorTrackerDatabaseContext.SaveChangesAsync();
                 return savedGoalAnswer.Entity;
-            }
-            catch (Exception ex)
-            {
-                var test = ex;
-                throw;
-            }
+        }
+
+        /// <inheritdoc />
+        public async Task<GoalAnswer> DeleteAsync(long goalAnswerKey)
+        {
+            var deletedGoalAnswer = await _behaviorTrackerDatabaseContext.GoalAnswers.FirstOrDefaultAsync(goalAnswer => goalAnswer.GoalAnswerKey == goalAnswerKey);
+
+            if (deletedGoalAnswer == null) return null;
+
+            _behaviorTrackerDatabaseContext.GoalAnswers.Remove(deletedGoalAnswer);
+            await _behaviorTrackerDatabaseContext.SaveChangesAsync();
+            return deletedGoalAnswer;
         }
     }
 }
