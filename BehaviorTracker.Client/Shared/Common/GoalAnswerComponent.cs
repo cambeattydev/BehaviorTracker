@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using BehaviorTracker.Client.Models;
@@ -10,10 +11,11 @@ namespace BehaviorTracker.Client.Shared.Common
     public class GoalAnswerComponent : BlazorComponent
     {
         [Parameter]
-        protected string GoalName { get; set; } 
+        protected Goal Goal { get; set; } 
         [Parameter]
         protected GoalAnswer Answer { get; set; } 
         [Inject] HttpClient _httpClient { get; set; }
+        
         protected async Task SaveAnswer()
         {
             if (Answer.GoalAnswerKey < 1 )

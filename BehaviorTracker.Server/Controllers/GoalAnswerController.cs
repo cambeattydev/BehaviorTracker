@@ -26,7 +26,7 @@ namespace BehaviorTracker.Server.Controllers
             var studentGoalAnswers = await _goalAnswerService.GetStudentGoalAnswers(studentKey, dateTime);
             if (studentGoalAnswers == null || studentGoalAnswers.Count < 1)
             {
-                return NotFound();
+                return NoContent();
             }
 
             return Ok(studentGoalAnswers.ToDictionary(goalAnswer => goalAnswer.Key,

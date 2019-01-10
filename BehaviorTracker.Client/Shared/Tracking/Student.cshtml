@@ -18,11 +18,11 @@
                         <td>
                             @if (goal.GoalType == GoalType.YesNo)
                             {
-                                <YesNoGoalAnswer GoalName="@goal.GoalDescription" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]"/>
+                                <YesNoGoalAnswer Goal="@goal" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]"/>
                             }
                             else
                             {
-                                <NumericGoalAnswer GoalName="@goal.GoalDescription" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]"/>
+                                <NumericGoalAnswer Goal="@goal" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]" />
                             }
                         </td>
                     }
@@ -59,7 +59,7 @@ else
 
     protected override async Task OnInitAsync()
     {
-        _students = await Http.GetJsonAsync<Models.Student[]>("api/Student/Students");
+        _students = await Http.GetJsonAsync<Models.Student[]>("api/Student/GetStudentsWithGoalsAndAvailableAnswers");
         if (CurrentDateTime > DateTime.MinValue)
         {
             await GetStudentAnswers();
@@ -77,8 +77,8 @@ else
             {
                 var responseMessage = await Http.GetAsync(
                     $"api/GoalAnswer/StudentGoalAnswers/{student.StudentKey}/{HttpUtility.UrlEncode(CurrentDateTime.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture))}");
-                Console.WriteLine($"ResponseMessage.StatusCode:{responseMessage.StatusCode.ToString()}");
-                if (responseMessage.IsSuccessStatusCode)
+                
+                if (responseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     _studentGoalAnswers[student.StudentKey] = Microsoft.JSInterop.Json.Deserialize<IDictionary<string,GoalAnswer>>(await responseMessage.Content.ReadAsStringAsync());
                 }

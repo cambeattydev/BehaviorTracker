@@ -1,7 +1,7 @@
 @using Microsoft.AspNetCore.Blazor.RenderTree
 @inherits BehaviorTracker.Client.Shared.Common.GoalAnswerComponent
 <div class="form-group">
-    <label for="GoalKey@(Answer.GoalKey)-Answer">@GoalName</label>
+    <label for="GoalKey@(Answer.GoalKey)-Answer">@Goal.GoalDescription</label>
     @if (Answer != null)
     {
         <select class="form-control" id="GoalKey@(Answer.GoalKey)-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">

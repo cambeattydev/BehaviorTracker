@@ -1,5 +1,29 @@
 @inherits BehaviorTracker.Client.Shared.Common.GoalAnswerComponent
 <div class="form-group">
-    <label for="@Answer.GoalKey-Answer">@GoalName</label>
-    <input type="number" class="form-control" id="@Answer.GoalKey-Answer" bind="@Answer.Answer" onblur="@SaveAnswer"/>
+    <label for="@Answer.GoalKey-Answer">@Goal.GoalDescription</label>
+    <select type="number" class="form-control" id="@Answer.GoalKey-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">
+        @foreach (var option in _options)
+        {
+            <option value="@option">@option</option>
+        } 
+    </select>
 </div>
+
+@functions{
+
+    IList<string> _options = new List<string>();
+
+    protected override void OnParametersSet()
+    {
+        if (Goal.AvailableAnswers != null)
+        {
+            _options = Goal.AvailableAnswers.Prepend(new GoalAvailableAnswer
+            {
+                GoalKey = -1,
+                GoalAvailableAnswerKey = -1,
+                OptionValue = string.Empty
+            }).Select(s => s.OptionValue).ToList();
+        }
+    }
+
+}

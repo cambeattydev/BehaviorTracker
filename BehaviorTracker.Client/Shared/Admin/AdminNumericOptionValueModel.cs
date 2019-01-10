@@ -31,20 +31,7 @@ namespace BehaviorTracker.Client.Shared.Admin
             }
             if (Goal != null)
             {
-                var parsedOptions = new List<float>();
-                if (Goal.AvailableAnswers != null)
-                {
-                    parsedOptions.AddRange(Goal.AvailableAnswers.Select(s =>
-                        float.TryParse(s.OptionValue, out var parsedInt) ? parsedInt : 0));
-                    parsedOptions = parsedOptions.OrderBy(s => s).ToList();
-                }
-
-                Model.StartValue = parsedOptions.Any() ? parsedOptions.Min() : 0;
-                Model.EndValue = parsedOptions.Any() ? parsedOptions.Max() : 0;
-                Model.StepAmount = parsedOptions.Count() > 1
-                    ? Math.Abs(parsedOptions.FirstOrDefault() - parsedOptions.ElementAtOrDefault(1))
-                    : 0;
-                Model.GoalKey = Goal.GoalKey;
+                Model = new GoalAvailableAnswerEditModel(Goal);
                 canDelete = Goal.AvailableAnswers?.Any() ?? false;
             }
         }
