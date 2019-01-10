@@ -20,13 +20,16 @@ namespace BehaviorTracker.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+#if DEBUG
             modelBuilder.Entity<Student>().HasData(ListOfStudents);
             modelBuilder.Entity<Goal>().HasData(ListOfGoals);
             modelBuilder.Entity<GoalAvailableAnswer>().HasData(_availableAnswers);
             //Creates goalAnswer test data for the time you are testing
-            var currentHour = DateTime.Now.Hour > 15 ? 15: DateTime.Now.Hour < 8 ? 8 : DateTime.Now.Hour;
-            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, currentHour , currentHour >= 15 || currentHour == 8  ? 30 : DateTime.Now.Minute >= 30 ? 30 : 0, 0);
+            var currentHour = DateTime.Now.Hour > 15 ? 15 : DateTime.Now.Hour < 8 ? 8 : DateTime.Now.Hour;
+            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, currentHour,
+                currentHour >= 15 || currentHour == 8 ? 30 : DateTime.Now.Minute >= 30 ? 30 : 0, 0);
             modelBuilder.Entity<GoalAnswer>().HasData(ListOfGoalAnswers(date));
+#endif
         }
 
         private static Student[] ListOfStudents => new[]
@@ -116,44 +119,44 @@ namespace BehaviorTracker.Repository
                 GoalKey = 2,
                 GoalAvailableAnswerKey = 1,
                 OptionValue = "1"
-            }, 
+            },
             new GoalAvailableAnswer
             {
                 GoalKey = 2,
                 GoalAvailableAnswerKey = 2,
                 OptionValue = "2"
-            }, 
+            },
             new GoalAvailableAnswer
             {
                 GoalKey = 2,
                 GoalAvailableAnswerKey = 3,
                 OptionValue = "3"
-            }, 
+            },
             new GoalAvailableAnswer
             {
                 GoalKey = 2,
                 GoalAvailableAnswerKey = 4,
                 OptionValue = "4"
-            }, 
+            },
             //Goal 3
             new GoalAvailableAnswer
             {
                 GoalKey = 3,
                 GoalAvailableAnswerKey = 5,
                 OptionValue = "0"
-            }, 
+            },
             new GoalAvailableAnswer
             {
                 GoalKey = 3,
                 GoalAvailableAnswerKey = 6,
                 OptionValue = "0.5"
-            }, 
+            },
             new GoalAvailableAnswer
             {
                 GoalKey = 3,
                 GoalAvailableAnswerKey = 7,
                 OptionValue = "1"
-            }, 
+            },
             new GoalAvailableAnswer
             {
                 GoalKey = 3,
@@ -165,7 +168,7 @@ namespace BehaviorTracker.Repository
                 GoalKey = 3,
                 GoalAvailableAnswerKey = 9,
                 OptionValue = "2"
-            }, 
+            },
         };
     }
 }

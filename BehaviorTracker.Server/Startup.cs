@@ -53,9 +53,13 @@ namespace BehaviorTracker.Server
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<Repository.BehaviorTrackerDatabaseContext>();
+                #if DEBUG
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
-                //context.Database.Migrate();
+                #else
+                context.Database.Migrate();
+                #endif
+                
             }
             
             
