@@ -18,11 +18,11 @@
                         <td>
                             @if (goal.GoalType == GoalType.YesNo)
                             {
-                                <YesNoGoalAnswer Goal="@goal" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]"/>
+                                <YesNoGoalAnswer Goal="@goal" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]" CurrentDateTime="@CurrentDateTime"/>
                             }
                             else
                             {
-                                <NumericGoalAnswer Goal="@goal" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]" />
+                                <NumericGoalAnswer Goal="@goal" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]" CurrentDateTime="@CurrentDateTime" />
                             }
                         </td>
                     }

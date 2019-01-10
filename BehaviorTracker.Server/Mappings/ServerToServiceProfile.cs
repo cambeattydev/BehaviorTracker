@@ -10,6 +10,10 @@ namespace BehaviorTracker.Server.Mappings
             CreateMap<Client.Models.GoalAnswer, Service.Models.GoalAnswer>();
             CreateMap<Client.Models.GoalAvailableAnswer, Service.Models.GoalAvailableAnswer>();
             CreateMap<Client.Models.Student, Service.Models.Student>();
+            CreateMap<Client.Models.GoalAnswerTotal, Service.Models.GoalAnswerTotals>()
+                .ForAllMembers(mo => mo.Ignore());
+
+            CreateMap<Service.Models.GoalAnswerTotals, Client.Models.GoalAnswerTotal>();
         }
     }
 }

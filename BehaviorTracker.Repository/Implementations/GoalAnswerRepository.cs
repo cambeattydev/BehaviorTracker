@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BehaviorTracker.Repository.Interfaces;
 using BehaviorTracker.Repository.Models;
+using BehaviorTracker.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -50,6 +51,29 @@ namespace BehaviorTracker.Repository.Implementations
             _behaviorTrackerDatabaseContext.GoalAnswers.Remove(deletedGoalAnswer);
             await _behaviorTrackerDatabaseContext.SaveChangesAsync();
             return deletedGoalAnswer;
+        }
+
+        public IEnumerable<GoalAnswerTotals> GoalAnswersTotal(long goalKey, DateTime date)
+        {
+            try
+            {
+                return _behaviorTrackerDatabaseContext.GoalAnswers.Where(goalAnswer =>
+                    goalAnswer.GoalKey == goalKey && goalAnswer.Date.Date == date.Date).Select(goalAnswer =>
+                    new GoalAnswerTotals
+                    {
+                        MaxValue = goalAnswer.Goal.GoalType == GoalType.Numeric
+                            ? goalAnswer.Goal.AvailableAnswers.Max(availableAnswer =>
+                                float.Parse(availableAnswer.OptionValue))
+                            : 1,
+                        GoalType = goalAnswer.Goal.GoalType,
+                        Goal = goalAnswer
+                    }).AsEnumerable();
+            }
+            catch (Exception e)
+            {
+                var test = e;
+                throw;
+            }
         }
     }
 }

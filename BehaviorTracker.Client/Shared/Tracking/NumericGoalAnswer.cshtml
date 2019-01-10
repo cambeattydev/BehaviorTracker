@@ -1,11 +1,15 @@
 @inherits BehaviorTracker.Client.Shared.Common.GoalAnswerComponent
 <div class="form-group">
     <label for="@Answer.GoalKey-Answer">@Goal.GoalDescription</label>
+    @if (GoalAnswerTotal != null)
+    {
+        <label class="float-right">@GoalAnswerTotal.Received/@GoalAnswerTotal.Available</label>
+    }
     <select type="number" class="form-control" id="@Answer.GoalKey-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">
         @foreach (var option in _options)
         {
             <option value="@option">@option</option>
-        } 
+        }
     </select>
 </div>
 
@@ -17,12 +21,13 @@
     {
         if (Goal.AvailableAnswers != null)
         {
-            _options = Goal.AvailableAnswers.Prepend(new GoalAvailableAnswer
+            _options = Goal.AvailableAnswers.OrderBy(availableAnswer => float.Parse(availableAnswer.OptionValue)).Prepend(new GoalAvailableAnswer
             {
                 GoalKey = -1,
                 GoalAvailableAnswerKey = -1,
                 OptionValue = string.Empty
-            }).Select(s => s.OptionValue).ToList();
+
+            }).Select(goalAvailableAnswer => goalAvailableAnswer.OptionValue).ToList();
         }
     }
 

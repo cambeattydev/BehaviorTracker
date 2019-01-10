@@ -58,5 +58,12 @@ namespace BehaviorTracker.Server.Controllers
             var mappedDeletedGoalAnswer = _mapper.Map<GoalAnswer>(deletedGoalAnswer);
             return Ok(mappedDeletedGoalAnswer);
         }
+        
+        [HttpGet("[action]/{goalKey}/{date}")]
+        public IActionResult GoalAnswersTotal(long goalKey, DateTime date)
+        {
+            var goalAnswerTotals = _goalAnswerService.GoalAnswersTotal(goalKey, date);
+            return Ok(_mapper.Map<GoalAnswerTotal>(goalAnswerTotals));
+        }
     }
 }

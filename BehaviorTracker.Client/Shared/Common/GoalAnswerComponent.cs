@@ -1,7 +1,9 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using BehaviorTracker.Client.Models;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Components;
@@ -14,8 +16,19 @@ namespace BehaviorTracker.Client.Shared.Common
         protected Goal Goal { get; set; } 
         [Parameter]
         protected GoalAnswer Answer { get; set; } 
-        [Inject] HttpClient _httpClient { get; set; }
         
+        [Parameter]
+        protected DateTime CurrentDateTime { get; set; } 
+        [Inject] HttpClient _httpClient { get; set; }
+
+        protected GoalAnswerTotal GoalAnswerTotal;
+
+        protected override async Task OnParametersSetAsync()
+        {
+            GoalAnswerTotal = await _httpClient.GetJsonAsync<GoalAnswerTotal>(
+                $"/api/GoalAnswer/GoalAnswersTotal/{Goal.GoalKey}/{HttpUtility.UrlEncode(CurrentDateTime.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))}");
+        }
+
         protected async Task SaveAnswer()
         {
             if (Answer.GoalAnswerKey < 1 )
