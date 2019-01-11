@@ -1,14 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BehaviorTracker.Client", "BehaviorTracker.Client\BehaviorTracker.Client.csproj", "{9FD4EC02-5F06-4A10-B983-40147E0AA261}"
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BehaviorTracker.Client", "BehaviorTracker.Client\BehaviorTracker.Client.csproj", "{9FD4EC02-5F06-4A10-B983-40147E0AA261}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BehaviorTracker.Server", "BehaviorTracker.Server\BehaviorTracker.Server.csproj", "{786A373A-4227-48CB-8396-38F3BB9D2B48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BehaviorTracker.Server", "BehaviorTracker.Server\BehaviorTracker.Server.csproj", "{786A373A-4227-48CB-8396-38F3BB9D2B48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BehaviorTracker.Shared", "BehaviorTracker.Shared\BehaviorTracker.Shared.csproj", "{D805217D-FCF7-4890-9753-41D5841A64E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BehaviorTracker.Shared", "BehaviorTracker.Shared\BehaviorTracker.Shared.csproj", "{D805217D-FCF7-4890-9753-41D5841A64E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BehaviorTracker.Repository", "BehaviorTracker.Repository\BehaviorTracker.Repository.csproj", "{5F9748CB-2594-4749-89CD-C7007C3858DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BehaviorTracker.Repository", "BehaviorTracker.Repository\BehaviorTracker.Repository.csproj", "{5F9748CB-2594-4749-89CD-C7007C3858DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BehaviorTracker.Service", "BehaviorTracker.Service\BehaviorTracker.Service.csproj", "{4DC9FBEB-F6D1-4FDA-9C83-D2EF0272689F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BehaviorTracker.Service", "BehaviorTracker.Service\BehaviorTracker.Service.csproj", "{4DC9FBEB-F6D1-4FDA-9C83-D2EF0272689F}"
+EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "BehaviorTracker.AzureDeploy", "BehaviorTracker.ResourceGroup\BehaviorTracker.AzureDeploy.deployproj", "{931CCC37-4F18-40D6-85D9-1084AA083DE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +41,15 @@ Global
 		{4DC9FBEB-F6D1-4FDA-9C83-D2EF0272689F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DC9FBEB-F6D1-4FDA-9C83-D2EF0272689F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DC9FBEB-F6D1-4FDA-9C83-D2EF0272689F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{931CCC37-4F18-40D6-85D9-1084AA083DE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{931CCC37-4F18-40D6-85D9-1084AA083DE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{931CCC37-4F18-40D6-85D9-1084AA083DE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{931CCC37-4F18-40D6-85D9-1084AA083DE8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1C50B0C5-68B4-43EA-A73A-96D83A16D066}
 	EndGlobalSection
 EndGlobal

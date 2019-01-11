@@ -1,0 +1,176 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environment": {
+      "defaultValue": "test",
+      "type": "string",
+      "allowedValues": [
+        "test",
+        "prod"
+      ]
+    }
+  },
+  "variables": {
+    "systemName":  "BehaviorTracker" ,
+    "siteName": "[concat('wapp-', variables('systemName'), '-', parameters('environment'))]",
+    "appServicePlanName" : "[concat('asp-', parameters('environment'))]",
+    "appInsightsName":  "[concat('appi-',variables('siteName'))]",
+    "appInsightsFailureAnomaliesName": "[concat('Failure Anomalies - ', variables('siteName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "sku": {
+        "name": "F1",
+        "tier": "Free",
+        "size": "F1",
+        "family": "F",
+        "capacity": 0
+      },
+      "kind": "app",
+      "name": "[variables('appServicePlanName')]",
+      "apiVersion": "2016-09-01",
+      "location": "Central US",
+      "scale": null,
+      "properties": {
+        "name": "[variables('appServicePlanName')]",
+        "perSiteScaling": false,
+        "reserved": false,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0
+      },
+      "dependsOn": []
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "name": "[variables('siteName')]",
+      "apiVersion": "2016-08-01",
+      "location": "Central US",
+      "properties": {
+        "enabled": true,
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "reserved": false,
+        "siteConfig": null,
+        "scmSiteAlsoStopped": false,
+        "hostingEnvironmentProfile": null,
+        "clientAffinityEnabled": true,
+        "clientCertEnabled": false,
+        "hostNamesDisabled": false,
+        "containerSize": 0,
+        "dailyMemoryTimeQuota": 0,
+        "cloningInfo": null,
+        "httpsOnly": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ],
+      "resources": [
+        {
+          "apiVersion": "2015-08-01",
+          "name": "appsettings",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('siteName'))]",
+            "Microsoft.ApplicationInsights.AzureWebSites",
+            "[resourceId('microsoft.insights/components/', variables('appInsightsName'))]"
+          ],
+          "properties": {
+            "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(concat('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey]",
+            "ASPNETCORE_ENVIRONMENT": "[parameters('environment')]",
+            "ASPNETCORE_DETAILEDERRORS": "false"
+          }
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "Microsoft.ApplicationInsights.AzureWebSites",
+          "type": "siteextensions",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('siteName'))]",
+            "[resourceId('microsoft.insights/components/', variables('appInsightsName'))]"
+          ]
+        },
+        {
+          "apiVersion": "2015-08-01",
+          "name": "logs",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', variables('siteName'))]"
+          ],
+          "properties": {
+            "applicationLogs": {
+              "fileSystem": {
+                "level": "Warning"
+              }
+            },
+            "httpLogs": {
+              "fileSystem": {
+                "retentionInMb": 40,
+                "enabled": true
+              }
+            },
+            "failedRequestsTracing": {
+              "enabled": true
+            },
+            "detailedErrorMessages": {
+              "enabled": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "name": "[concat(variables('siteName') , '/web')]",
+      "apiVersion": "2016-08-01",
+      "location": "Central US",
+      "scale": null,
+      "properties": {
+        "numberOfWorkers": 1,
+        "defaultDocuments": [
+          "index.html"
+        ],
+        "netFrameworkVersion": "v4.0",
+        "phpVersion": "",
+        "pythonVersion": "",
+        "nodeVersion": "",
+        "managedPipelineMode": "Integrated",
+        "virtualApplications": [
+          {
+            "virtualPath": "/",
+            "physicalPath": "site\\wwwroot"
+          }
+        ],
+        "loadBalancing": "LeastRequests",
+        "minTlsVersion": "1.2",
+        "ftpsState": "FtpsOnly",
+        "http20Enabled":  true, 
+        "reservedInstanceCount": 0,
+        "clientAffinityEnabled":  false 
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('siteName'))]"
+      ]
+    },
+    {
+  "type": "microsoft.insights/components",
+  "kind": "web",
+  "name": "[variables('appInsightsName')]",
+  "apiVersion": "2015-05-01",
+  "location": "East US",
+  "scale": null,
+  "properties": {
+    "Application_Type": "web",
+    "Flow_Type": "Redfield",
+    "Request_Source": null,
+    "HockeyAppId": "",
+    "SamplingPercentage": null,
+    "ApplicationId" :  "[variables('appInsightsName')]" 
+  },
+  "dependsOn": [
+    "[resourceId('Microsoft.Web/Sites', variables('siteName'))]"
+  ]
+},
+  ]
+}
