@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BehaviorTracker.Repository.Migrations
 {
     [DbContext(typeof(BehaviorTrackerDatabaseContext))]
-    [Migration("20190110033213_InitialCreate")]
+    [Migration("20190111174212_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,13 +34,6 @@ namespace BehaviorTracker.Repository.Migrations
                     b.HasIndex("StudentKey");
 
                     b.ToTable("Goals");
-
-                    b.HasData(
-                        new { GoalKey = 1L, GoalDescription = "I can speak respectfully.", GoalType = 1, StudentKey = 1L },
-                        new { GoalKey = 2L, GoalDescription = "I can act appropriately.", GoalType = 2, StudentKey = 1L },
-                        new { GoalKey = 3L, GoalDescription = "I am a numeric goal type", GoalType = 2, StudentKey = 2L },
-                        new { GoalKey = 4L, GoalDescription = "I am a yes/no goal type", GoalType = 1, StudentKey = 3L }
-                    );
                 });
 
             modelBuilder.Entity("BehaviorTracker.Repository.Models.GoalAnswer", b =>
@@ -61,12 +54,6 @@ namespace BehaviorTracker.Repository.Migrations
                     b.HasIndex("GoalKey");
 
                     b.ToTable("GoalAnswers");
-
-                    b.HasData(
-                        new { GoalAnswerKey = 1L, Answer = "True", Date = new DateTime(2019, 1, 9, 15, 30, 0, 0, DateTimeKind.Unspecified), GoalKey = 1L },
-                        new { GoalAnswerKey = 2L, Answer = "1", Date = new DateTime(2019, 1, 9, 15, 30, 0, 0, DateTimeKind.Unspecified), GoalKey = 2L },
-                        new { GoalAnswerKey = 3L, Answer = "2", Date = new DateTime(2019, 1, 9, 15, 30, 0, 0, DateTimeKind.Unspecified), GoalKey = 3L }
-                    );
                 });
 
             modelBuilder.Entity("BehaviorTracker.Repository.Models.GoalAvailableAnswer", b =>
@@ -83,18 +70,6 @@ namespace BehaviorTracker.Repository.Migrations
                     b.HasIndex("GoalKey");
 
                     b.ToTable("GoalAvailableAnswer");
-
-                    b.HasData(
-                        new { GoalAvailableAnswerKey = 1L, GoalKey = 2L, OptionValue = "1" },
-                        new { GoalAvailableAnswerKey = 2L, GoalKey = 2L, OptionValue = "2" },
-                        new { GoalAvailableAnswerKey = 3L, GoalKey = 2L, OptionValue = "3" },
-                        new { GoalAvailableAnswerKey = 4L, GoalKey = 2L, OptionValue = "4" },
-                        new { GoalAvailableAnswerKey = 5L, GoalKey = 3L, OptionValue = "0" },
-                        new { GoalAvailableAnswerKey = 6L, GoalKey = 3L, OptionValue = "0.5" },
-                        new { GoalAvailableAnswerKey = 7L, GoalKey = 3L, OptionValue = "1" },
-                        new { GoalAvailableAnswerKey = 8L, GoalKey = 3L, OptionValue = "1.5" },
-                        new { GoalAvailableAnswerKey = 9L, GoalKey = 3L, OptionValue = "2" }
-                    );
                 });
 
             modelBuilder.Entity("BehaviorTracker.Repository.Models.Student", b =>
@@ -109,12 +84,6 @@ namespace BehaviorTracker.Repository.Migrations
                     b.HasKey("StudentKey");
 
                     b.ToTable("Students");
-
-                    b.HasData(
-                        new { StudentKey = 1L, StudentFirstName = "Student", StudentLastName = "1" },
-                        new { StudentKey = 2L, StudentFirstName = "Student", StudentLastName = "2" },
-                        new { StudentKey = 3L, StudentFirstName = "Student", StudentLastName = "3" }
-                    );
                 });
 
             modelBuilder.Entity("BehaviorTracker.Repository.Models.Goal", b =>

@@ -2,6 +2,13 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp2.1</TargetFramework>
         <LangVersion>7.3</LangVersion>
+        <UserSecretsId>44609d5e-e57e-45c5-9305-3116d2551335</UserSecretsId>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <DefineConstants>TRACE</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <DefineConstants>DEBUG;TRACE</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
