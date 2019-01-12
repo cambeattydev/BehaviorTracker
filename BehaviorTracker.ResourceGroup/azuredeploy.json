@@ -13,10 +13,9 @@
   },
   "variables": {
     "systemName": "BehaviorTracker",
-    "siteName": "[concat('wapp-', variables('systemName'), '-', parameters('environment'))]",
+    "siteName": "[if(equals(parameters('environment'), 'prod') , concat(variables('systemName'), '-', parameters('environment')), variables('systemName')]",
     "appServicePlanName": "[concat('asp-', parameters('environment'))]",
-    "appInsightsName": "[concat('appi-',variables('siteName'))]",
-    "appInsightsFailureAnomaliesName": "[concat('Failure Anomalies - ', variables('siteName'))]"
+    "appInsightsName": "[concat('appi-',variables('siteName'))]"    
   },
   "resources": [
     {
