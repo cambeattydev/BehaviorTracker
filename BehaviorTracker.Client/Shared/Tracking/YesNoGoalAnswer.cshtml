@@ -1,3 +1,4 @@
+@using System.Collections
 @using Microsoft.AspNetCore.Blazor.RenderTree
 @inherits BehaviorTracker.Client.Shared.Common.GoalAnswerComponent
 <div class="form-group">
@@ -8,9 +9,9 @@
     }
     <select class="form-control" id="GoalKey@(Answer.GoalKey)-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">
         @* For now this must be done, because blazor won't be able to render correctly on init *@
-        @foreach (var option in _options)
+        @foreach (var kvp in _options)
         {
-            <option value="@option">@option</option>
+            <option value="@kvp.Key">@kvp.Value</option>
         }
     </select>
 </div>
@@ -18,9 +19,9 @@
 @functions
 {
 
-    private readonly string[] _options =
+    private readonly IDictionary<string,string> _options = new Dictionary<string, string>
     {
-        string.Empty, true.ToString(), false.ToString()
+        {string.Empty, string.Empty}, {true.ToString(), "Yes"}, {false.ToString(), "No"}
     };
 
 }
