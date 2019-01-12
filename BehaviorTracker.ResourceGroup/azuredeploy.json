@@ -13,7 +13,7 @@
   },
   "variables": {
     "systemName": "BehaviorTracker",
-    "siteName": "[if(equals(parameters('environment'), 'prod') , concat(variables('systemName'), '-', parameters('environment')), variables('systemName'))]",
+    "siteName": "[if(equals(parameters('environment'), 'prod') , variables('systemName'), concat(variables('systemName'), '-', parameters('environment')))]",
     "appServicePlanName": "[concat('asp-', parameters('environment'))]",
     "appInsightsName": "[concat('appi-',variables('siteName'))]"    
   },
