@@ -3,7 +3,10 @@
     <label for="@Answer.GoalKey-Answer">@Goal.GoalDescription</label>
     @if (AnswerScore != null)
     {
-        <label class="float-right">@AnswerScore.Received/@AnswerScore.Available</label>
+        <span class="float-right">
+            <label><b>Daily:</b> @AnswerScore.Daily.Received/@AnswerScore.Daily.Available</label>&nbsp;
+            <label><b>Weekly:</b> @AnswerScore.Weekly.Received/@AnswerScore.Weekly.Available</label>
+        </span>
     }
     <select type="number" class="form-control" id="@Answer.GoalKey-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">
         @foreach (var option in _options)
@@ -26,7 +29,6 @@
                 GoalKey = -1,
                 GoalAvailableAnswerKey = -1,
                 OptionValue = string.Empty
-
             }).Select(goalAvailableAnswer => goalAvailableAnswer.OptionValue).ToList();
         }
     }

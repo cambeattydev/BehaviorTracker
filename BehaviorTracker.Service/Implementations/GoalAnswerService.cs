@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Repository.Interfaces;
 using BehaviorTracker.Service.Interfaces;
+using BehaviorTracker.Service.Models;
 using GoalAnswer = BehaviorTracker.Service.Models.GoalAnswer;
 
 namespace BehaviorTracker.Service.Implementations
@@ -13,6 +14,16 @@ namespace BehaviorTracker.Service.Implementations
     {
         private readonly IMapper _mapper;
         private readonly IGoalAnswerRepository _goalAnswerRepository;
+        private readonly Dictionary<DayOfWeek, int> _daysToAddToGetMonday =new Dictionary<DayOfWeek, int>
+        {
+            {DayOfWeek.Monday, 0},
+            {DayOfWeek.Tuesday, -1},
+            {DayOfWeek.Wednesday, -2},
+            {DayOfWeek.Thursday, -3},
+            {DayOfWeek.Friday, -4},
+            {DayOfWeek.Saturday, -5},
+            {DayOfWeek.Sunday, -6}
+        };
 
         public GoalAnswerService(IMapper mapper, IGoalAnswerRepository goalAnswerRepository)
         {
@@ -41,13 +52,21 @@ namespace BehaviorTracker.Service.Implementations
             return mappedDeletedGoalAnswer;
         }
 
-        public Models.GoalAnswerScore GoalAnswersTotal(long goalKey, DateTime date)
+        public Models.GoalAnswerTotal GoalAnswersTotal(long goalKey, DateTime date)
         {
             try
             {
-                var goalAnswerTotals = _goalAnswerRepository.GoalAnswersTotal(goalKey, date);
-                var mappedGoalAnswerTotals = _mapper.Map<Models.GoalAnswerScore>(goalAnswerTotals);
-                return mappedGoalAnswerTotals;
+                var goalAnswerScores = _goalAnswerRepository.GoalAnswersScore(goalKey, date);
+                var mappedGoalAnswerScores = _mapper.Map<Models.GoalAnswerScore>(goalAnswerScores);
+
+                var mondayDate = GetMondayDate(date);
+                var weeklyGoalAnswerScores = _goalAnswerRepository.WeeklyGoalAnswersScore(goalKey, mondayDate);
+                var mappedWeeklyGoalAnswerScores = _mapper.Map<Models.GoalAnswerScore>(weeklyGoalAnswerScores);
+                return new GoalAnswerTotal
+                {
+                    Daily = mappedGoalAnswerScores,
+                    Weekly = mappedWeeklyGoalAnswerScores
+                };
             }
             catch (Exception ex)
             {
@@ -56,5 +75,7 @@ namespace BehaviorTracker.Service.Implementations
             }
 
         }
+
+        private DateTime GetMondayDate(DateTime date) => date.AddDays(_daysToAddToGetMonday[date.DayOfWeek]);
     }
 }

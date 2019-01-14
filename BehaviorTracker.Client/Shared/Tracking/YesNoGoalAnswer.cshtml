@@ -5,7 +5,10 @@
     <label for="GoalKey@(Answer.GoalKey)-Answer">@Goal.GoalDescription</label>
     @if (AnswerScore != null)
     {
-        <label class="float-right">@AnswerScore.Received/@AnswerScore.Available</label>
+        <span class="float-right">
+            <label><b>Daily:</b> @AnswerScore.Daily.Received/@AnswerScore.Daily.Available</label>&nbsp;
+            <label><b>Weekly:</b> @AnswerScore.Weekly.Received/@AnswerScore.Weekly.Available</label>
+        </span>
     }
     <select class="form-control" id="GoalKey@(Answer.GoalKey)-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">
         @* For now this must be done, because blazor won't be able to render correctly on init *@

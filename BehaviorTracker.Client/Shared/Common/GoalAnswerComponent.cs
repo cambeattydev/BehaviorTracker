@@ -21,12 +21,12 @@ namespace BehaviorTracker.Client.Shared.Common
         protected DateTime CurrentDateTime { get; set; } 
         [Inject] HttpClient _httpClient { get; set; }
 
-        protected GoalAnswerScore AnswerScore;
+        protected GoalAnswerTotal AnswerScore;
 
         protected override async Task OnParametersSetAsync()
         {
-            AnswerScore = await _httpClient.GetJsonAsync<GoalAnswerScore>(
-                $"/api/GoalAnswer/GoalAnswersTotal/{Goal.GoalKey}/{HttpUtility.UrlEncode(CurrentDateTime.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))}");
+            AnswerScore = await _httpClient.GetJsonAsync<GoalAnswerTotal>(
+                $"/api/GoalAnswer/GoalAnswerTotal/{Goal.GoalKey}/{HttpUtility.UrlEncode(CurrentDateTime.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))}");
         }
 
         protected async Task SaveAnswer()

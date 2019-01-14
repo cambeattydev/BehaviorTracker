@@ -60,10 +60,10 @@ namespace BehaviorTracker.Server.Controllers
         }
         
         [HttpGet("[action]/{goalKey}/{date}")]
-        public IActionResult GoalAnswersTotal(long goalKey, DateTime date)
+        public IActionResult GoalAnswerTotal(long goalKey, DateTime date)
         {
             var goalAnswerTotals = _goalAnswerService.GoalAnswersTotal(goalKey, date);
-            return Ok(_mapper.Map<GoalAnswerScore>(goalAnswerTotals));
+            return Ok(_mapper.Map<GoalAnswerTotal>(goalAnswerTotals));
         }
     }
 }

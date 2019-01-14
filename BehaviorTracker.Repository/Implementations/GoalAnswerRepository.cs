@@ -53,12 +53,35 @@ namespace BehaviorTracker.Repository.Implementations
             return deletedGoalAnswer;
         }
 
-        public IEnumerable<GoalAnswerScore> GoalAnswersTotal(long goalKey, DateTime date)
+        public IEnumerable<GoalAnswerScore> GoalAnswersScore(long goalKey, DateTime date)
         {
             try
             {
                 return _behaviorTrackerDatabaseContext.GoalAnswers.Where(goalAnswer =>
                     goalAnswer.GoalKey == goalKey && goalAnswer.Date.Date == date.Date).Select(goalAnswer =>
+                    new GoalAnswerScore
+                    {
+                        MaxValue = goalAnswer.Goal.GoalType == GoalType.Numeric
+                            ? goalAnswer.Goal.AvailableAnswers.Max(availableAnswer =>
+                                float.Parse(availableAnswer.OptionValue))
+                            : 1,
+                        GoalType = goalAnswer.Goal.GoalType,
+                        Goal = goalAnswer
+                    }).AsEnumerable();
+            }
+            catch (Exception e)
+            {
+                var test = e;
+                throw;
+            }
+        }
+        
+        public IEnumerable<GoalAnswerScore> WeeklyGoalAnswersScore(long goalKey, DateTime mondayDate)
+        {
+            try
+            {
+                return _behaviorTrackerDatabaseContext.GoalAnswers.Where(goalAnswer =>
+                    goalAnswer.GoalKey == goalKey && goalAnswer.Date.Date >= mondayDate.Date && goalAnswer.Date.Date <= mondayDate.Date.AddDays(7)).Select(goalAnswer =>
                     new GoalAnswerScore
                     {
                         MaxValue = goalAnswer.Goal.GoalType == GoalType.Numeric
