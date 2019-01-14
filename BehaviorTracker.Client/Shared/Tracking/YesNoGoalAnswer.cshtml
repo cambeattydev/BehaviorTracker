@@ -3,9 +3,9 @@
 @inherits BehaviorTracker.Client.Shared.Common.GoalAnswerComponent
 <div class="form-group">
     <label for="GoalKey@(Answer.GoalKey)-Answer">@Goal.GoalDescription</label>
-    @if (GoalAnswerTotal != null)
+    @if (AnswerScore != null)
     {
-        <label class="float-right">@GoalAnswerTotal.Received/@GoalAnswerTotal.Available</label>
+        <label class="float-right">@AnswerScore.Received/@AnswerScore.Available</label>
     }
     <select class="form-control" id="GoalKey@(Answer.GoalKey)-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">
         @* For now this must be done, because blazor won't be able to render correctly on init *@

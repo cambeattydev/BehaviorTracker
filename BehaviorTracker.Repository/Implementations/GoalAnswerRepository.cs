@@ -53,13 +53,13 @@ namespace BehaviorTracker.Repository.Implementations
             return deletedGoalAnswer;
         }
 
-        public IEnumerable<GoalAnswerTotals> GoalAnswersTotal(long goalKey, DateTime date)
+        public IEnumerable<GoalAnswerScore> GoalAnswersTotal(long goalKey, DateTime date)
         {
             try
             {
                 return _behaviorTrackerDatabaseContext.GoalAnswers.Where(goalAnswer =>
                     goalAnswer.GoalKey == goalKey && goalAnswer.Date.Date == date.Date).Select(goalAnswer =>
-                    new GoalAnswerTotals
+                    new GoalAnswerScore
                     {
                         MaxValue = goalAnswer.Goal.GoalType == GoalType.Numeric
                             ? goalAnswer.Goal.AvailableAnswers.Max(availableAnswer =>

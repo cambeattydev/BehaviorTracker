@@ -1,6 +1,6 @@
-namespace BehaviorTracker.Client.Models
+namespace BehaviorTracker.Service.Models
 {
-    public class GoalAnswerTotal
+    public class GoalAnswerScore
     {
         public float Available { get; set; }
         

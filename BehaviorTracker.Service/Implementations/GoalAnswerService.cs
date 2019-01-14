@@ -41,12 +41,12 @@ namespace BehaviorTracker.Service.Implementations
             return mappedDeletedGoalAnswer;
         }
 
-        public Models.GoalAnswerTotals GoalAnswersTotal(long goalKey, DateTime date)
+        public Models.GoalAnswerScore GoalAnswersTotal(long goalKey, DateTime date)
         {
             try
             {
                 var goalAnswerTotals = _goalAnswerRepository.GoalAnswersTotal(goalKey, date);
-                var mappedGoalAnswerTotals = _mapper.Map<Models.GoalAnswerTotals>(goalAnswerTotals);
+                var mappedGoalAnswerTotals = _mapper.Map<Models.GoalAnswerScore>(goalAnswerTotals);
                 return mappedGoalAnswerTotals;
             }
             catch (Exception ex)

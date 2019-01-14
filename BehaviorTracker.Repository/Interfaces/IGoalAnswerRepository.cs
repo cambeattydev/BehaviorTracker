@@ -10,6 +10,6 @@ namespace BehaviorTracker.Repository.Interfaces
         Task<IDictionary<long, GoalAnswer>> GetStudentGoalAnswers(long studentKey, DateTime dateTime);
         Task<GoalAnswer> SaveAsync(GoalAnswer goalAnswer);
         Task<GoalAnswer> DeleteAsync(long goalAnswerKey);
-        IEnumerable<GoalAnswerTotals> GoalAnswersTotal(long goalKey, DateTime date);
+        IEnumerable<GoalAnswerScore> GoalAnswersTotal(long goalKey, DateTime date);
     }
 }

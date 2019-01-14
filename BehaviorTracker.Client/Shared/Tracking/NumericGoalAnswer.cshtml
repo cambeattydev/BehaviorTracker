@@ -1,9 +1,9 @@
 @inherits BehaviorTracker.Client.Shared.Common.GoalAnswerComponent
 <div class="form-group">
     <label for="@Answer.GoalKey-Answer">@Goal.GoalDescription</label>
-    @if (GoalAnswerTotal != null)
+    @if (AnswerScore != null)
     {
-        <label class="float-right">@GoalAnswerTotal.Received/@GoalAnswerTotal.Available</label>
+        <label class="float-right">@AnswerScore.Received/@AnswerScore.Available</label>
     }
     <select type="number" class="form-control" id="@Answer.GoalKey-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">
         @foreach (var option in _options)

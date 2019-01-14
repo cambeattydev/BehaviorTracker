@@ -2,7 +2,7 @@ using BehaviorTracker.Shared;
 
 namespace BehaviorTracker.Repository.Models
 {
-    public class GoalAnswerTotals
+    public class GoalAnswerScore
     {
         public float MaxValue { get; set; }
         
