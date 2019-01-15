@@ -21,14 +21,18 @@ namespace BehaviorTracker.Client.Shared.Common
         protected DateTime CurrentDateTime { get; set; } 
         [Inject] HttpClient _httpClient { get; set; }
 
-        protected GoalAnswerTotal AnswerScore;
+        protected GoalAnswerTotal GoalAnswerTotal;
 
         protected override async Task OnParametersSetAsync()
         {
-            AnswerScore = await _httpClient.GetJsonAsync<GoalAnswerTotal>(
-                $"/api/GoalAnswer/GoalAnswerTotal/{Goal.GoalKey}/{HttpUtility.UrlEncode(CurrentDateTime.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))}");
+            await GetGoalAnswerTotal();
         }
 
+        private async Task GetGoalAnswerTotal()
+        {
+            GoalAnswerTotal = await _httpClient.GetJsonAsync<GoalAnswerTotal>(
+                $"/api/GoalAnswer/GoalAnswerTotal/{Goal.GoalKey}/{HttpUtility.UrlEncode(CurrentDateTime.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))}");
+        }
         protected async Task SaveAnswer()
         {
             if (Answer.GoalAnswerKey < 1 )
@@ -63,6 +67,7 @@ namespace BehaviorTracker.Client.Shared.Common
                     Answer.GoalAnswerKey = response.GoalAnswerKey;
                 }
             }
+            await GetGoalAnswerTotal();
         }    
     }
 }

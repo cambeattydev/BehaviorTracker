@@ -3,11 +3,11 @@
 @inherits BehaviorTracker.Client.Shared.Common.GoalAnswerComponent
 <div class="form-group">
     <label for="GoalKey@(Answer.GoalKey)-Answer">@Goal.GoalDescription</label>
-    @if (AnswerScore != null)
+    @if (GoalAnswerTotal != null)
     {
         <span class="float-right">
-            <label><b>Daily:</b> @AnswerScore.Daily.Received/@AnswerScore.Daily.Available</label>&nbsp;
-            <label><b>Weekly:</b> @AnswerScore.Weekly.Received/@AnswerScore.Weekly.Available</label>
+            <label><b>Daily:</b> @GoalAnswerTotal.Daily.Received/@GoalAnswerTotal.Daily.Available</label>&nbsp;
+            <label><b>Weekly:</b> @GoalAnswerTotal.Weekly.Received/@GoalAnswerTotal.Weekly.Available</label>
         </span>
     }
     <select class="form-control" id="GoalKey@(Answer.GoalKey)-Answer" bind="@Answer.Answer" onblur="@SaveAnswer">
