@@ -14,13 +14,31 @@ namespace BehaviorTracker.Client.Shared.Admin
     public class AdminNumericOptionValueModel : ValidationComponent<GoalAvailableAnswerEditModel>
     {
         [Inject] protected HttpClient _httpClient { get; set; }
-        [Parameter] protected Goal Goal { get; set; }
+        private Goal _goal;
+        [Parameter] protected Goal Goal
+        {
+            get => _goal;
+            set
+            {
+                _goal = value;
+                SetPropertiesBasedOnGoal();
+            }
+        }
 
         GoalAvailableAnswerEditModel OriginalModel;
 
         protected bool _editMode;
 
         protected bool canDelete;
+
+        private void SetPropertiesBasedOnGoal()
+        {
+            if (Goal != null)
+            {
+                Model = new GoalAvailableAnswerEditModel(Goal);
+                canDelete = Goal.AvailableAnswers?.Any() ?? false;
+            }
+        }
 
         protected override void OnInit()
         {
@@ -29,11 +47,7 @@ namespace BehaviorTracker.Client.Shared.Admin
             {
                 Model = new GoalAvailableAnswerEditModel();
             }
-            if (Goal != null)
-            {
-                Model = new GoalAvailableAnswerEditModel(Goal);
-                canDelete = Goal.AvailableAnswers?.Any() ?? false;
-            }
+            SetPropertiesBasedOnGoal();
         }
 
         protected void Edit()

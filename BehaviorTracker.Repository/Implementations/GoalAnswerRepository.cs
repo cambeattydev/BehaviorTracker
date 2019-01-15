@@ -27,13 +27,13 @@ namespace BehaviorTracker.Repository.Implementations
         public async Task<GoalAnswer> SaveAsync(GoalAnswer goalAnswer)
         {
                 EntityEntry<GoalAnswer> savedGoalAnswer = default(EntityEntry<GoalAnswer>);
+                goalAnswer.Goal = null;
                 if (goalAnswer.GoalAnswerKey < 1)
                 {
                     savedGoalAnswer = await _behaviorTrackerDatabaseContext.GoalAnswers.AddAsync(goalAnswer);
                 }
                 else
                 {
-                    goalAnswer.Goal = null;
                     savedGoalAnswer = _behaviorTrackerDatabaseContext.Update(goalAnswer);
                 }
 
