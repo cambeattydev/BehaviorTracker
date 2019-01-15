@@ -1,65 +1,89 @@
-@using NodaTime
-<nav aria-label="Page navigation example">
-    
-    <ul class="pagination justify-content-center">
-        @*<li class="page-item">
+<div class="row">
+    <div class="col-lg-12 d-none d-lg-block">
+        <nav aria-label="Time of day">
+            <ul class="pagination justify-content-center">
+                @*<li class="page-item">
             <a class="page-link" href="#" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
                 <span class="sr-only">Previous</span>
             </a>
         </li>*@
-        @for (var i = 0; i < timesDictionary.Count; i++)
-        {
-            var index = i;
-            <li class="page-item d-flex align-items-stretch @(ActiveIndex == i ? "active" : "" )" onclick="@(() => SelectActiveIndex(index))">
-                <a class="page-link" href="">@timesDictionary.Values.ElementAt(i)</a>
-            </li>
-        }
-        @*<li class="page-item">
+                @foreach (var kvp in timesDictionary)
+                {
+                    <li class="page-item d-flex align-items-stretch @(kvp.Key == SelectedTime? "active" : "")" onclick="@(() => SetSelectedItem(kvp.Key))">
+                        <a class="page-link" href="">@kvp.Value</a>
+                    </li>
+                }
+                @*<li class="page-item">
             <a class="page-link" href="#" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Next</span>
             </a>
         </li>*@
-    </ul>
-</nav>
+            </ul>
+        </nav>
+    </div>
+    <div class="col-md-12 d-lg-none">
+        <div class="form-group">
+        <label for="selected-time">Time of Day</label>
+            <select id="selected-time" class="form-control"bind="@SelectedTimeString">
+            @foreach(var kvp in timesDictionary)
+            {
+                <option value="@kvp.Key">
+                    @kvp.Value
+                </option>
+            }
+            </select>
+        </div>
+    </div>
+</div>
 
 @functions {
 
     private IDictionary<TimeSpan, string> timesDictionary;
-    
-    private int ActiveIndex { get; set; }
-    
-    [Parameter] Action<TimeSpan> OnTimeChanged { get; set; }
+
+    [Parameter]
+    Action<TimeSpan> OnTimeChanged { get; set; }
+
+    protected TimeSpan SelectedTime { get; set; }
+
+    protected string SelectedTimeString
+    {
+        get => SelectedTime.ToString();
+        set
+        {
+            SelectedTime = TimeSpan.Parse(value);
+            OnTimeChanged?.Invoke(SelectedTime);
+        }
+    }
 
     protected override void OnInit()
     {
         timesDictionary = new Dictionary<TimeSpan, string>
         {
-            {new TimeSpan(0,0,0), "Arrival"} 
+            {new TimeSpan(0, 0, 0), "Arrival"}
         };
-        for(int i =9; i < 15; i++)
+        for (int i = 9; i < 15; i++)
         {
-            timesDictionary.Add(new TimeSpan(i,0,0), i <= 12 ? $"{i}:00-{i}:30" : $"{i-12}:00-{i-12}:30");
-            timesDictionary.Add(new TimeSpan(i,30,0), i <= 12 ? $"{i}:30-{i+1}:00" : $"{i-12}:30-{i-11}:00");
+            timesDictionary.Add(new TimeSpan(i, 0, 0), i <= 12 ? $"{i}:00-{i}:30" : $"{i - 12}:00-{i - 12}:30");
+            timesDictionary.Add(new TimeSpan(i, 30, 0), i <= 12 ? $"{i}:30-{i + 1}:00" : $"{i - 12}:30-{i - 11}:00");
         }
         timesDictionary.Add(new TimeSpan(15, 0, 0), $"3:00-3:30");
         timesDictionary.Add(new TimeSpan(15, 30, 0), "Dismissal");
-        
+
         FindIndexBasedOnNow();
-        OnTimeChanged?.Invoke(timesDictionary.Keys.ElementAt(ActiveIndex));
+        OnTimeChanged?.Invoke(SelectedTime);
     }
 
     void FindIndexBasedOnNow()
     {
-        //Add hours is used here since toLocalTime doesn't work
+    //Add hours is used here since toLocalTime doesn't work
         var timeSpan = DateTime.Now.ToLocalTime().AddHours(-6).TimeOfDay;
-        for (int i = 0; i < timesDictionary.Count ; i++)
+        foreach  (var kvp in  timesDictionary)
         {
-            var kvp = timesDictionary.ElementAt(i);
             if (timeSpan.CompareTo(kvp.Key) > 0)
             {
-                ActiveIndex = i;
+                SelectedTime = kvp.Key;
             }
             else
             {
@@ -68,12 +92,10 @@
         }
     }
 
-    void SelectActiveIndex(int i)
+    void SetSelectedItem(TimeSpan key)
     {
-        ActiveIndex = i;
-        OnTimeChanged?.Invoke(timesDictionary.Keys.ElementAt(ActiveIndex));
+        SelectedTime = key;
+        OnTimeChanged?.Invoke(SelectedTime);
     }
 
-    
-   
 }

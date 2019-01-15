@@ -2,20 +2,27 @@
 @using BehaviorTracker.Client.Shared.Tracking
 @using NodaTime
 @using Student = BehaviorTracker.Client.Shared.Tracking.Student
-<div class="form-group">
-    <label>Date</label>
-    <div class="input-group">
-        <input class="form-control" type="text" onfocus=@focussed bind="@CurrentDate" format-value="MM-dd-yyyy"/>
-        <DatePicker Visible=@visible Selected=@selected DaysOfWeekDisabled=@(new[] {IsoDayOfWeek.Saturday, IsoDayOfWeek.Sunday}) ShowClose=@true/>
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label>Date</label>
+            <div class="input-group">
+                <input class="form-control" type="text" onfocus=@focussed bind="@CurrentDate" format-value="MM-dd-yyyy"/>
+                <DatePicker Visible=@visible Selected=@selected DaysOfWeekDisabled=@(new[] {IsoDayOfWeek.Saturday, IsoDayOfWeek.Sunday}) ShowClose=@true/>
+            </div>
+        </div>
     </div>
 </div>
 <timesNavigation OnTimeChanged="@CurrentTimeChanged"/>
 <Student CurrentDateTime="@CurrentDateTime"/>
 @* Get spinner to work when loading things  *@
+
 @functions
 {
-   [Parameter] Student StudentComponent { get; set; }   
-    
+
+    [Parameter]
+    Student StudentComponent { get; set; }
+
     DateTime CurrentDate;
 
     private TimeSpan _currentTime;
@@ -26,7 +33,7 @@
 
     protected override void OnInit()
     {
-        //Add hours is used here since toLocalTime doesn't work
+    //Add hours is used here since toLocalTime doesn't work
         CurrentDate = DateTime.Now.ToLocalTime().AddHours(-6).Date;
     }
 

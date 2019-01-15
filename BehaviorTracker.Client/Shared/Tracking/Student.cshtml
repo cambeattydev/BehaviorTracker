@@ -3,39 +3,44 @@
 @using System.Net
 @using System.Web
 @using BehaviorTracker.Shared
-@if (_students != null)
-{
-    <table class="table">
-        <tbody>
-        @foreach (var student in _students)
+<div class="row">
+    <div class="col">
+        @if (_students != null)
         {
-            <tr>
-                <td>@student.StudentFirstName @student.StudentLastName</td>
-                @foreach (var goal in student.Goals)
+            <table class="table">
+                <tbody>
+                @foreach (var student in _students)
                 {
-                    if (_studentGoalAnswers.ContainsKey(student.StudentKey) && _studentGoalAnswers[student.StudentKey].ContainsKey(goal.GoalKey.ToString()))
-                    {
-                        <td>
-                            @if (goal.GoalType == GoalType.YesNo)
+                    <tr>
+                        <td>@student.StudentFirstName @student.StudentLastName</td>
+                        @foreach (var goal in student.Goals)
+                        {
+                            if (_studentGoalAnswers.ContainsKey(student.StudentKey) && _studentGoalAnswers[student.StudentKey].ContainsKey(goal.GoalKey.ToString()))
                             {
-                                <YesNoGoalAnswer Goal="@goal" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]" CurrentDateTime="@CurrentDateTime"/>
+                                <td>
+                                    @if (goal.GoalType == GoalType.YesNo)
+                                    {
+                                        <YesNoGoalAnswer Goal="@goal" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]" CurrentDateTime="@CurrentDateTime"/>
+                                    }
+                                    else
+                                    {
+                                        <NumericGoalAnswer Goal="@goal" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]" CurrentDateTime="@CurrentDateTime" />
+                                    }
+                                </td>
                             }
-                            else
-                            {
-                                <NumericGoalAnswer Goal="@goal" Answer="@_studentGoalAnswers[student.StudentKey][goal.GoalKey.ToString()]" CurrentDateTime="@CurrentDateTime" />
-                            }
-                        </td>
-                    }
+                        }
+                    </tr>
                 }
-            </tr>
+                </tbody>
+            </table>
         }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>Loading...</p>
-}
+        else
+        {
+            <p>Loading...</p>
+            <Spinner/>
+        }
+    </div>
+</div>
 
 @functions {
     Models.Student[] _students;
