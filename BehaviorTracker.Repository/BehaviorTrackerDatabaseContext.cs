@@ -1,11 +1,13 @@
 using System;
 using BehaviorTracker.Repository.Models;
 using BehaviorTracker.Shared;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BehaviorTracker.Repository
 {
-    public class BehaviorTrackerDatabaseContext : DbContext
+    public class BehaviorTrackerDatabaseContext : IdentityDbContext<IdentityUser>
     {
         public static string ConnectionString = "Data Source=BehaviorTracker.db";
         internal DbSet<Goal> Goals { get; set; }

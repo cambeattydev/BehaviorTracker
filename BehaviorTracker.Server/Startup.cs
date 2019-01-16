@@ -9,8 +9,13 @@ using BehaviorTracker.Service.Interfaces;
 using Microsoft.AspNetCore.Blazor.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -19,6 +24,12 @@ namespace BehaviorTracker.Server
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+    
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -32,6 +43,16 @@ namespace BehaviorTracker.Server
             });
             
            AddAutoMapper(services);
+           
+           services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>()
+               .AddEntityFrameworkStores<Repository.BehaviorTrackerDatabaseContext>();
+
+           services.AddAuthentication()
+               .AddGoogle(googleOptions =>
+               {
+                   googleOptions.ClientId = _configuration["GoogleAuthentication:client_id"];
+                   googleOptions.ClientSecret = _configuration["GoogleAuthentication:client_secret"];
+               });
 
            IocConfiguration.ConfigureIoc(services);
 
@@ -43,6 +64,8 @@ namespace BehaviorTracker.Server
                     WasmMediaTypeNames.Application.Wasm,
                 });
             });
+
+            services.AddSingleton<IActionContextAccessor,ActionContextAccessor>();
 
         }
 
@@ -61,7 +84,8 @@ namespace BehaviorTracker.Server
                 #endif
                 
             }
-            
+
+            app.UseAuthentication();
             
             app.UseResponseCompression();
 
