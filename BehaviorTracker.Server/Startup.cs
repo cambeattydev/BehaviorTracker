@@ -1,16 +1,24 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
 using AutoMapper;
 using BehaviorTracker.Repository.Implementations;
 using BehaviorTracker.Repository.Interfaces;
+using BehaviorTracker.Server.Auth;
 using BehaviorTracker.Server.Mappings;
 using BehaviorTracker.Service.Implementations;
 using BehaviorTracker.Service.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Blazor.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -25,36 +33,60 @@ namespace BehaviorTracker.Server
     public class Startup
     {
         private readonly IConfiguration _configuration;
+
         public Startup(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-    
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<Repository.BehaviorTrackerDatabaseContext>(options => 
+            services.AddDbContext<Repository.BehaviorTrackerDatabaseContext>(options =>
                 options.UseSqlite(Repository.BehaviorTrackerDatabaseContext.ConnectionString));
-            
-            services.AddMvc().AddJsonOptions(options => {
+
+            services.AddMvc(o =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                o.Filters.Add(new AuthorizeFilter(policy));
+                
+            }).AddJsonOptions(options =>
+            {
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
-            
-           AddAutoMapper(services);
-           
-           services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>()
-               .AddEntityFrameworkStores<Repository.BehaviorTrackerDatabaseContext>();
 
-           services.AddAuthentication()
-               .AddGoogle(googleOptions =>
-               {
-                   googleOptions.ClientId = _configuration["GoogleAuthentication:client_id"];
-                   googleOptions.ClientSecret = _configuration["GoogleAuthentication:client_secret"];
-               });
+            AddAutoMapper(services);
 
-           IocConfiguration.ConfigureIoc(services);
+            services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<Repository.BehaviorTrackerDatabaseContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication(authenticationOptions =>
+                {
+                    authenticationOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    authenticationOptions.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                }).AddCookie(cookieOptions =>
+                {
+                    cookieOptions.SlidingExpiration = true;
+                    //cookieOptions.
+                })
+                .AddGoogle(googleOptions =>
+                {
+                    googleOptions.ClientId = _configuration["GoogleAuthentication:client_id"];
+                    googleOptions.ClientSecret = _configuration["GoogleAuthentication:client_secret"];
+                    googleOptions.Events = new GoogleAuthEvents("cbcsd.org");
+                });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.SlidingExpiration = true;
+            });
+
+            IocConfiguration.ConfigureIoc(services);
 
             services.AddResponseCompression(options =>
             {
@@ -65,24 +97,21 @@ namespace BehaviorTracker.Server
                 });
             });
 
-            services.AddSingleton<IActionContextAccessor,ActionContextAccessor>();
-
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<Repository.BehaviorTrackerDatabaseContext>();
-                #if DEBUG
+#if DEBUG
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
-                #else
+#else
                 context.Database.Migrate();
-                #endif
-                
+#endif
             }
 
             app.UseAuthentication();
@@ -97,8 +126,6 @@ namespace BehaviorTracker.Server
             app.UseMvc(routes => { routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}"); });
 
             app.UseBlazor<BehaviorTracker.Client.Startup>();
-            
-           
         }
 
         private static void AddAutoMapper(IServiceCollection services)
@@ -108,9 +135,8 @@ namespace BehaviorTracker.Server
                 cfg.AddProfile<ServerToServiceProfile>();
                 cfg.AddProfile<Service.Mapping.ServiceToRepositoryProfile>();
             });
-            
+
             services.AddAutoMapper();
         }
-        
     }
 }

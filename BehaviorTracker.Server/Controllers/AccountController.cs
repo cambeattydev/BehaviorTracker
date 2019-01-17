@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -19,6 +20,7 @@ namespace BehaviorTracker.Server.Controllers
             _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
         [HttpPost("[action]")]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             var redirectUrl = _urlHelper.Action("LoginCallback", "Account");
@@ -28,6 +30,7 @@ namespace BehaviorTracker.Server.Controllers
         }
 
         [HttpGet("[action]")]
+        [AllowAnonymous]
         public async Task<IActionResult> LoginCallback(string returnUrl = null, string remoteError = null)
         {
             if (remoteError != null)
