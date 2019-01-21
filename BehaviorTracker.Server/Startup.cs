@@ -61,9 +61,17 @@ namespace BehaviorTracker.Server
 
             AddAutoMapper(services);
 
-            services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>()
+            services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<Repository.BehaviorTrackerDatabaseContext>()
                 .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password = null;
+                options.Lockout = null;
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+            });
 
             services.AddAuthentication(authenticationOptions =>
                 {
