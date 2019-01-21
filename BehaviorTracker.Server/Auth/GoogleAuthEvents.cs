@@ -17,12 +17,22 @@ namespace BehaviorTracker.Server.Auth
 
         public override Task RedirectToAuthorizationEndpoint(RedirectContext<OAuthOptions> context)
         {
+            string GetRedirectUri()
+            {
+#if !DEBUG
+                return $"{context.RedirectUri}&hd={_domainName}";
+#endif
+                return context.RedirectUri;
+#endif
+            }
+
             return base.RedirectToAuthorizationEndpoint(new RedirectContext<OAuthOptions>(
                 context.HttpContext,
                 context.Scheme,
                 context.Options,
                 context.Properties,
-                $"{context.RedirectUri}&hd={_domainName}"));
+                GetRedirectUri()
+            ));
         }
 
         public override Task TicketReceived(TicketReceivedContext context)
@@ -30,7 +40,15 @@ namespace BehaviorTracker.Server.Auth
             var emailClaim = context.Principal.Claims.FirstOrDefault(
                 c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
 
-            if (emailClaim == null || !emailClaim.Value.ToLower().EndsWith(_domainName))
+            bool ValidateEmailWithDomain()
+            {
+#if !DEBUG
+                !emailClaim.Value.ToLower().EndsWith(_domainName)
+#endif
+                return false;
+#endif  
+            }
+            if (emailClaim == null || ValidateEmailWithDomain())
             {
                 context.Response.StatusCode = 403; // or redirect somewhere
                 context.HandleResponse();
