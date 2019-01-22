@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -29,7 +30,8 @@ namespace BehaviorTracker.Server.Controllers
         public IActionResult Login()
         {
             var redirectUrl = _urlHelper.Action("LoginCallback", "Account");
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(GoogleDefaults.DisplayName, redirectUrl);
+            var properties =
+                _signInManager.ConfigureExternalAuthenticationProperties(GoogleDefaults.DisplayName, redirectUrl);
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
@@ -48,33 +50,51 @@ namespace BehaviorTracker.Server.Controllers
                 return null;
             }
 
-            var existingUser = _signInManager.UserManager.Users.FirstOrDefaultAsync(user =>
-                user.Email.ToLower() == info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value);
+            var existingUser = await _signInManager.UserManager.Users.FirstOrDefaultAsync(user =>
+                user.Email.ToLower() ==
+                info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value);
 
             if (existingUser == null)
             {
-                var user = new IdentityUser
+                try
                 {
-                    Email = info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value,
-                    UserName =
-                        $"{info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Name)?.Value}.{info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Surname)?.Value}"
-                };
-                var savedUser = await _signInManager.UserManager.CreateAsync(user);
-                if (!savedUser.Succeeded)
+                    var user = new IdentityUser
+                    {
+                        Email = info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value,
+                        UserName =
+                            $"{info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.GivenName)?.Value}.{info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Surname)?.Value}",
+                        PasswordHash = "defaultPassword123!"
+                    };
+                    var savedUser = await _signInManager.UserManager.CreateAsync(user);
+
+                    if (!savedUser.Succeeded)
+                    {
+                        return Redirect("/login");
+                    }
+
+                    existingUser = user;
+                }
+                catch (Exception ex)
                 {
-                    return Redirect("/login");
+                    var test = ex;
+                    throw;
                 }
             }
 
-            // Sign in the user with this external login provider if the user already has a login.
-            var signedIn = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true, true);
-            if (signedIn.Succeeded)
+            var loginAdded = await _signInManager.UserManager.AddLoginAsync(existingUser, info);
+            if (loginAdded.Succeeded)
             {
-                return RedirectToPage("/");
+                // Sign in the user with this external login provider if the user already has a login.
+                var signedIn =
+                    await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true, true);
+                if (signedIn.Succeeded)
+                {
+                    return Redirect("/");
+                }
             }
 
             // If the user does not have an account, then ask the user to create an account.
-            return Redirect("/account/externalLogin");
+            return Redirect("/login");
         }
     }
 }

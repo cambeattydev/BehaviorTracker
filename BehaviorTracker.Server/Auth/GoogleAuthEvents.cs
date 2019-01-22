@@ -21,7 +21,7 @@ namespace BehaviorTracker.Server.Auth
             {
 #if !DEBUG
                 return $"{context.RedirectUri}&hd={_domainName}";
-#endif
+#else
                 return context.RedirectUri;
 #endif
             }
@@ -44,10 +44,11 @@ namespace BehaviorTracker.Server.Auth
             {
 #if !DEBUG
                 !emailClaim.Value.ToLower().EndsWith(_domainName)
-#endif
+#else
                 return false;
 #endif  
             }
+            
             if (emailClaim == null || ValidateEmailWithDomain())
             {
                 context.Response.StatusCode = 403; // or redirect somewhere

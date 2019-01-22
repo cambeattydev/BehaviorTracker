@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
@@ -67,20 +68,24 @@ namespace BehaviorTracker.Server
 
             services.Configure<IdentityOptions>(options =>
             {
-                options.Password = null;
-                options.Lockout = null;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 1;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredUniqueChars = 1;
+                options.Password.RequireNonAlphanumeric = false;
+                
+                options.Lockout.AllowedForNewUsers = false;
+                options.Lockout.MaxFailedAccessAttempts = int.MaxValue;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.Zero;
+                
                 options.SignIn.RequireConfirmedEmail = false;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
             });
 
             services.AddAuthentication(authenticationOptions =>
                 {
-                    authenticationOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     authenticationOptions.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-                }).AddCookie(cookieOptions =>
-                {
-                    cookieOptions.SlidingExpiration = true;
-                    //cookieOptions.
                 })
                 .AddGoogle(googleOptions =>
                 {
