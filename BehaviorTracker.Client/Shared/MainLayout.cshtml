@@ -1,3 +1,4 @@
+@using BehaviorTracker.Client.Services
 @using BehaviorTracker.Client.Shared.Common
 @inherits BlazorLayoutComponent
 
@@ -18,7 +19,9 @@
     @* </CascadingValue> *@
 </div>
 
-@* @functions *@
-@* { *@
-@*     Modal modalTest; *@
-@* } *@
+@functions
+{
+ //   Modal modalTest;
+    [Inject] AuthorizationService _authorizationService { get; set; }
+
+}

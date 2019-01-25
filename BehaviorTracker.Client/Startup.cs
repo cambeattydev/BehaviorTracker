@@ -1,5 +1,6 @@
 using System;
 using BehaviorTracker.Client.Models;
+using BehaviorTracker.Client.Services;
 using BehaviorTracker.Client.Shared.Common;
 using BehaviorTracker.Client.Validators;
 using FluentValidation;
@@ -17,6 +18,7 @@ namespace BehaviorTracker.Client
             services.AddTransient<IValidator<Goal>, GoalValidator>();
             services.AddTransient<IValidator<GoalAvailableAnswerEditModel>, GoalAvailableAnswerEditModelValidator>();
             services.AddSingleton<IValidatorFactory, ValidatorFactory>();
+            services.AddSingleton<AuthorizationService>();
         }
 
         public void Configure(IBlazorApplicationBuilder app)

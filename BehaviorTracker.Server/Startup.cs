@@ -62,7 +62,7 @@ namespace BehaviorTracker.Server
 
             AddAutoMapper(services);
 
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<Repository.BehaviorTrackerDatabaseContext>()
                 .AddDefaultTokenProviders();
 

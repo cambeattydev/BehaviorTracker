@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using BehaviorTracker.Client.Models;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -95,6 +96,20 @@ namespace BehaviorTracker.Server.Controllers
 
             // If the user does not have an account, then ask the user to create an account.
             return Redirect("/login");
+        }
+
+        [HttpGet("[action]")]
+        [Authorize]
+        public async Task<IActionResult> AuthorizationModel()
+        {
+            var user = await _signInManager.UserManager.GetUserAsync(HttpContext.User);
+            var roles = await _signInManager.UserManager.GetRolesAsync(user);
+            return Ok(new AuthorizationModel()
+            {
+                Email = user.Email,
+                Username = user.UserName,
+                Roles = roles
+            });
         }
     }
 }
