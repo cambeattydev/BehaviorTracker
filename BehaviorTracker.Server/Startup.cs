@@ -5,6 +5,7 @@ using System.Net.Mime;
 using AutoMapper;
 using BehaviorTracker.Repository.Implementations;
 using BehaviorTracker.Repository.Interfaces;
+using BehaviorTracker.Repository.Models;
 using BehaviorTracker.Server.Auth;
 using BehaviorTracker.Server.Mappings;
 using BehaviorTracker.Service.Implementations;
@@ -62,37 +63,39 @@ namespace BehaviorTracker.Server
 
             AddAutoMapper(services);
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<Repository.BehaviorTrackerDatabaseContext>()
-                .AddDefaultTokenProviders();
+//            services.AddIdentity<BehaviorTrackerUser, BehaviorTrackerRole>()
+//                .AddEntityFrameworkStores<Repository.BehaviorTrackerDatabaseContext>()
+//                .AddDefaultTokenProviders();
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 1;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequiredUniqueChars = 1;
-                options.Password.RequireNonAlphanumeric = false;
-                
-                options.Lockout.AllowedForNewUsers = false;
-                options.Lockout.MaxFailedAccessAttempts = int.MaxValue;
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.Zero;
-                
-                options.SignIn.RequireConfirmedEmail = false;
-                options.SignIn.RequireConfirmedPhoneNumber = false;
-            });
+//            services.Configure<IdentityOptions>(options =>
+//            {
+//                options.Password.RequireDigit = false;
+//                options.Password.RequiredLength = 1;
+//                options.Password.RequireLowercase = false;
+//                options.Password.RequireUppercase = false;
+//                options.Password.RequiredUniqueChars = 1;
+//                options.Password.RequireNonAlphanumeric = false;
+//                
+//                options.Lockout.AllowedForNewUsers = false;
+//                options.Lockout.MaxFailedAccessAttempts = int.MaxValue;
+//                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.Zero;
+//                
+//                options.SignIn.RequireConfirmedEmail = false;
+//                options.SignIn.RequireConfirmedPhoneNumber = false;
+//            });
 
             services.AddAuthentication(authenticationOptions =>
                 {
                     authenticationOptions.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                    authenticationOptions.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
                 .AddGoogle(googleOptions =>
                 {
                     googleOptions.ClientId = _configuration["GoogleAuthentication:client_id"];
                     googleOptions.ClientSecret = _configuration["GoogleAuthentication:client_secret"];
                     googleOptions.Events = new GoogleAuthEvents("cbcsd.org");
-                });
+                })
+                .AddCookie();
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -128,6 +131,7 @@ namespace BehaviorTracker.Server
             }
 
             app.UseAuthentication();
+            app.UseCookiePolicy();
             
             app.UseResponseCompression();
 
