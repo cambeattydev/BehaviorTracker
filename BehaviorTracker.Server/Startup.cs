@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Mime;
+using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Repository.Implementations;
 using BehaviorTracker.Repository.Interfaces;
@@ -84,23 +86,24 @@ namespace BehaviorTracker.Server
 //                options.SignIn.RequireConfirmedPhoneNumber = false;
 //            });
 
-            services.AddAuthentication(authenticationOptions =>
-                {
-                    authenticationOptions.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-                    authenticationOptions.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddGoogle(googleOptions =>
                 {
                     googleOptions.ClientId = _configuration["GoogleAuthentication:client_id"];
                     googleOptions.ClientSecret = _configuration["GoogleAuthentication:client_secret"];
                     googleOptions.Events = new GoogleAuthEvents("cbcsd.org");
+                    googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
-                .AddCookie();
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.SlidingExpiration = true;
-            });
+                .AddCookie(options =>
+                {
+                    options.LoginPath = PathString.Empty;
+                    options.SlidingExpiration = true;
+                    options.Events.OnRedirectToLogin = context =>
+                    {
+                        context.Response.StatusCode = 401;    
+                        return Task.CompletedTask;
+                    };
+                });
 
             IocConfiguration.ConfigureIoc(services);
 

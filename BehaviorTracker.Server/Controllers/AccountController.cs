@@ -52,7 +52,7 @@ Items = { {"LoginProvider", GoogleDefaults.DisplayName}}
                 return Redirect("/login");
             }
 
-            var authenticationResult = await HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme);
+            var authenticationResult = await HttpContext.AuthenticateAsync();
             
 //            var info = await _signInManager.GetExternalLoginInfoAsync();
 //            if (info == null)
@@ -110,22 +110,22 @@ Items = { {"LoginProvider", GoogleDefaults.DisplayName}}
 
                 var authProperties = new AuthenticationProperties
                 {
-                    //AllowRefresh = <bool>,
+                    AllowRefresh = true,
                     // Refreshing the authentication session should be allowed.
 
-                    //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1).AddMinutes(-30),
                     // The time at which the authentication ticket expires. A 
                     // value set here overrides the ExpireTimeSpan option of 
                     // CookieAuthenticationOptions set with AddCookie.
 
-                    //IsPersistent = true,
+                    IsPersistent = true,
                     // Whether the authentication session is persisted across 
                     // multiple requests. Required when setting the 
                     // ExpireTimeSpan option of CookieAuthenticationOptions 
                     // set with AddCookie. Also required when setting 
                     // ExpiresUtc.
 
-                    //IssuedUtc = <DateTimeOffset>,
+                    IssuedUtc = DateTimeOffset.UtcNow
                     // The time at which the authentication ticket was issued.
 
                     //RedirectUri = <string>
