@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BehaviorTracker.Client.Models;
+using BehaviorTracker.Service.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -21,12 +22,14 @@ namespace BehaviorTracker.Server.Controllers
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IUrlHelper _urlHelper;
+        private readonly IUserService _userService;
 
         public AccountController(IUrlHelperFactory urlHelperFactory,
-            IActionContextAccessor actionContextAccessor)
+            IActionContextAccessor actionContextAccessor, IUserService userService)
         {
             //_signInManager = signInManager;
             _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
+            _userService = userService;
         }
 
         [HttpPost("[action]")]
@@ -53,6 +56,14 @@ Items = { {"LoginProvider", GoogleDefaults.DisplayName}}
             }
 
             var authenticationResult = await HttpContext.AuthenticateAsync();
+
+            if (authenticationResult.Succeeded)
+            {
+                var user = await _userService.GetUserAsync(authenticationResult.Principal.Claims.FirstOrDefault(claim =>
+                    claim.Type == ClaimTypes.Email)?.ValueType);
+                
+                
+            }
             
 //            var info = await _signInManager.GetExternalLoginInfoAsync();
 //            if (info == null)

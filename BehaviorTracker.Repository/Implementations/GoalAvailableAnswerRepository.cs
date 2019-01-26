@@ -8,13 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BehaviorTracker.Repository.Implementations
 {
-    public class GoalAvailableAnswerRepository : IGoalAvailableAnswerRepository
+    public class GoalAvailableAnswerRepository : BaseRepository,  IGoalAvailableAnswerRepository
     {
-        private readonly BehaviorTrackerDatabaseContext _behaviorTrackerDatabaseContext;
 
-        public GoalAvailableAnswerRepository(BehaviorTrackerDatabaseContext behaviorTrackerDatabaseContext)
+        public GoalAvailableAnswerRepository(BehaviorTrackerDatabaseContext behaviorTrackerDatabaseContext) : base(behaviorTrackerDatabaseContext)
         {
-            _behaviorTrackerDatabaseContext = behaviorTrackerDatabaseContext;
         }
         public async Task<IEnumerable<GoalAvailableAnswer>> DeleteAllForGoalAsync(long goalKey)
         {

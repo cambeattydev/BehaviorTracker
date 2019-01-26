@@ -5,22 +5,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BehaviorTracker.Repository.Implementations
 {
-    public class GoalRepository : IGoalRepository
+    public class GoalRepository : BaseRepository, IGoalRepository
     {
-        private readonly BehaviorTrackerDatabaseContext _dbContext;
-
-        public GoalRepository(BehaviorTrackerDatabaseContext behaviorTrackerDatabaseContext)
+        public GoalRepository(BehaviorTrackerDatabaseContext behaviorTrackerDatabaseContext) : base(
+            behaviorTrackerDatabaseContext)
         {
-            _dbContext = behaviorTrackerDatabaseContext;
         }
 
         public async Task<Goal> DeleteAsync(long goalKey)
         {
-            var goalToDelete = await _dbContext.Goals.FirstOrDefaultAsync(goal => goal.GoalKey == goalKey).ConfigureAwait(false);
+            var goalToDelete = await _behaviorTrackerDatabaseContext.Goals
+                .FirstOrDefaultAsync(goal => goal.GoalKey == goalKey).ConfigureAwait(false);
             if (goalToDelete != null)
             {
-                _dbContext.Goals.Remove(goalToDelete);
-                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                _behaviorTrackerDatabaseContext.Goals.Remove(goalToDelete);
+                await _behaviorTrackerDatabaseContext.SaveChangesAsync().ConfigureAwait(false);
 
                 return goalToDelete;
             }
@@ -30,11 +29,11 @@ namespace BehaviorTracker.Repository.Implementations
 
         public async Task<Goal> SaveAsync(Goal goal)
         {
-            var savedGoal = goal.GoalKey < 1 ?
-                _dbContext.Goals.Add(goal) : 
-                _dbContext.Goals.Update(goal);
+            var savedGoal = goal.GoalKey < 1
+                ? _behaviorTrackerDatabaseContext.Goals.Add(goal)
+                : _behaviorTrackerDatabaseContext.Goals.Update(goal);
 
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _behaviorTrackerDatabaseContext.SaveChangesAsync().ConfigureAwait(false);
             return savedGoal.Entity;
         }
     }

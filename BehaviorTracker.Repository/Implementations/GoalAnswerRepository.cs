@@ -10,12 +10,11 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BehaviorTracker.Repository.Implementations
 {
-    public class GoalAnswerRepository : IGoalAnswerRepository
+    public class GoalAnswerRepository : BaseRepository,  IGoalAnswerRepository
     {
-        private readonly BehaviorTrackerDatabaseContext _behaviorTrackerDatabaseContext;
-        public GoalAnswerRepository(BehaviorTrackerDatabaseContext behaviorTrackerDatabaseContext)
+        public GoalAnswerRepository(BehaviorTrackerDatabaseContext behaviorTrackerDatabaseContext) : 
+            base(behaviorTrackerDatabaseContext)
         {
-            _behaviorTrackerDatabaseContext = behaviorTrackerDatabaseContext;
         }
         public async Task<IDictionary<long,GoalAnswer>> GetStudentGoalAnswers(long studentKey, DateTime dateTime)
         {

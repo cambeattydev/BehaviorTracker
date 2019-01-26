@@ -8,42 +8,41 @@ using Microsoft.EntityFrameworkCore.Extensions.Internal;
 
 namespace BehaviorTracker.Repository.Implementations
 {
-    public class StudentRepository : IStudentRepository
+    public class StudentRepository : BaseRepository, IStudentRepository
     {
-        private readonly BehaviorTrackerDatabaseContext _dbContext;
-        public StudentRepository(BehaviorTrackerDatabaseContext behaviorTrackerDatabaseContext)
+        public StudentRepository(BehaviorTrackerDatabaseContext behaviorTrackerDatabaseContext) : base(
+            behaviorTrackerDatabaseContext)
         {
-            _dbContext = behaviorTrackerDatabaseContext;
         }
 
         public IEnumerable<Student> GetStudents()
         {
-            return _dbContext.Students.Include(s => s.Goals).AsEnumerable();
+            return _behaviorTrackerDatabaseContext.Students.Include(s => s.Goals).AsEnumerable();
         }
-        
+
         public IEnumerable<Student> GetStudentsWithGoalsAndAvailableAnswers()
         {
-            return _dbContext.Students.Include(s => s.Goals).ThenInclude(s => s.AvailableAnswers);
+            return _behaviorTrackerDatabaseContext.Students.Include(s => s.Goals).ThenInclude(s => s.AvailableAnswers);
         }
 
         public async Task<Student> SaveAsync(Student student)
         {
-            
-            var savedStudent = student.StudentKey < 1 ?
-                _dbContext.Students.Add(student) : 
-                _dbContext.Students.Update(student);
+            var savedStudent = student.StudentKey < 1
+                ? _behaviorTrackerDatabaseContext.Students.Add(student)
+                : _behaviorTrackerDatabaseContext.Students.Update(student);
 
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _behaviorTrackerDatabaseContext.SaveChangesAsync().ConfigureAwait(false);
             return savedStudent.Entity;
         }
 
         public async Task<Student> DeleteStudentAsync(long studentKey)
         {
-            var studentToDelete = await _dbContext.Students.FirstOrDefaultAsync(student => student.StudentKey == studentKey).ConfigureAwait(false);
+            var studentToDelete = await _behaviorTrackerDatabaseContext.Students
+                .FirstOrDefaultAsync(student => student.StudentKey == studentKey).ConfigureAwait(false);
             if (studentToDelete != null)
             {
-                _dbContext.Students.Remove(studentToDelete);
-                await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+                _behaviorTrackerDatabaseContext.Students.Remove(studentToDelete);
+                await _behaviorTrackerDatabaseContext.SaveChangesAsync().ConfigureAwait(false);
 
                 return studentToDelete;
             }
