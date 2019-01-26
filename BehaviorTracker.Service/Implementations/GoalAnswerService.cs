@@ -10,9 +10,8 @@ using GoalAnswer = BehaviorTracker.Service.Models.GoalAnswer;
 
 namespace BehaviorTracker.Service.Implementations
 {
-    public class GoalAnswerService : IGoalAnswerService
+    public class GoalAnswerService : BaseService, IGoalAnswerService
     {
-        private readonly IMapper _mapper;
         private readonly IGoalAnswerRepository _goalAnswerRepository;
         private readonly Dictionary<DayOfWeek, int> _daysToAddToGetMonday =new Dictionary<DayOfWeek, int>
         {
@@ -25,9 +24,8 @@ namespace BehaviorTracker.Service.Implementations
             {DayOfWeek.Sunday, -6}
         };
 
-        public GoalAnswerService(IMapper mapper, IGoalAnswerRepository goalAnswerRepository)
+        public GoalAnswerService(IMapper mapper, IGoalAnswerRepository goalAnswerRepository) : base(mapper)
         {
-            _mapper = mapper;
             _goalAnswerRepository = goalAnswerRepository;
         }
         public async Task<IDictionary<long, Service.Models.GoalAnswer>> GetStudentGoalAnswers(long studentKey, DateTime dateTime)

@@ -8,14 +8,12 @@ using BehaviorTracker.Service.Models;
 
 namespace BehaviorTracker.Service.Implementations
 {
-    public class StudentService : IStudentService
+    public class StudentService : BaseService, IStudentService
     {
-        private readonly IMapper _mapper;
         private readonly IStudentRepository _studentRepository;
 
-        public StudentService(IMapper mapper, IStudentRepository studentRepository)
+        public StudentService(IMapper mapper, IStudentRepository studentRepository) : base(mapper)
         {
-            _mapper = mapper;
             _studentRepository = studentRepository;
         }
 

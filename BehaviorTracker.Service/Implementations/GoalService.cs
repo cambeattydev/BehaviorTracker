@@ -7,14 +7,12 @@ using BehaviorTracker.Shared;
 
 namespace BehaviorTracker.Service.Implementations
 {
-    public class GoalService : IGoalService
+    public class GoalService : BaseService, IGoalService
     {
-        private readonly IMapper _mapper;
         private readonly IGoalRepository _goalRepository;
         
-        public GoalService(IGoalRepository goalRepository, IMapper mapper)
+        public GoalService(IMapper mapper, IGoalRepository goalRepository) :base(mapper)
         {
-            _mapper = mapper;
             _goalRepository = goalRepository;
         }
 

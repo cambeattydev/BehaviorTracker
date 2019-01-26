@@ -10,15 +10,13 @@ using BehaviorTracker.Service.Models;
 
 namespace BehaviorTracker.Service.Implementations
 {
-    public class GoalAvailableAnswerService : IGoalAvailableAnswerService
+    public class GoalAvailableAnswerService : BaseService, IGoalAvailableAnswerService
     {
-        private IGoalAvailableAnswerRepository _goalAvailableAnswerRepository;
-        private IMapper _mapper;
+        private readonly IGoalAvailableAnswerRepository _goalAvailableAnswerRepository;
 
-        public GoalAvailableAnswerService(IGoalAvailableAnswerRepository goalAvailableAnswerRepository, IMapper mapper)
+        public GoalAvailableAnswerService(IMapper mapper, IGoalAvailableAnswerRepository goalAvailableAnswerRepository) : base(mapper)
         {
             _goalAvailableAnswerRepository = goalAvailableAnswerRepository;
-            _mapper = mapper;
         }
 
         public async Task<IEnumerable<GoalAvailableAnswer>> DeleteAndInsertAsync(
