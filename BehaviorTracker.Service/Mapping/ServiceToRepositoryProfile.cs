@@ -14,6 +14,7 @@ namespace BehaviorTracker.Service.Mapping
             CreateMap<GoalAnswer, Repository.DatabaseModels.GoalAnswer>();
             CreateMap<GoalAvailableAnswer, Repository.DatabaseModels.GoalAvailableAnswer>();
             CreateMap<Student, Repository.DatabaseModels.Student>();
+            CreateMap<BehaviorTrackerUser, Repository.DatabaseModels.BehaviorTrackerUser>();
             CreateMap<GoalAnswerScore, IEnumerable<Repository.OtherModels.GoalAnswerScore>>()
                 .ForAllMembers(mo => mo.Ignore());
 

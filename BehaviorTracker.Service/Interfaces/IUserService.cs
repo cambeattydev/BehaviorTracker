@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BehaviorTracker.Service.Models;
+using Microsoft.AspNetCore.Authentication;
 
 namespace BehaviorTracker.Service.Interfaces
 {
     public interface IUserService
     {
-        Task<BehaviorTrackerUser> GetUserAsync(string email);
-        Task<BehaviorTrackerUser> CreateUserAsync(BehaviorTrackerUser user);
-        Task<IEnumerable<string>> GetUserRolesAsync(long behaviorTrackerUserKey);
+        Task<IEnumerable<string>> LoginUserAsync(AuthenticateResult authenticationResult);
+        Task<AuthorizationModel> GetUserRoles(string email);
     }
 }

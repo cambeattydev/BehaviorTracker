@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Service.Interfaces;
+using BehaviorTracker.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BehaviorTracker.Server.Controllers
@@ -18,6 +20,7 @@ namespace BehaviorTracker.Server.Controllers
         }
         
         [HttpDelete("[action]/{goalKey}")]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalWrite))]
         public async Task<IActionResult> Delete(long goalKey)
         {
             var deletedGoal = await _goalService.DeleteAsync(goalKey).ConfigureAwait(false);
@@ -31,6 +34,7 @@ namespace BehaviorTracker.Server.Controllers
         }
         
         [HttpPost("[action]")]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalWrite))]
         public async Task<IActionResult> Goal([FromBody] Client.Models.Goal goalModel)
         {
             

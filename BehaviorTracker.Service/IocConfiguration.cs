@@ -14,7 +14,8 @@ namespace BehaviorTracker.Service
             services.AddScoped<IStudentService, StudentService>()
                 .AddScoped<IGoalService, GoalService>()
                 .AddScoped<IGoalAvailableAnswerService, GoalAvailableAnswerService>()
-                .AddScoped<IGoalAnswerService, GoalAnswerService>();
+                .AddScoped<IGoalAnswerService, GoalAnswerService>()
+                .AddScoped<IUserService, UserService>();
             
             Repository.IocConfiguration.ConfigureIoc(services);
         }

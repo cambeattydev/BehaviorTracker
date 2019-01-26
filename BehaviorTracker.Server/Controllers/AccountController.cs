@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
 using BehaviorTracker.Client.Models;
 using BehaviorTracker.Service.Interfaces;
 using BehaviorTracker.Service.Models;
@@ -15,22 +16,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
+using AuthorizationModel = BehaviorTracker.Client.Models.AuthorizationModel;
 
 namespace BehaviorTracker.Server.Controllers
 {
     [Route("api/[controller]")]
     public class AccountController : Controller
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IUrlHelper _urlHelper;
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
         public AccountController(IUrlHelperFactory urlHelperFactory,
-            IActionContextAccessor actionContextAccessor, IUserService userService)
+            IActionContextAccessor actionContextAccessor, IUserService userService, IMapper mapper)
         {
-            //_signInManager = signInManager;
             _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
             _userService = userService;
+            _mapper = mapper;
         }
 
         [HttpPost("[action]")]
@@ -58,136 +60,73 @@ namespace BehaviorTracker.Server.Controllers
 
             var authenticationResult = await HttpContext.AuthenticateAsync();
 
-            if (authenticationResult.Succeeded)
+            if (!authenticationResult.Succeeded) return Redirect("/login");
+
+            var roles = await _userService.LoginUserAsync(authenticationResult);
+            
+            try
             {
-                var user = await _userService.GetUserAsync(authenticationResult.Principal.Claims.FirstOrDefault(claim =>
-                    claim.Type == ClaimTypes.Email)?.ValueType);
+                var combinedClaims =
+                    authenticationResult.Principal.Claims.Concat(roles.Select(role =>
+                        new Claim(ClaimTypes.Role, role)));
+                var claimsIdentity =
+                    new ClaimsIdentity(combinedClaims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                if (user == null)
+                var authProperties = new AuthenticationProperties
                 {
-                    //Create new user for the login
-                    var userToBeSaved = new BehaviorTrackerUser
-                    {
-                        Email = authenticationResult.Principal.Claims
-                            .FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value,
-                        FirstName = authenticationResult.Principal.Claims
-                            .FirstOrDefault(claim => claim.Type == ClaimTypes.GivenName)?.Value,
-                        LastName = authenticationResult.Principal.Claims
-                            .FirstOrDefault(claim => claim.Type == ClaimTypes.Surname)?.Value
-                    };
-                    user = await _userService.CreateUserAsync(userToBeSaved);
-                }
+                    AllowRefresh = true,
+                    // Refreshing the authentication session should be allowed.
 
-                var roles = await _userService.GetUserRolesAsync(user.BehaviorTrackerUserKey);
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1).AddMinutes(-30),
+                    // The time at which the authentication ticket expires. A 
+                    // value set here overrides the ExpireTimeSpan option of 
+                    // CookieAuthenticationOptions set with AddCookie.
 
-                try
-                {
-                    var combinedClaims =
-                        authenticationResult.Principal.Claims.Concat(roles.Select(role =>
-                            new Claim(ClaimTypes.Role, role)));
-                    var claimsIdentity =
-                        new ClaimsIdentity(combinedClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    IsPersistent = true,
+                    // Whether the authentication session is persisted across 
+                    // multiple requests. Required when setting the 
+                    // ExpireTimeSpan option of CookieAuthenticationOptions 
+                    // set with AddCookie. Also required when setting 
+                    // ExpiresUtc.
 
-                    var authProperties = new AuthenticationProperties
-                    {
-                        AllowRefresh = true,
-                        // Refreshing the authentication session should be allowed.
+                    IssuedUtc = DateTimeOffset.UtcNow
+                    // The time at which the authentication ticket was issued.
 
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1).AddMinutes(-30),
-                        // The time at which the authentication ticket expires. A 
-                        // value set here overrides the ExpireTimeSpan option of 
-                        // CookieAuthenticationOptions set with AddCookie.
+                    //RedirectUri = <string>
+                    // The full path or absolute URI to be used as an http 
+                    // redirect response value.
+                };
 
-                        IsPersistent = true,
-                        // Whether the authentication session is persisted across 
-                        // multiple requests. Required when setting the 
-                        // ExpireTimeSpan option of CookieAuthenticationOptions 
-                        // set with AddCookie. Also required when setting 
-                        // ExpiresUtc.
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties);
 
-                        IssuedUtc = DateTimeOffset.UtcNow
-                        // The time at which the authentication ticket was issued.
-
-                        //RedirectUri = <string>
-                        // The full path or absolute URI to be used as an http 
-                        // redirect response value.
-                    };
-
-                    await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(claimsIdentity),
-                        authProperties);
-
-                    return Redirect(returnUrl ?? "/");
-                }
-                catch (Exception ex)
-                {
-                    return Redirect("/login");
-                }
-                
+                return Redirect(returnUrl ?? "/");
             }
-            return Redirect("/login");
+            catch (Exception ex)
+            {
+                return Redirect("/login");
+            }
 
-//            var info = await _signInManager.GetExternalLoginInfoAsync();
-//            if (info == null)
-//            {
-//                return null;
-//            }
-
-//            var existingUser = await _signInManager.UserManager.Users.FirstOrDefaultAsync(user =>
-//                user.Email.ToLower() ==
-//                info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value);
-
-//            if (existingUser == null)
-//            {
-//                try
-//                {
-//                    var user = new IdentityUser
-//                    {
-
-//                    };
-//                    var savedUser = await _signInManager.UserManager.CreateAsync(user);
-//
-//                    if (!savedUser.Succeeded)
-//                    {
-//                        return Redirect("/login");
-//                    }
-//
-//                    existingUser = user;
-//                }
-//                catch (Exception ex)
-//                {
-//                    var test = ex;
-//                    throw;
-//                }
-//            }
-
-//            var loginAdded = await _signInManager.UserManager.AddLoginAsync(existingUser, info);
-//            if (loginAdded.Succeeded)
-//            {
-//                // Sign in the user with this external login provider if the user already has a login.
-//                var signedIn =
-//                    await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true, true);
-//                if (signedIn.Succeeded)
-//                {
-//                    return Redirect("/");
-//                }
-//            }
         }
 
         [HttpGet("[action]")]
         [Authorize]
         public async Task<IActionResult> AuthorizationModel()
         {
-//            var user = await _signInManager.UserManager.GetUserAsync(HttpContext.User);
-//            var roles = await _signInManager.UserManager.GetRolesAsync(user);
-//            return Ok(new AuthorizationModel()
-//            {
-//                Email = user.Email,
-//                Username = user.UserName,
-//                Roles = roles
-//            });
-            throw new NotImplementedException();
+            if (!HttpContext.User.Identity.IsAuthenticated) return Unauthorized();
+
+            var authorizationModel = await _userService.GetUserRoles(HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)
+                ?.Value);
+
+            if (authorizationModel == null)
+            {
+                return Unauthorized();
+            }
+            
+            return Ok(_mapper.Map<AuthorizationModel>(authorizationModel));
+
         }
     }
 }

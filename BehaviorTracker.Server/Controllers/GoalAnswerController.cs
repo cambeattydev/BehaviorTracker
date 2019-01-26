@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Client.Models;
 using BehaviorTracker.Service.Interfaces;
+using BehaviorTracker.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BehaviorTracker.Server.Controllers
@@ -21,6 +23,7 @@ namespace BehaviorTracker.Server.Controllers
         }
         
         [HttpGet("[action]/{studentKey}/{datetime}")]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalAnswerRead))]
         public async Task<IActionResult> StudentGoalAnswers(long studentKey, DateTime dateTime)
         {
             var studentGoalAnswers = await _goalAnswerService.GetStudentGoalAnswers(studentKey, dateTime);
@@ -37,6 +40,7 @@ namespace BehaviorTracker.Server.Controllers
         
         [HttpPost("[action]")]
         [HttpPut("[action]")]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalAnswerWrite))]
         public async Task<IActionResult> GoalAnswer([FromBody] Client.Models.GoalAnswer goalAnswer)
         {
             var mappedGoalAnswer = _mapper.Map<Service.Models.GoalAnswer>(goalAnswer);
@@ -47,6 +51,7 @@ namespace BehaviorTracker.Server.Controllers
         }
 
         [HttpDelete("[action]/{goalAnswerKey}")]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalAnswerWrite))]
         public async Task<IActionResult> GoalAnswer(long goalAnswerKey)
         {
             var deletedGoalAnswer = await _goalAnswerService.DeleteAsync(goalAnswerKey);
@@ -60,6 +65,7 @@ namespace BehaviorTracker.Server.Controllers
         }
         
         [HttpGet("[action]/{goalKey}/{date}")]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalAnswerRead))]
         public IActionResult GoalAnswerTotal(long goalKey, DateTime date)
         {
             var goalAnswerTotals = _goalAnswerService.GoalAnswersTotal(goalKey, date);

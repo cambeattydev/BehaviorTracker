@@ -102,6 +102,11 @@ namespace BehaviorTracker.Server
                         context.Response.StatusCode = 401;    
                         return Task.CompletedTask;
                     };
+                    options.Events.OnRedirectToAccessDenied = context =>
+                    {
+                        context.Response.StatusCode = 401;    
+                        return Task.CompletedTask;
+                    };
                 });
 
             IocConfiguration.ConfigureIoc(services);

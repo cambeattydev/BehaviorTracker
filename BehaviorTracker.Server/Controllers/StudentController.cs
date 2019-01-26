@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Service.Interfaces;
+using BehaviorTracker.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +23,16 @@ namespace BehaviorTracker.Server.Controllers
         }
 
         [HttpGet("[action]")]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalAnswerWrite))]
         public IEnumerable<Client.Models.Student> Students() => _studentService.GetStudents().Select(_mapper.Map<Client.Models.Student>);
 
         [HttpGet("[action]")]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalAnswerWrite))]
         public IEnumerable<Client.Models.Student> GetStudentsWithGoalsAndAvailableAnswers() =>
             _studentService.GetStudentsWithGoalsAndAvailableAnswers().Select(_mapper.Map<Client.Models.Student>);
 
         [HttpPost("[action]")]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalWrite))]
         public async Task<IActionResult> Student([FromBody] Client.Models.Student studentModel)
         {
             
@@ -44,6 +48,7 @@ namespace BehaviorTracker.Server.Controllers
         }
         
         [HttpDelete("[action]/{studentKey}")]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalWrite))]
         public async Task<IActionResult> Delete(long studentKey)
         {
             var deletedStudent = await _studentService.DeleteAsync(studentKey).ConfigureAwait(false);
