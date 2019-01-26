@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Repository.Interfaces;
@@ -18,6 +20,19 @@ namespace BehaviorTracker.Service.Implementations
         {
             var repositoryUser = await _userRepository.GetUserAsync(email);
             return _mapper.Map<BehaviorTrackerUser>(repositoryUser);
+        }
+
+        public async Task<BehaviorTrackerUser> CreateUserAsync(BehaviorTrackerUser user)
+        {
+            var repositoryUser = _mapper.Map<Repository.Models.BehaviorTrackerUser>(user);
+            var savedUser = await _userRepository.SaveUserAsync(repositoryUser);
+            var mappedSavedUser = _mapper.Map<BehaviorTrackerUser>(savedUser);
+            return mappedSavedUser;
+        }
+
+        public async Task<IEnumerable<string>> GetUserRolesAsync(long behaviorTrackerUserKey)
+        {
+            return (await _userRepository.GetUserRolesAsync(behaviorTrackerUserKey)).Select(role => role.RoleName);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using BehaviorTracker.Client.Models;
 using BehaviorTracker.Service.Interfaces;
+using BehaviorTracker.Service.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -39,10 +40,10 @@ namespace BehaviorTracker.Server.Controllers
             var redirectUrl = _urlHelper.Action("LoginCallback", "Account");
             var properties = new AuthenticationProperties
             {
-RedirectUri = redirectUrl,
-Items = { {"LoginProvider", GoogleDefaults.DisplayName}}
+                RedirectUri = redirectUrl,
+                Items = {{"LoginProvider", GoogleDefaults.DisplayName}}
             };
-                
+
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
@@ -61,10 +62,72 @@ Items = { {"LoginProvider", GoogleDefaults.DisplayName}}
             {
                 var user = await _userService.GetUserAsync(authenticationResult.Principal.Claims.FirstOrDefault(claim =>
                     claim.Type == ClaimTypes.Email)?.ValueType);
-                
+
+                if (user == null)
+                {
+                    //Create new user for the login
+                    var userToBeSaved = new BehaviorTrackerUser
+                    {
+                        Email = authenticationResult.Principal.Claims
+                            .FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value,
+                        FirstName = authenticationResult.Principal.Claims
+                            .FirstOrDefault(claim => claim.Type == ClaimTypes.GivenName)?.Value,
+                        LastName = authenticationResult.Principal.Claims
+                            .FirstOrDefault(claim => claim.Type == ClaimTypes.Surname)?.Value
+                    };
+                    user = await _userService.CreateUserAsync(userToBeSaved);
+                }
+
+                var roles = await _userService.GetUserRolesAsync(user.BehaviorTrackerUserKey);
+
+                try
+                {
+                    var combinedClaims =
+                        authenticationResult.Principal.Claims.Concat(roles.Select(role =>
+                            new Claim(ClaimTypes.Role, role)));
+                    var claimsIdentity =
+                        new ClaimsIdentity(combinedClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    var authProperties = new AuthenticationProperties
+                    {
+                        AllowRefresh = true,
+                        // Refreshing the authentication session should be allowed.
+
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1).AddMinutes(-30),
+                        // The time at which the authentication ticket expires. A 
+                        // value set here overrides the ExpireTimeSpan option of 
+                        // CookieAuthenticationOptions set with AddCookie.
+
+                        IsPersistent = true,
+                        // Whether the authentication session is persisted across 
+                        // multiple requests. Required when setting the 
+                        // ExpireTimeSpan option of CookieAuthenticationOptions 
+                        // set with AddCookie. Also required when setting 
+                        // ExpiresUtc.
+
+                        IssuedUtc = DateTimeOffset.UtcNow
+                        // The time at which the authentication ticket was issued.
+
+                        //RedirectUri = <string>
+                        // The full path or absolute URI to be used as an http 
+                        // redirect response value.
+                    };
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity),
+                        authProperties);
+
+                    return Redirect(returnUrl ?? "/");
+                }
+                catch (Exception ex)
+                {
+                    return Redirect("/login");
+                }
                 
             }
-            
+            return Redirect("/login");
+
 //            var info = await _signInManager.GetExternalLoginInfoAsync();
 //            if (info == null)
 //            {
@@ -81,10 +144,7 @@ Items = { {"LoginProvider", GoogleDefaults.DisplayName}}
 //                {
 //                    var user = new IdentityUser
 //                    {
-//                        Email = info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value,
-//                        UserName =
-//                            $"{info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.GivenName)?.Value}.{info.Principal.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Surname)?.Value}",
-//                        PasswordHash = "defaultPassword123!"
+
 //                    };
 //                    var savedUser = await _signInManager.UserManager.CreateAsync(user);
 //
@@ -113,49 +173,6 @@ Items = { {"LoginProvider", GoogleDefaults.DisplayName}}
 //                    return Redirect("/");
 //                }
 //            }
-            try
-            {
-
-                var claimsIdentity = new ClaimsIdentity(
-                    authenticationResult.Principal.Claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                var authProperties = new AuthenticationProperties
-                {
-                    AllowRefresh = true,
-                    // Refreshing the authentication session should be allowed.
-
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1).AddMinutes(-30),
-                    // The time at which the authentication ticket expires. A 
-                    // value set here overrides the ExpireTimeSpan option of 
-                    // CookieAuthenticationOptions set with AddCookie.
-
-                    IsPersistent = true,
-                    // Whether the authentication session is persisted across 
-                    // multiple requests. Required when setting the 
-                    // ExpireTimeSpan option of CookieAuthenticationOptions 
-                    // set with AddCookie. Also required when setting 
-                    // ExpiresUtc.
-
-                    IssuedUtc = DateTimeOffset.UtcNow
-                    // The time at which the authentication ticket was issued.
-
-                    //RedirectUri = <string>
-                    // The full path or absolute URI to be used as an http 
-                    // redirect response value.
-                };
-
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
-
-                return Redirect(returnUrl ?? "/");
-            }
-            catch (Exception ex)
-            {
-               return Redirect("/login");
-            }
-
         }
 
         [HttpGet("[action]")]
@@ -170,7 +187,7 @@ Items = { {"LoginProvider", GoogleDefaults.DisplayName}}
 //                Username = user.UserName,
 //                Roles = roles
 //            });
-throw new NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }
