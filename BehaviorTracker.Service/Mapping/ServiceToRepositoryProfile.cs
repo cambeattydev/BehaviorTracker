@@ -10,14 +10,14 @@ namespace BehaviorTracker.Service.Mapping
     {
         public ServiceToRepositoryProfile()
         {
-            CreateMap<Goal, Repository.Models.Goal>();
-            CreateMap<GoalAnswer, Repository.Models.GoalAnswer>();
-            CreateMap<GoalAvailableAnswer, Repository.Models.GoalAvailableAnswer>();
-            CreateMap<Student, Repository.Models.Student>();
-            CreateMap<GoalAnswerScore, IEnumerable<Repository.Models.GoalAnswerScore>>()
+            CreateMap<Goal, Repository.DatabaseModels.Goal>();
+            CreateMap<GoalAnswer, Repository.DatabaseModels.GoalAnswer>();
+            CreateMap<GoalAvailableAnswer, Repository.DatabaseModels.GoalAvailableAnswer>();
+            CreateMap<Student, Repository.DatabaseModels.Student>();
+            CreateMap<GoalAnswerScore, IEnumerable<Repository.OtherModels.GoalAnswerScore>>()
                 .ForAllMembers(mo => mo.Ignore());
 
-            CreateMap<IEnumerable<Repository.Models.GoalAnswerScore>, GoalAnswerScore>()
+            CreateMap<IEnumerable<Repository.OtherModels.GoalAnswerScore>, GoalAnswerScore>()
                 .ForMember(dest => dest.Available, mo => mo.MapFrom(src => src.Sum(s => s.MaxValue)))
                 .ForMember(dest => dest.Received, mo =>
                     mo.MapFrom(src => src.Sum(s =>

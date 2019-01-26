@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Repository.Implementations;
 using BehaviorTracker.Repository.Interfaces;
-using BehaviorTracker.Repository.Models;
 using BehaviorTracker.Server.Auth;
 using BehaviorTracker.Server.Mappings;
 using BehaviorTracker.Service.Implementations;

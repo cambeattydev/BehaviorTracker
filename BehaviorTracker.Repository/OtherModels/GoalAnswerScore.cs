@@ -1,6 +1,7 @@
+using BehaviorTracker.Repository.DatabaseModels;
 using BehaviorTracker.Shared;
 
-namespace BehaviorTracker.Repository.Models
+namespace BehaviorTracker.Repository.OtherModels
 {
     public class GoalAnswerScore
     {

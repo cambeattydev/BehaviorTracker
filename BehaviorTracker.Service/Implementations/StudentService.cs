@@ -30,7 +30,7 @@ namespace BehaviorTracker.Service.Implementations
 
         public async Task<Student> SaveAsync(Student student)
         {
-            var repositoryStudent = _mapper.Map<Repository.Models.Student>(student);
+            var repositoryStudent = _mapper.Map<Repository.DatabaseModels.Student>(student);
             var savedStudent = await _studentRepository.SaveAsync(repositoryStudent).ConfigureAwait(false);
             return _mapper.Map<Student>(savedStudent);
         }

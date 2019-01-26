@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
+using BehaviorTracker.Repository.DatabaseModels;
 using BehaviorTracker.Repository.Interfaces;
-using BehaviorTracker.Repository.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BehaviorTracker.Repository.Implementations

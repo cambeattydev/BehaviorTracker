@@ -25,7 +25,7 @@ namespace BehaviorTracker.Service.Implementations
 
         public async Task<Goal> SaveAsync(Goal goal)
         {
-            var repositoryGoal = _mapper.Map<Repository.Models.Goal>(goal);
+            var repositoryGoal = _mapper.Map<Repository.DatabaseModels.Goal>(goal);
             var savedGoal = await _goalRepository.SaveAsync(repositoryGoal).ConfigureAwait(false);
             if (savedGoal.GoalType != GoalType.Numeric)
             {

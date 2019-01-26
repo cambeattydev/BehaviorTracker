@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using BehaviorTracker.Repository.Models;
+using BehaviorTracker.Repository.DatabaseModels;
 
 namespace BehaviorTracker.Repository.Interfaces
 {

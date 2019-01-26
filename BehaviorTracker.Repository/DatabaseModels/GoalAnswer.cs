@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BehaviorTracker.Repository.Models
+namespace BehaviorTracker.Repository.DatabaseModels
 {
     public class GoalAnswer
     {

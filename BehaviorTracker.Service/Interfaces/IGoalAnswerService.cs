@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BehaviorTracker.Repository.Models;
 using BehaviorTracker.Service.Models;
 using GoalAnswerScore = BehaviorTracker.Service.Models.GoalAnswerScore;
 

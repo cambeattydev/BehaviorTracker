@@ -37,7 +37,7 @@ namespace BehaviorTracker.Service.Implementations
 
         public async Task<Service.Models.GoalAnswer> SaveAsync(Service.Models.GoalAnswer goalAnswer)
         {
-            var mappedGoalAnswer = _mapper.Map<Repository.Models.GoalAnswer>(goalAnswer);
+            var mappedGoalAnswer = _mapper.Map<Repository.DatabaseModels.GoalAnswer>(goalAnswer);
             var savedGoalAnswer = await _goalAnswerRepository.SaveAsync(mappedGoalAnswer);
             return _mapper.Map<Service.Models.GoalAnswer>(savedGoalAnswer);
         }

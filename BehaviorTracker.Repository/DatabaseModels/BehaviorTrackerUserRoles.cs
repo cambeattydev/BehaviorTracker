@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace BehaviorTracker.Repository.Models
+namespace BehaviorTracker.Repository.DatabaseModels
 {
     public class BehaviorTrackerUserRoles
     {

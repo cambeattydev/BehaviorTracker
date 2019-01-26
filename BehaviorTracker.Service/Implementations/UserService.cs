@@ -24,7 +24,7 @@ namespace BehaviorTracker.Service.Implementations
 
         public async Task<BehaviorTrackerUser> CreateUserAsync(BehaviorTrackerUser user)
         {
-            var repositoryUser = _mapper.Map<Repository.Models.BehaviorTrackerUser>(user);
+            var repositoryUser = _mapper.Map<Repository.DatabaseModels.BehaviorTrackerUser>(user);
             var savedUser = await _userRepository.SaveUserAsync(repositoryUser);
             var mappedSavedUser = _mapper.Map<BehaviorTrackerUser>(savedUser);
             return mappedSavedUser;

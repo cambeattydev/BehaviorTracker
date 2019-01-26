@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,7 +27,7 @@ namespace BehaviorTracker.Service.Implementations
             }
 
             var mappedGoalAvailableAnswers =
-                goalAvailableAnswers.Select(_mapper.Map<Repository.Models.GoalAvailableAnswer>).ToList();
+                goalAvailableAnswers.Select(_mapper.Map<Repository.DatabaseModels.GoalAvailableAnswer>).ToList();
             //Delete all the old available an
             if (mappedGoalAvailableAnswers.All(goalAvailableAnswer => goalAvailableAnswer.GoalAvailableAnswerKey < 1))
             {

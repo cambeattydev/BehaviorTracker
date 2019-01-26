@@ -1,5 +1,5 @@
 using System;
-using BehaviorTracker.Repository.Models;
+using BehaviorTracker.Repository.DatabaseModels;
 using BehaviorTracker.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

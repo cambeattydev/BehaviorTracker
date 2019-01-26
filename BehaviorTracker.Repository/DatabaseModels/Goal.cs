@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BehaviorTracker.Shared;
 
-namespace BehaviorTracker.Repository.Models
+namespace BehaviorTracker.Repository.DatabaseModels
 {
     public class Goal
     {
