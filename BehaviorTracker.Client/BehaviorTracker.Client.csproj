@@ -17,4 +17,8 @@
       <ProjectReference Include="..\BehaviorTracker.Shared\BehaviorTracker.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Shared\Admin\User" />
+    </ItemGroup>
+
 </Project>

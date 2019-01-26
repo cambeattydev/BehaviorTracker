@@ -9,5 +9,6 @@ namespace BehaviorTracker.Repository.Interfaces
         Task<BehaviorTrackerUser> GetUserAsync(string email);
         Task<BehaviorTrackerUser> SaveUserAsync(BehaviorTrackerUser user);
         Task<IEnumerable<BehaviorTrackerRole>> GetUserRolesAsync(long behaviorTrackerUserKey);
+        IEnumerable<BehaviorTrackerUser> GetUsers();
     }
 }

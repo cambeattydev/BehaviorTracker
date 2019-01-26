@@ -64,27 +64,6 @@ namespace BehaviorTracker.Server
 
             AddAutoMapper(services);
 
-//            services.AddIdentity<BehaviorTrackerUser, BehaviorTrackerRole>()
-//                .AddEntityFrameworkStores<Repository.BehaviorTrackerDatabaseContext>()
-//                .AddDefaultTokenProviders();
-
-//            services.Configure<IdentityOptions>(options =>
-//            {
-//                options.Password.RequireDigit = false;
-//                options.Password.RequiredLength = 1;
-//                options.Password.RequireLowercase = false;
-//                options.Password.RequireUppercase = false;
-//                options.Password.RequiredUniqueChars = 1;
-//                options.Password.RequireNonAlphanumeric = false;
-//                
-//                options.Lockout.AllowedForNewUsers = false;
-//                options.Lockout.MaxFailedAccessAttempts = int.MaxValue;
-//                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.Zero;
-//                
-//                options.SignIn.RequireConfirmedEmail = false;
-//                options.SignIn.RequireConfirmedPhoneNumber = false;
-//            });
-
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddGoogle(googleOptions =>
                 {

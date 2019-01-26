@@ -55,7 +55,15 @@ namespace BehaviorTracker.Service.Implementations
                 Roles = roles.ToList()
             };
         }
-        
+
+        public IEnumerable<BehaviorTrackerUser> GetUsers()
+        {
+           var repositoryUsers = _userRepository.GetUsers();
+           var mappedUsers = repositoryUsers.Select(_mapper.Map<BehaviorTrackerUser>);
+           //TODO Need to create role groups for the ui
+           return mappedUsers;
+        }
+
         private async  Task<BehaviorTrackerUser> GetUserAsync(string email)
         {
             var repositoryUser = await _userRepository.GetUserAsync(email);

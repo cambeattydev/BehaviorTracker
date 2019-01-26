@@ -30,11 +30,17 @@ namespace BehaviorTracker.Repository.Implementations
             return savedUser;
         }
 
-        public  async Task<IEnumerable<BehaviorTrackerRole>> GetUserRolesAsync(long behaviorTrackerUserKey)
+        public async Task<IEnumerable<BehaviorTrackerRole>> GetUserRolesAsync(long behaviorTrackerUserKey)
         {
             return await _behaviorTrackerDatabaseContext.BehaviorTrackerUserRoles.Where(userRoles =>
                     userRoles.BehaviorTrackerUserKey == behaviorTrackerUserKey)
                 .Select(userRoles => userRoles.BehaviorTrackerRole).ToListAsync();
+        }
+
+        public IEnumerable<BehaviorTrackerUser> GetUsers()
+        {
+            return _behaviorTrackerDatabaseContext.BehaviorTrackerUsers.Include(user => user.BehaviorTrackerUserRoles)
+                .ThenInclude(userRole => userRole.BehaviorTrackerRole).AsEnumerable();
         }
     }
 }

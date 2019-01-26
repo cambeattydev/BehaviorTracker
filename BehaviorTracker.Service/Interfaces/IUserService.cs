@@ -9,5 +9,6 @@ namespace BehaviorTracker.Service.Interfaces
     {
         Task<IEnumerable<string>> LoginUserAsync(AuthenticateResult authenticationResult);
         Task<AuthorizationModel> GetUserRoles(string email);
+        IEnumerable<BehaviorTrackerUser> GetUsers();
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BehaviorTracker.Repository.DatabaseModels
@@ -6,7 +7,9 @@ namespace BehaviorTracker.Repository.DatabaseModels
     { 
         [Key]
         public long BehaviorTrackerRoleKey { get; set; }
-        
+        [Required]
         public string RoleName { get; set; }
+        
+        public IEnumerable<BehaviorTrackerUserRole> BehaviorTrackerUserRoles { get; set; }
     }
 }
