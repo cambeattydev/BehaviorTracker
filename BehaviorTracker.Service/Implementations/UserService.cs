@@ -13,6 +13,7 @@ namespace BehaviorTracker.Service.Implementations
     public class UserService : BaseService, IUserService
     {
         private readonly IUserRepository _userRepository;
+        
         public UserService(IMapper mapper, IUserRepository userRepository) : base(mapper)
         {
             _userRepository = userRepository;

@@ -14,6 +14,7 @@ namespace BehaviorTracker.Repository.DatabaseModels
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        public IEnumerable<BehaviorTrackerUserRole> BehaviorTrackerUserRoles { get; set; }
+        
+        public IEnumerable<BehaviorTrackerUserRoleGroup> BehaviorTrackerUserRoleGroups { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using BehaviorTracker.Repository.DatabaseModels;
 using BehaviorTracker.Shared;
 
@@ -7,14 +9,14 @@ namespace BehaviorTracker.Repository
 {
     public static class SeedData
     {
-        internal static BehaviorTrackerRole[] ListOfRoles =>
+        internal static BehaviorTrackerRole[] Roles =>
             Enum.GetValues(typeof(BehaviorTrackerRoles)).Cast<BehaviorTrackerRoles>().Where(roleName => roleName != BehaviorTrackerRoles.None).Select(roleName => new BehaviorTrackerRole
             {
                 BehaviorTrackerRoleKey = (long) roleName,
                 RoleName = roleName.ToString()
             }).ToArray();
 
-        internal static BehaviorTrackerUser[] ListOfUsers => new[]
+        internal static BehaviorTrackerUser[] Users => new[]
         {
             new BehaviorTrackerUser
             {
@@ -25,16 +27,52 @@ namespace BehaviorTracker.Repository
             },
         };
 
-        internal static BehaviorTrackerUserRole[] ListOfBehaviorTrackerUserRole => Enum.GetValues(typeof(BehaviorTrackerRoles))
-            .Cast<long>().Where(roleKey => roleKey > 0).Select((roleKey, index) => new BehaviorTrackerUserRole
+        internal static BehaviorTrackerRoleGroup[] RoleGroups => 
+            Enum.GetValues(typeof(BehaviorTrackerRoleGroups)).Cast<BehaviorTrackerRoleGroups>().Where(roleName => roleName != BehaviorTrackerRoleGroups.None).Select(roleGroupName => 
+                new BehaviorTrackerRoleGroup
+        {
+            BehaviorTrackerRoleGroupKey = (long) roleGroupName,
+            RoleGroupName = roleGroupName.ToString()
+        }).ToArray();
+        
+        private static readonly IDictionary<BehaviorTrackerRoleGroups,BehaviorTrackerRoles[]> _roleGroupsrolesDictionary = new Dictionary<BehaviorTrackerRoleGroups, BehaviorTrackerRoles[]>
+        {
+            {BehaviorTrackerRoleGroups.Admin, Enum.GetValues(typeof(BehaviorTrackerRoles)).Cast<BehaviorTrackerRoles>().Where(roleName => roleName != BehaviorTrackerRoles.None).ToArray()},
+            {BehaviorTrackerRoleGroups.Teacher, new []{BehaviorTrackerRoles.AddGoalAnswerWriter, BehaviorTrackerRoles.GoalWrite, BehaviorTrackerRoles.GoalAnswerWrite, BehaviorTrackerRoles.GoalAnswerRead }},
+            {BehaviorTrackerRoleGroups.GoalAnswerWriter, new []{BehaviorTrackerRoles.GoalAnswerWrite, BehaviorTrackerRoles.GoalAnswerRead }},
+            {BehaviorTrackerRoleGroups.Student, new []{BehaviorTrackerRoles.GoalAnswerRead}}
+        };
+
+        internal static BehaviorTrackerRoleGroupRole[] RoleGroupRoles =>
+            _roleGroupsrolesDictionary.SelectMany((kvp, keyIndex) =>
             {
-                BehaviorTrackerUserRoleKey = ++index,
-                BehaviorTrackerRoleKey = roleKey,
-                BehaviorTrackerUserKey = 1
+                var startingCount = 0;
+                for (var i = 0; i < keyIndex; i++)
+                {
+                    startingCount += _roleGroupsrolesDictionary[_roleGroupsrolesDictionary.Keys.ElementAt(i)].Length;
+                }
+                
+                return kvp.Value.Select((role, roleIndex) => new BehaviorTrackerRoleGroupRole
+                {
+                    BehaviorTrackerRoleGroupRoleKey = startingCount + roleIndex + 1,
+                    BehaviorTrackerRoleKey = (long) role,
+                    BehaviorTrackerRoleGroupKey = (long) kvp.Key
+                });
             }).ToArray();
+
+        internal static BehaviorTrackerUserRoleGroup[] UserRoleGroups => new[]
+        {
+            new BehaviorTrackerUserRoleGroup
+            {
+                BehaviorTrackerUserRoleGroupKey = 1,
+                BehaviorTrackerUserKey = 1,
+                BehaviorTrackerRoleGroupKey = (long) BehaviorTrackerRoleGroups.Admin
+            }
+        };
+        
         public static class Testing
         {
-            internal static Student[] ListOfStudents => new[]
+            internal static Student[] Students => new[]
             {
                 new Student()
                 {
@@ -81,7 +119,7 @@ namespace BehaviorTracker.Repository
                 },
             };
 
-            internal static Goal[] ListOfGoals => new[]
+            internal static Goal[] Goals => new[]
             {
                 new Goal
                 {
@@ -113,7 +151,7 @@ namespace BehaviorTracker.Repository
                 }
             };
 
-            internal static GoalAvailableAnswer[] ListOfAvailableAnswers => new[]
+            internal static GoalAvailableAnswer[] AvailableAnswers => new[]
             {
                 //Goal 2
                 new GoalAvailableAnswer
@@ -173,7 +211,7 @@ namespace BehaviorTracker.Repository
                 },
             };
             
-            internal static BehaviorTrackerUser[] ListOfUsers => new[]
+            internal static BehaviorTrackerUser[] Users => new[]
             {
                 new BehaviorTrackerUser
                 {

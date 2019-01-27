@@ -63,52 +63,44 @@ namespace BehaviorTracker.Server.Controllers
             if (!authenticationResult.Succeeded) return Redirect("/login");
 
             var roles = await _userService.LoginUserAsync(authenticationResult);
-            
-            try
+
+            var combinedClaims =
+                authenticationResult.Principal.Claims.Concat(roles.Select(role =>
+                    new Claim(ClaimTypes.Role, role)));
+            var claimsIdentity =
+                new ClaimsIdentity(combinedClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var authProperties = new AuthenticationProperties
             {
-                var combinedClaims =
-                    authenticationResult.Principal.Claims.Concat(roles.Select(role =>
-                        new Claim(ClaimTypes.Role, role)));
-                var claimsIdentity =
-                    new ClaimsIdentity(combinedClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+                AllowRefresh = true,
+                // Refreshing the authentication session should be allowed.
 
-                var authProperties = new AuthenticationProperties
-                {
-                    AllowRefresh = true,
-                    // Refreshing the authentication session should be allowed.
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1).AddMinutes(-30),
+                // The time at which the authentication ticket expires. A 
+                // value set here overrides the ExpireTimeSpan option of 
+                // CookieAuthenticationOptions set with AddCookie.
 
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(1).AddMinutes(-30),
-                    // The time at which the authentication ticket expires. A 
-                    // value set here overrides the ExpireTimeSpan option of 
-                    // CookieAuthenticationOptions set with AddCookie.
+                IsPersistent = true,
+                // Whether the authentication session is persisted across 
+                // multiple requests. Required when setting the 
+                // ExpireTimeSpan option of CookieAuthenticationOptions 
+                // set with AddCookie. Also required when setting 
+                // ExpiresUtc.
 
-                    IsPersistent = true,
-                    // Whether the authentication session is persisted across 
-                    // multiple requests. Required when setting the 
-                    // ExpireTimeSpan option of CookieAuthenticationOptions 
-                    // set with AddCookie. Also required when setting 
-                    // ExpiresUtc.
+                IssuedUtc = DateTimeOffset.UtcNow
+                // The time at which the authentication ticket was issued.
 
-                    IssuedUtc = DateTimeOffset.UtcNow
-                    // The time at which the authentication ticket was issued.
+                //RedirectUri = <string>
+                // The full path or absolute URI to be used as an http 
+                // redirect response value.
+            };
 
-                    //RedirectUri = <string>
-                    // The full path or absolute URI to be used as an http 
-                    // redirect response value.
-                };
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties);
 
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
-
-                return Redirect(returnUrl ?? "/");
-            }
-            catch (Exception ex)
-            {
-                return Redirect("/login");
-            }
-
+            return Redirect(returnUrl ?? "/");
         }
 
         [HttpGet("[action]")]
@@ -117,16 +109,16 @@ namespace BehaviorTracker.Server.Controllers
         {
             if (!HttpContext.User.Identity.IsAuthenticated) return Unauthorized();
 
-            var authorizationModel = await _userService.GetUserRoles(HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)
+            var authorizationModel = await _userService.GetUserRoles(HttpContext.User.Claims
+                .FirstOrDefault(claim => claim.Type == ClaimTypes.Email)
                 ?.Value);
 
             if (authorizationModel == null)
             {
                 return Unauthorized();
             }
-            
-            return Ok(_mapper.Map<AuthorizationModel>(authorizationModel));
 
+            return Ok(_mapper.Map<AuthorizationModel>(authorizationModel));
         }
     }
 }

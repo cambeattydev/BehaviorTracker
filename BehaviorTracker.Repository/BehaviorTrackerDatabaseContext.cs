@@ -17,7 +17,11 @@ namespace BehaviorTracker.Repository
         
         internal DbSet<BehaviorTrackerUser> BehaviorTrackerUsers { get; set; }
         
-        internal DbSet<BehaviorTrackerUserRole> BehaviorTrackerUserRoles { get; set; }
+        internal DbSet<BehaviorTrackerRoleGroup> BehaviorTrackerRoleGroups { get; set; }
+        
+        internal DbSet<BehaviorTrackerRoleGroupRole> BehaviorTrackerRoleGroupsRoles { get; set; }
+        
+        internal DbSet<BehaviorTrackerUserRoleGroup> BehaviorTrackerUserRoleGroups { get; set; }
         
         internal DbSet<BehaviorTrackerRole> BehaviorTrackerRoles { get; set; }
 
@@ -29,23 +33,23 @@ namespace BehaviorTracker.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BehaviorTrackerRole>().HasData(SeedData.ListOfRoles);
-            modelBuilder.Entity<BehaviorTrackerUser>().HasData(SeedData.ListOfUsers);
-            modelBuilder.Entity<BehaviorTrackerUserRole>().HasData(SeedData.ListOfBehaviorTrackerUserRole);
+            modelBuilder.Entity<BehaviorTrackerRole>().HasData(SeedData.Roles);
+            modelBuilder.Entity<BehaviorTrackerUser>().HasData(SeedData.Users);
+            modelBuilder.Entity<BehaviorTrackerRoleGroup>().HasData(SeedData.RoleGroups);
+            modelBuilder.Entity<BehaviorTrackerRoleGroupRole>().HasData(SeedData.RoleGroupRoles);
+            modelBuilder.Entity<BehaviorTrackerUserRoleGroup>().HasData(SeedData.UserRoleGroups);
             
 #if DEBUG
-            modelBuilder.Entity<Student>().HasData(SeedData.Testing.ListOfStudents);
-            modelBuilder.Entity<Goal>().HasData(SeedData.Testing.ListOfGoals);
-            modelBuilder.Entity<GoalAvailableAnswer>().HasData(SeedData.Testing.ListOfAvailableAnswers);
+            modelBuilder.Entity<Student>().HasData(SeedData.Testing.Students);
+            modelBuilder.Entity<Goal>().HasData(SeedData.Testing.Goals);
+            modelBuilder.Entity<GoalAvailableAnswer>().HasData(SeedData.Testing.AvailableAnswers);
             //Creates goalAnswer test data for the time you are testing
             var currentHour = DateTime.Now.Hour > 15 ? 15 : DateTime.Now.Hour < 8 ? 8 : DateTime.Now.Hour;
             var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, currentHour,
                 currentHour >= 15 || currentHour == 8 ? 30 : DateTime.Now.Minute >= 30 ? 30 : 0, 0);
             modelBuilder.Entity<GoalAnswer>().HasData(SeedData.Testing.ListOfGoalAnswers(date));
-            
-            modelBuilder.Entity<BehaviorTrackerUser>().HasData(SeedData.Testing.ListOfUsers);
-            modelBuilder.Entity<BehaviorTrackerUserRole>().HasData(SeedData.Testing.ListOfBehaviorTrackerUserRole);
-            
+            modelBuilder.Entity<BehaviorTrackerUser>().HasData(SeedData.Testing.Users);
+            modelBuilder.Entity<BehaviorTrackerUserRoleGroup>().HasData(SeedData.Testing.UserRoleGroups);
 #endif
         }
 

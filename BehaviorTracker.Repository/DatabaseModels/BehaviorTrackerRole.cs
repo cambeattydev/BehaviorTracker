@@ -9,7 +9,5 @@ namespace BehaviorTracker.Repository.DatabaseModels
         public long BehaviorTrackerRoleKey { get; set; }
         [Required]
         public string RoleName { get; set; }
-        
-        public IEnumerable<BehaviorTrackerUserRole> BehaviorTrackerUserRoles { get; set; }
     }
 }

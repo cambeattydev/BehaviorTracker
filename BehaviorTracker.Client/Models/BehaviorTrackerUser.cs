@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace BehaviorTracker.Client.Models
 {
     public class BehaviorTrackerUser

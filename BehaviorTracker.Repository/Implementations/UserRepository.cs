@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,15 +33,17 @@ namespace BehaviorTracker.Repository.Implementations
 
         public async Task<IEnumerable<BehaviorTrackerRole>> GetUserRolesAsync(long behaviorTrackerUserKey)
         {
-            return await _behaviorTrackerDatabaseContext.BehaviorTrackerUserRoles.Where(userRoles =>
-                    userRoles.BehaviorTrackerUserKey == behaviorTrackerUserKey)
-                .Select(userRoles => userRoles.BehaviorTrackerRole).ToListAsync();
+            throw new NotImplementedException();
+//            return await _behaviorTrackerDatabaseContext.BehaviorTrackerUserRoles.Where(userRoles =>
+//                    userRoles.BehaviorTrackerUserKey == behaviorTrackerUserKey)
+//                .Select(userRoles => userRoles.BehaviorTrackerRole).ToListAsync();
         }
 
         public IEnumerable<BehaviorTrackerUser> GetUsers()
         {
-            return _behaviorTrackerDatabaseContext.BehaviorTrackerUsers.Include(user => user.BehaviorTrackerUserRoles)
-                .ThenInclude(userRole => userRole.BehaviorTrackerRole).AsEnumerable();
+            throw new NotImplementedException();
+//            return _behaviorTrackerDatabaseContext.BehaviorTrackerUsers.Include(user => user.BehaviorTrackerUserRoles)
+//                .ThenInclude(userRole => userRole.BehaviorTrackerRole).AsEnumerable();
         }
     }
 }

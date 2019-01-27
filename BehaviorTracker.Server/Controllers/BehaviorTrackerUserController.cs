@@ -19,11 +19,12 @@ namespace BehaviorTracker.Server.Controllers
         }
         
         [HttpGet("[action]")]
-        [Authorize(Roles = nameof(BehaviorTrackerRoles.UserRead))]
+        [Authorize(Roles = "AddAdmin, AddGoalAnswerWriter")]
         public IActionResult Users()
         {
             var users = _userService.GetUsers();
-            _mapper.Map<BehaviorTrackerUser>()
+            var mappedUsers = _mapper.Map<BehaviorTrackerUser>(users);
+            return Ok(mappedUsers);
         }
     }
 }

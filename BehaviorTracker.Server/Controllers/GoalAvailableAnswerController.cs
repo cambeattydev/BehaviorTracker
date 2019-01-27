@@ -22,7 +22,7 @@ namespace BehaviorTracker.Server.Controllers
         }
         
         [HttpDelete("[action]/{goalKey}")]
-        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalAvailableAnswerWrite))]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalWrite))]
         public async Task<IActionResult> DeleteAllForGoal(long goalKey)
         {
             var deletedGoalAvailableAnswers = await _goalAvailableAnswerService.DeleteAllForGoal(goalKey).ConfigureAwait(false);
@@ -32,7 +32,7 @@ namespace BehaviorTracker.Server.Controllers
         }
         
         [HttpPost("[action]")]
-        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalAvailableAnswerWrite))]
+        [Authorize(Roles =  nameof(BehaviorTrackerRoles.GoalWrite))]
         public async Task<IActionResult> DeleteAndInsert([FromBody] IEnumerable<Client.Models.GoalAvailableAnswer> goalAvailableAnswers)
         {
             
