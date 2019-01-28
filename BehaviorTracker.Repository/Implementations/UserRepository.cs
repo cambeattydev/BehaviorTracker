@@ -34,10 +34,10 @@ namespace BehaviorTracker.Repository.Implementations
 
         public async Task<IEnumerable<BehaviorTrackerRole>> GetUserRolesAsync(long behaviorTrackerUserKey)
         {
-            throw new NotImplementedException();
-//            return await _behaviorTrackerDatabaseContext.BehaviorTrackerUserRoles.Where(userRoles =>
-//                    userRoles.BehaviorTrackerUserKey == behaviorTrackerUserKey)
-//                .Select(userRoles => userRoles.BehaviorTrackerRole).ToListAsync();
+            return await _behaviorTrackerDatabaseContext.BehaviorTrackerUserRoleGroups.Where(userRoles =>
+                    userRoles.BehaviorTrackerUserKey == behaviorTrackerUserKey)
+                .Where(userRoles => userRoles.BehaviorTrackerRoleGroup != null && userRoles.BehaviorTrackerRoleGroup.RoleGroupRoles != null)
+                .SelectMany(userRoles => userRoles.BehaviorTrackerRoleGroup.RoleGroupRoles.Select(roleGroupRole => roleGroupRole.BehaviorTrackerRole)).ToListAsync();
         }
 
         public IEnumerable<BehaviorTrackerUsersResponse> GetUsers()

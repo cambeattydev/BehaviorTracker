@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BehaviorTracker.Repository.OtherModels;
 using BehaviorTracker.Service.Models;
 using Microsoft.AspNetCore.Authentication;
+using BehaviorTrackerUsersResponse = BehaviorTracker.Repository.OtherModels.BehaviorTrackerUsersResponse;
 
 namespace BehaviorTracker.Service.Interfaces
 {
@@ -11,6 +12,6 @@ namespace BehaviorTracker.Service.Interfaces
     {
         Task<IEnumerable<Claim>> LoginUserAsync(AuthenticateResult authenticationResult);
         Task<AuthorizationModel> GetUserRoles(string email);
-        IEnumerable<BehaviorTrackerUsersResponse> GetUsers();
+        IEnumerable<Models.BehaviorTrackerUsersResponse> GetUsers();
     }
 }

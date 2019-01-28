@@ -1,3 +1,4 @@
+using System.Linq;
 using AutoMapper;
 using BehaviorTracker.Service.Interfaces;
 using BehaviorTracker.Service.Models;
@@ -23,7 +24,7 @@ namespace BehaviorTracker.Server.Controllers
         public IActionResult Users()
         {
             var users = _userService.GetUsers();
-            var mappedUsers = _mapper.Map<BehaviorTrackerUser>(users);
+            var mappedUsers = users.Select(_mapper.Map<Client.Models.BehaviorTrackerUsersResponse>);
             return Ok(mappedUsers);
         }
     }

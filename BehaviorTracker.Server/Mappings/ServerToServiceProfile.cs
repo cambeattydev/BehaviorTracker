@@ -1,5 +1,6 @@
 using System.Linq;
 using AutoMapper;
+using BehaviorTracker.Shared;
 
 namespace BehaviorTracker.Server.Mappings
 {
@@ -38,6 +39,15 @@ namespace BehaviorTracker.Server.Mappings
                     opt.MapFrom(src => src.User.LastName);
                 })
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles));
+
+            CreateMap<Service.Models.BehaviorTrackerUsersResponse, Client.Models.BehaviorTrackerUsersResponse>()
+                .ForMember(dest => dest.Editing, opt => opt.Ignore());
+
+            CreateMap<Service.Models.BehaviorTrackerRole, Shared.BehaviorTrackerRoles>().ConvertUsing(role =>
+                role == null ? BehaviorTrackerRoles.None : (BehaviorTrackerRoles) role.BehaviorTrackerRoleKey);
+            CreateMap<Service.Models.BehaviorTrackerRoleGroup, Shared.BehaviorTrackerRoleGroups>().ConvertUsing(roleGroup =>roleGroup == null ? BehaviorTrackerRoleGroups.None: (BehaviorTrackerRoleGroups) roleGroup.BehaviorTrackerRoleGroupKey);
+            
+
         }
     }
 }

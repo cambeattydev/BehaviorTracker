@@ -27,7 +27,7 @@ namespace BehaviorTracker.Service.Mapping
                         s.GoalType == GoalType.Numeric ? float.Parse(s.Goal.Answer) :
                         bool.Parse(s.Goal.Answer) ? 1 : 0)));
 
-            CreateMap<BehaviorTrackerUserResponse, Repository.OtherModels.BehaviorTrackerUsersResponse>();
+            CreateMap<BehaviorTrackerUsersResponse, Repository.OtherModels.BehaviorTrackerUsersResponse>();
         }
     }
 }

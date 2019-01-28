@@ -221,14 +221,16 @@ namespace BehaviorTracker.Repository
                     Email = "beatty2121@gmail.com"
                 },
             };
-            
-            internal static BehaviorTrackerUserRole[] ListOfBehaviorTrackerUserRole => Enum.GetValues(typeof(BehaviorTrackerRoles))
-                .Cast<long>().Where(roleKey => roleKey > 0).Select((roleKey, index) => new BehaviorTrackerUserRole
+
+            internal static BehaviorTrackerUserRoleGroup[] UserRoleGroups => new[]
+            {
+                new BehaviorTrackerUserRoleGroup
                 {
-                    BehaviorTrackerUserRoleKey = index + SeedData.ListOfBehaviorTrackerUserRole.Length + 1,
-                    BehaviorTrackerRoleKey = roleKey,
-                    BehaviorTrackerUserKey = 2
-                }).ToArray();
+                    BehaviorTrackerRoleGroupKey = (long) BehaviorTrackerRoleGroups.Admin,
+                    BehaviorTrackerUserKey = 2,
+                    BehaviorTrackerUserRoleGroupKey = 2
+                }
+            };
         }
     }
 }

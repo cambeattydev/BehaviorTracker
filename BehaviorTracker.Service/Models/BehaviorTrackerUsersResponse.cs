@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace BehaviorTracker.Service.Models
 {
-    public class BehaviorTrackerUserResponse
+    public class BehaviorTrackerUsersResponse
     {
         public BehaviorTrackerUser User { get; set; }
 

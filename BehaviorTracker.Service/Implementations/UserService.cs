@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -72,12 +73,19 @@ namespace BehaviorTracker.Service.Implementations
             };
         }
 
-        public IEnumerable<BehaviorTrackerUsersResponse> GetUsers()
+        public IEnumerable<Models.BehaviorTrackerUsersResponse> GetUsers()
         {
-            var repositoryUsersResponse = _userRepository.GetUsers();
-            var mappedUsersResponse = repositoryUsersResponse.Select(_mapper.Map<BehaviorTrackerUsersResponse>);
+            var allowedBehaviorTrackerRoleGroups = new[] {BehaviorTrackerRoleGroups.Admin, BehaviorTrackerRoleGroups.Teacher};
+            var behaviorTrackerRoleGroup = GetBehaviorTrackerRoleGroup();
 
-            return mappedUsersResponse;
+            if (!allowedBehaviorTrackerRoleGroups.Contains(behaviorTrackerRoleGroup)) return Enumerable.Empty<Models.BehaviorTrackerUsersResponse>();
+
+            var repositoryUsersResponse = _userRepository.GetUsers();
+            var mappedUsersResponse = repositoryUsersResponse.Select(_mapper.Map<Models.BehaviorTrackerUsersResponse>);
+            // Only show users that are in groups bellow what the user currently has, unless admin
+            var usersAllowedToSee = mappedUsersResponse.Where(user => behaviorTrackerRoleGroup == BehaviorTrackerRoleGroups.Admin ||
+                               user.RoleGroup.BehaviorTrackerRoleGroupKey > (long) behaviorTrackerRoleGroup);
+            return usersAllowedToSee;
         }
 
         private async Task<BehaviorTrackerUser> GetUserAsync(string email)
@@ -103,6 +111,18 @@ namespace BehaviorTracker.Service.Implementations
         {
             var roleGroup = await _userRepository.GetRoleGroupAsync(behaviorTrackerUserKey);
             return _mapper.Map<BehaviorTrackerRoleGroup>(roleGroup);
+        }
+
+        private BehaviorTrackerRoleGroups GetBehaviorTrackerRoleGroup()
+        {
+            var roleGroupClaimString = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == RoleGroupClaimType)?.Value;
+            if (string.IsNullOrWhiteSpace(roleGroupClaimString))
+            {
+                return BehaviorTrackerRoleGroups.None;
+            }
+
+            var result = Enum.TryParse(roleGroupClaimString, out BehaviorTrackerRoleGroups behaviorTrackerRoleGroup);
+            return result ? behaviorTrackerRoleGroup : BehaviorTrackerRoleGroups.None;
         }
     }
 }

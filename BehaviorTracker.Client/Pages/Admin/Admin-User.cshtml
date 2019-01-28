@@ -1,0 +1,70 @@
+@page "/Admin/Users"
+@inject HttpClient _httpClient
+
+<h3>Users</h3>
+<div class="row">
+    <div class="col">
+        @if (_users != null)
+        {
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email Address</th>
+                    <th scope="col">RoleGroup</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var user in _users)
+                {
+                    <tr>
+                        <td>@user.User.FirstName</td>
+                        <td>@user.User.LastName</td>
+                        <td>@user.User.Email</td>
+                        <td>@user.RoleGroup.ToString()</td>
+                        <td>   <button class="btn btn-link" style="font-size: .75em;" onclick="@Edit" aria-label="Edit">
+                                <span class="oi oi-pencil"></span>
+                            </button>
+                            <button class="btn btn-link" style="font-size: .75em; color: red" onclick="@Delete" aria-label="Delete">
+                                <span class="oi oi-trash"></span>
+                            </button>
+                            </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <Spinner/>
+        }
+    </div>
+</div>
+
+@functions
+{
+
+    protected IList<BehaviorTrackerUsersResponse> _users { get; set; }
+    
+    protected BehaviorTrackerUsersResponse selectedUser { get; set; } 
+    
+    private BehaviorTrackerUsersResponse originalUser { get; set; }
+
+    protected override async Task OnInitAsync()
+    {
+        _users = await _httpClient.GetJsonAsync<IList<BehaviorTrackerUsersResponse>>("/api/BehaviorTrackerUser/Users");
+    }
+
+    protected void Edit()
+    {
+        throw new NotImplementedException(); 
+    }
+
+    protected void Delete()
+    {
+        throw new NotImplementedException(); 
+    }
+
+}
