@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BehaviorTracker.Client", "BehaviorTracker.Client\BehaviorTracker.Client.csproj", "{9FD4EC02-5F06-4A10-B983-40147E0AA261}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BehaviorTracker.Server", "BehaviorTracker.Server\BehaviorTracker.Server.csproj", "{786A373A-4227-48CB-8396-38F3BB9D2B48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BehaviorTracker.WebApi", "BehaviorTracker.WebApi\BehaviorTracker.WebApi.csproj", "{786A373A-4227-48CB-8396-38F3BB9D2B48}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BehaviorTracker.Shared", "BehaviorTracker.Shared\BehaviorTracker.Shared.csproj", "{D805217D-FCF7-4890-9753-41D5841A64E3}"
 EndProject

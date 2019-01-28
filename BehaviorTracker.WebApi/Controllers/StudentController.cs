@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BehaviorTracker.Server.Controllers
+namespace BehaviorTracker.WebApi.Controllers
 {
     [Route("api/[controller]")]
     public class StudentController : Controller

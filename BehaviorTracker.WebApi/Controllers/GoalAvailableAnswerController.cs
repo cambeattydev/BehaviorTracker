@@ -7,7 +7,7 @@ using BehaviorTracker.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BehaviorTracker.Server.Controllers
+namespace BehaviorTracker.WebApi.Controllers
 {
     [Route("api/[controller]")]
     public class GoalAvailableAnswerController : Controller

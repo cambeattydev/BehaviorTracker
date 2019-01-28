@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Repository.Implementations;
 using BehaviorTracker.Repository.Interfaces;
-using BehaviorTracker.Server.Auth;
-using BehaviorTracker.Server.Mappings;
 using BehaviorTracker.Service.Implementations;
 using BehaviorTracker.Service.Interfaces;
+using BehaviorTracker.WebApi.Auth;
+using BehaviorTracker.WebApi.Mappings;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -31,7 +31,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace BehaviorTracker.Server
+namespace BehaviorTracker.WebApi
 {
     public class Startup
     {

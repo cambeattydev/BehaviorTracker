@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 
-namespace BehaviorTracker.Server.Auth
+namespace BehaviorTracker.WebApi.Auth
 {
     internal class GoogleAuthEvents : OAuthEvents
     {

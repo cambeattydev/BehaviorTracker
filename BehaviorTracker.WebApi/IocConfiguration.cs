@@ -4,7 +4,7 @@ using BehaviorTracker.Service.Implementations;
 using BehaviorTracker.Service.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BehaviorTracker.Server
+namespace BehaviorTracker.WebApi
 {
     public static class IocConfiguration
     {

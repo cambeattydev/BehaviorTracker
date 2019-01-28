@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
-namespace BehaviorTracker.Server
+namespace BehaviorTracker.WebApi
 {
     public class Program
     {
