@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BehaviorTracker.Repository.DatabaseModels;
+using BehaviorTracker.Repository.OtherModels;
 
 namespace BehaviorTracker.Repository.Interfaces
 {
@@ -9,6 +10,7 @@ namespace BehaviorTracker.Repository.Interfaces
         Task<BehaviorTrackerUser> GetUserAsync(string email);
         Task<BehaviorTrackerUser> SaveUserAsync(BehaviorTrackerUser user);
         Task<IEnumerable<BehaviorTrackerRole>> GetUserRolesAsync(long behaviorTrackerUserKey);
-        IEnumerable<BehaviorTrackerUser> GetUsers();
+        IEnumerable<BehaviorTrackerUsersResponse> GetUsers();
+        Task<BehaviorTrackerRoleGroup> GetRoleGroupAsync(long behaviorTrackerUserKey);
     }
 }

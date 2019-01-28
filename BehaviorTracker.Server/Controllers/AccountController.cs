@@ -1,31 +1,26 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Client.Models;
 using BehaviorTracker.Service.Interfaces;
-using BehaviorTracker.Service.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.EntityFrameworkCore;
-using AuthorizationModel = BehaviorTracker.Client.Models.AuthorizationModel;
 
 namespace BehaviorTracker.Server.Controllers
 {
     [Route("api/[controller]")]
     public class AccountController : Controller
     {
+        private readonly IMapper _mapper;
         private readonly IUrlHelper _urlHelper;
         private readonly IUserService _userService;
-        private readonly IMapper _mapper;
 
         public AccountController(IUrlHelperFactory urlHelperFactory,
             IActionContextAccessor actionContextAccessor, IUserService userService, IMapper mapper)
@@ -62,11 +57,10 @@ namespace BehaviorTracker.Server.Controllers
 
             if (!authenticationResult.Succeeded) return Redirect("/login");
 
-            var roles = await _userService.LoginUserAsync(authenticationResult);
+            var extraClaims = await _userService.LoginUserAsync(authenticationResult);
 
             var combinedClaims =
-                authenticationResult.Principal.Claims.Concat(roles.Select(role =>
-                    new Claim(ClaimTypes.Role, role)));
+                authenticationResult.Principal.Claims.Concat(extraClaims);
             var claimsIdentity =
                 new ClaimsIdentity(combinedClaims, CookieAuthenticationDefaults.AuthenticationScheme);
 

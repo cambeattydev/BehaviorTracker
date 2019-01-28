@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BehaviorTracker.Repository.DatabaseModels;
 using BehaviorTracker.Repository.Interfaces;
+using BehaviorTracker.Repository.OtherModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace BehaviorTracker.Repository.Implementations
@@ -39,11 +40,26 @@ namespace BehaviorTracker.Repository.Implementations
 //                .Select(userRoles => userRoles.BehaviorTrackerRole).ToListAsync();
         }
 
-        public IEnumerable<BehaviorTrackerUser> GetUsers()
+        public IEnumerable<BehaviorTrackerUsersResponse> GetUsers()
         {
-            throw new NotImplementedException();
-//            return _behaviorTrackerDatabaseContext.BehaviorTrackerUsers.Include(user => user.BehaviorTrackerUserRoles)
-//                .ThenInclude(userRole => userRole.BehaviorTrackerRole).AsEnumerable();
+            return _behaviorTrackerDatabaseContext.BehaviorTrackerUsers
+                .Select(user => new BehaviorTrackerUsersResponse
+                {
+                    User = user,
+                    Roles = user.BehaviorTrackerUserRoleGroup.BehaviorTrackerRoleGroup.RoleGroupRoles.Select(
+                        roleGroupRole => roleGroupRole.BehaviorTrackerRole),
+                    RoleGroup = user.BehaviorTrackerUserRoleGroup.BehaviorTrackerRoleGroup
+                })
+                .AsEnumerable();
+        }
+
+        public async Task<BehaviorTrackerRoleGroup> GetRoleGroupAsync(long behaviorTrackerUserKey)
+        {
+            return (await _behaviorTrackerDatabaseContext.BehaviorTrackerUsers
+                    .Include(user => user.BehaviorTrackerUserRoleGroup)
+                    .ThenInclude(userRoleGroup => userRoleGroup.BehaviorTrackerRoleGroup)
+                    .FirstOrDefaultAsync(user => user.BehaviorTrackerUserKey == behaviorTrackerUserKey))
+                ?.BehaviorTrackerUserRoleGroup?.BehaviorTrackerRoleGroup;
         }
     }
 }

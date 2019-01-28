@@ -4,22 +4,29 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Repository.Interfaces;
+using BehaviorTracker.Repository.OtherModels;
 using BehaviorTracker.Service.Interfaces;
 using BehaviorTracker.Service.Models;
+using BehaviorTracker.Shared;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 
 namespace BehaviorTracker.Service.Implementations
 {
     public class UserService : BaseService, IUserService
     {
+        private const string RoleGroupClaimType = "RoleGroup";
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserRepository _userRepository;
-        
-        public UserService(IMapper mapper, IUserRepository userRepository) : base(mapper)
+
+        public UserService(IMapper mapper, IUserRepository userRepository, IHttpContextAccessor httpContextAccessor) :
+            base(mapper)
         {
             _userRepository = userRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<IEnumerable<string>> LoginUserAsync(AuthenticateResult authenticationResult)
+        public async Task<IEnumerable<Claim>> LoginUserAsync(AuthenticateResult authenticationResult)
         {
             var user = await GetUserAsync(authenticationResult.Principal.Claims.FirstOrDefault(claim =>
                 claim.Type == ClaimTypes.Email)?.Value);
@@ -39,7 +46,12 @@ namespace BehaviorTracker.Service.Implementations
                 user = await CreateUserAsync(userToBeSaved);
             }
 
-            return  await GetUserRolesAsync(user.BehaviorTrackerUserKey);
+            var roles = await GetUserRolesAsync(user.BehaviorTrackerUserKey);
+            var roleGroup = await GetRoleGroup(user.BehaviorTrackerUserKey);
+
+            return roles.Select(role =>
+                    new Claim(ClaimTypes.Role, role))
+                .Append(new Claim(RoleGroupClaimType, roleGroup.BehaviorTrackerRoleGroupKey.ToString()));
         }
 
         public async Task<AuthorizationModel> GetUserRoles(string email)
@@ -49,23 +61,26 @@ namespace BehaviorTracker.Service.Implementations
             {
                 return null;
             }
+
             var roles = await GetUserRolesAsync(user.BehaviorTrackerUserKey);
+            var roleGroup = await GetRoleGroup(user.BehaviorTrackerUserKey);
             return new AuthorizationModel
             {
                 User = user,
-                Roles = roles.ToList()
+                Roles = roles.ToList(),
+                RoleGroup = (BehaviorTrackerRoleGroups) roleGroup.BehaviorTrackerRoleGroupKey
             };
         }
 
-        public IEnumerable<BehaviorTrackerUser> GetUsers()
+        public IEnumerable<BehaviorTrackerUsersResponse> GetUsers()
         {
-           var repositoryUsers = _userRepository.GetUsers();
-           var mappedUsers = repositoryUsers.Select(_mapper.Map<BehaviorTrackerUser>);
-           //TODO Need to create role groups for the ui
-           return mappedUsers;
+            var repositoryUsersResponse = _userRepository.GetUsers();
+            var mappedUsersResponse = repositoryUsersResponse.Select(_mapper.Map<BehaviorTrackerUsersResponse>);
+
+            return mappedUsersResponse;
         }
 
-        private async  Task<BehaviorTrackerUser> GetUserAsync(string email)
+        private async Task<BehaviorTrackerUser> GetUserAsync(string email)
         {
             var repositoryUser = await _userRepository.GetUserAsync(email);
             return _mapper.Map<BehaviorTrackerUser>(repositoryUser);
@@ -82,6 +97,12 @@ namespace BehaviorTracker.Service.Implementations
         private async Task<IEnumerable<string>> GetUserRolesAsync(long behaviorTrackerUserKey)
         {
             return (await _userRepository.GetUserRolesAsync(behaviorTrackerUserKey)).Select(role => role.RoleName);
+        }
+
+        public async Task<BehaviorTrackerRoleGroup> GetRoleGroup(long behaviorTrackerUserKey)
+        {
+            var roleGroup = await _userRepository.GetRoleGroupAsync(behaviorTrackerUserKey);
+            return _mapper.Map<BehaviorTrackerRoleGroup>(roleGroup);
         }
     }
 }

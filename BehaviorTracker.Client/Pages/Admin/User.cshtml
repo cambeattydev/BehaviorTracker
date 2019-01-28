@@ -1,4 +1,5 @@
 @page "/Admin/Users"
+@inject HttpClient _httpClient
 
 <h3>Users</h3>
 <div class="row">
@@ -7,9 +8,15 @@
         </div>
     </div>
 </div>
+
 @functions
 {
 
-   protected IList<BehaviorTrackerUser> Users { get; set; }
+    protected IList<BehaviorTrackerUser> Users { get; set; }
+
+    protected override async Task OnInitAsync()
+    {
+        Users = await _httpClient.GetJsonAsync<IList<BehaviorTrackerUser>>("/api/BehaviorTrackerUser/Users");
+    }
 
 }

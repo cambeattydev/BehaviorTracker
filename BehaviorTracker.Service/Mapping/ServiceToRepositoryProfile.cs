@@ -17,6 +17,8 @@ namespace BehaviorTracker.Service.Mapping
             CreateMap<BehaviorTrackerUser, Repository.DatabaseModels.BehaviorTrackerUser>();
             CreateMap<GoalAnswerScore, IEnumerable<Repository.OtherModels.GoalAnswerScore>>()
                 .ForAllMembers(mo => mo.Ignore());
+            CreateMap<BehaviorTrackerRoleGroup, Repository.DatabaseModels.BehaviorTrackerRoleGroup>();
+            CreateMap<BehaviorTrackerRole, Repository.DatabaseModels.BehaviorTrackerRole>();
 
             CreateMap<IEnumerable<Repository.OtherModels.GoalAnswerScore>, GoalAnswerScore>()
                 .ForMember(dest => dest.Available, mo => mo.MapFrom(src => src.Sum(s => s.MaxValue)))
@@ -24,6 +26,8 @@ namespace BehaviorTracker.Service.Mapping
                     mo.MapFrom(src => src.Sum(s =>
                         s.GoalType == GoalType.Numeric ? float.Parse(s.Goal.Answer) :
                         bool.Parse(s.Goal.Answer) ? 1 : 0)));
+
+            CreateMap<BehaviorTrackerUserResponse, Repository.OtherModels.BehaviorTrackerUsersResponse>();
         }
     }
 }
