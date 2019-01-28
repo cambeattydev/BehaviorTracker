@@ -9,10 +9,10 @@ namespace BehaviorTracker.Repository.DatabaseModels
     {
         [Key]
         public long GoalKey { get; set; }
-        public long StudentKey { get; set; }
+        public long BehaviorTrackerUserKey { get; set; }
         public string GoalDescription { get; set; }
         public GoalType GoalType { get; set; }
-        public Student Student { get; set; }
+        public BehaviorTrackerUser BehaviorTrackerUser { get; set; }
         [ForeignKey("GoalKey")]
         public ICollection<GoalAnswer> GoalAnswers { get; set; }
         [ForeignKey("GoalKey")]

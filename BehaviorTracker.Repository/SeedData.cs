@@ -77,19 +77,19 @@ namespace BehaviorTracker.Repository
                 new Student()
                 {
                     StudentKey = 1,
-                    StudentFirstName = "Student",
+                    StudentFirstName = "BehaviorTrackerUser",
                     StudentLastName = "1"
                 },
                 new Student()
                 {
                     StudentKey = 2,
-                    StudentFirstName = "Student",
+                    StudentFirstName = "BehaviorTrackerUser",
                     StudentLastName = "2"
                 },
                 new Student()
                 {
                     StudentKey = 3,
-                    StudentFirstName = "Student",
+                    StudentFirstName = "BehaviorTrackerUser",
                     StudentLastName = "3"
                 }
             };
@@ -126,28 +126,28 @@ namespace BehaviorTracker.Repository
                     GoalKey = 1,
                     GoalDescription = "I can speak respectfully.",
                     GoalType = GoalType.YesNo,
-                    StudentKey = 1
+                    BehaviorTrackerUserKey = 1
                 },
                 new Goal
                 {
                     GoalKey = 2,
                     GoalDescription = "I can act appropriately.",
                     GoalType = GoalType.Numeric,
-                    StudentKey = 1
+                    BehaviorTrackerUserKey = 1
                 },
                 new Goal
                 {
                     GoalKey = 3,
                     GoalDescription = "I am a numeric goal type",
                     GoalType = GoalType.Numeric,
-                    StudentKey = 2
+                    BehaviorTrackerUserKey = 2
                 },
                 new Goal
                 {
                     GoalKey = 4,
                     GoalDescription = "I am a yes/no goal type",
                     GoalType = GoalType.YesNo,
-                    StudentKey = 3
+                    BehaviorTrackerUserKey = 3
                 }
             };
 

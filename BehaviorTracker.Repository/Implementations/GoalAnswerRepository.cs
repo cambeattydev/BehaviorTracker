@@ -20,7 +20,7 @@ namespace BehaviorTracker.Repository.Implementations
         public async Task<IDictionary<long,GoalAnswer>> GetStudentGoalAnswers(long studentKey, DateTime dateTime)
         {
             return await _behaviorTrackerDatabaseContext.GoalAnswers
-                .Where(goalAnswer => goalAnswer.Date == dateTime && goalAnswer.Goal.StudentKey == studentKey)
+                .Where(goalAnswer => goalAnswer.Date == dateTime && goalAnswer.Goal.BehaviorTrackerUserKey == studentKey)
                 .ToDictionaryAsync(goalAnswer => goalAnswer.GoalKey, goalAnswer => goalAnswer);
         }
 

@@ -10,7 +10,7 @@ namespace BehaviorTracker.Repository.DatabaseModels
         public long StudentKey { get; set; }
         public string StudentFirstName { get; set; }
         public string StudentLastName { get; set; }
-        [ForeignKey("StudentKey")]
+        [ForeignKey("BehaviorTrackerUserKey")]
         public ICollection<Goal> Goals { get; set; }
     }
 }

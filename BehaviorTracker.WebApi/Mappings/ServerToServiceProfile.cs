@@ -2,7 +2,7 @@ using System.Linq;
 using AutoMapper;
 using BehaviorTracker.Shared;
 
-namespace BehaviorTracker.Server.Mappings
+namespace BehaviorTracker.WebApi.Mappings
 {
     public class ServerToServiceProfile : Profile
     {
