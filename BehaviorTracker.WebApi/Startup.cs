@@ -1,9 +1,11 @@
 using System.Linq;
 using System.Net.Mime;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.WebApi.Auth;
 using BehaviorTracker.WebApi.Mappings;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Blazor.Server;
@@ -59,6 +61,15 @@ namespace BehaviorTracker.WebApi
                     googleOptions.ClientSecret = _configuration["GoogleAuthentication:client_secret"];
                     googleOptions.Events = new GoogleAuthEvents("cbcsd.org");
                     googleOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    googleOptions.UserInformationEndpoint = "https://www.googleapis.com/oauth2/v2/userinfo";
+                    googleOptions.ClaimActions.Clear();
+                    googleOptions.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "sub");
+                    googleOptions.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+                    googleOptions.ClaimActions.MapJsonKey(ClaimTypes.GivenName, "given_name");
+                    googleOptions.ClaimActions.MapJsonKey(ClaimTypes.Surname, "family_name");
+                    googleOptions.ClaimActions.MapJsonKey("urn:google:profile", "link");
+                    googleOptions.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+                    googleOptions.ClaimActions.MapJsonKey("urn:google:image", "picture");
                 })
                 .AddCookie(options =>
                 {
