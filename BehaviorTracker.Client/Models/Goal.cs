@@ -6,7 +6,7 @@ namespace BehaviorTracker.Client.Models
     public class Goal : Copyable<Goal>
     {
         public long GoalKey { get; set; }
-        public long StudentKey { get; set; }
+        public long BehaviorTrackerUserKey { get; set; }
         public string GoalDescription { get; set; }
         public GoalType GoalType { get; set; }
         public BehaviorTrackerUser BehaviorTrackerUser { get; set; }

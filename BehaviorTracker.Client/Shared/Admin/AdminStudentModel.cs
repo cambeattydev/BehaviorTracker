@@ -13,15 +13,14 @@ namespace BehaviorTracker.Client.Shared.Admin
 {
     public class AdminStudentModel : ValidationComponent<Student>
     {
+        //[CascadingParameter] Modal _modal { get; set; }
+
+        protected bool _editMode;
         [Inject] private HttpClient _httpClient { get; set; }
 
         Client.Models.Student OriginalModel { get; set; }
 
-        [Parameter] Func<Models.Student,Task> DeleteStudentAsync { get; set; }
-
-        //[CascadingParameter] Modal _modal { get; set; }
-
-        protected bool _editMode;
+        [Parameter] Func<Models.Student, Task> DeleteStudentAsync { get; set; }
 
         protected override void OnInit()
         {
@@ -36,8 +35,8 @@ namespace BehaviorTracker.Client.Shared.Admin
             {
                 _editMode = true;
             }
+
             Console.WriteLine("AdminStudentModel: End of OnInit");
-            
         }
 
         protected async Task Delete()
@@ -72,7 +71,7 @@ namespace BehaviorTracker.Client.Shared.Admin
                 {
                     new Models.Goal()
                     {
-                        StudentKey = Model.StudentKey,
+                        BehaviorTrackerUserKey = Model.StudentKey,
                         AvailableAnswers = new List<Models.GoalAvailableAnswer>(),
                         GoalKey = 0
                     }
@@ -84,7 +83,7 @@ namespace BehaviorTracker.Client.Shared.Admin
             var minGoalKey = Model.Goals.Min(s => s.GoalKey);
             var newGoal = new Models.Goal()
             {
-                StudentKey = Model.StudentKey,
+                BehaviorTrackerUserKey = Model.StudentKey,
                 AvailableAnswers = new List<Models.GoalAvailableAnswer>(),
                 GoalKey = minGoalKey > 0 ? 0 : minGoalKey
             };
@@ -102,6 +101,7 @@ namespace BehaviorTracker.Client.Shared.Admin
                     base.StateHasChanged();
                 return;
             }
+
             var deletedGoalMessage = await _httpClient.DeleteAsync($"api/Goal/Delete/{goal.GoalKey}");
             if (deletedGoalMessage.IsSuccessStatusCode)
             {

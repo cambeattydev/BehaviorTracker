@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BehaviorTracker.Repository.DatabaseModels
@@ -13,5 +14,13 @@ namespace BehaviorTracker.Repository.DatabaseModels
         [Required] public string LastName { get; set; }
 
         public BehaviorTrackerUserRoleGroup BehaviorTrackerUserRoleGroup { get; set; }
+
+//        [ForeignKey("BehaviorTrackerUserKey")]
+        public IEnumerable<BehaviorTrackerUserManager> BehaviorTrackerUserManagers { get; set; }
+
+//        [ForeignKey("ManagerBehaviorTrackerUserKey")]
+        public ICollection<BehaviorTrackerUserManager> MangedBehaviorTrackerUsers { get; set; }
+
+        public ICollection<Goal> Goals { get; set; }
     }
 }
