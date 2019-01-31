@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,8 +35,11 @@ namespace BehaviorTracker.Repository.Implementations
         {
             return await _behaviorTrackerDatabaseContext.BehaviorTrackerUserRoleGroups.Where(userRoles =>
                     userRoles.BehaviorTrackerUserKey == behaviorTrackerUserKey)
-                .Where(userRoles => userRoles.BehaviorTrackerRoleGroup != null && userRoles.BehaviorTrackerRoleGroup.RoleGroupRoles != null)
-                .SelectMany(userRoles => userRoles.BehaviorTrackerRoleGroup.RoleGroupRoles.Select(roleGroupRole => roleGroupRole.BehaviorTrackerRole)).ToListAsync();
+                .Where(userRoles => userRoles.BehaviorTrackerRoleGroup != null &&
+                                    userRoles.BehaviorTrackerRoleGroup.BehaviorTrackerRoleGroupRoles != null)
+                .SelectMany(userRoles =>
+                    userRoles.BehaviorTrackerRoleGroup.BehaviorTrackerRoleGroupRoles.Select(roleGroupRole =>
+                        roleGroupRole.BehaviorTrackerRole)).ToListAsync();
         }
 
         public IEnumerable<BehaviorTrackerUsersResponse> GetUsers()
@@ -46,8 +48,9 @@ namespace BehaviorTracker.Repository.Implementations
                 .Select(user => new BehaviorTrackerUsersResponse
                 {
                     User = user,
-                    Roles = user.BehaviorTrackerUserRoleGroup.BehaviorTrackerRoleGroup.RoleGroupRoles.Select(
-                        roleGroupRole => roleGroupRole.BehaviorTrackerRole),
+                    Roles = user.BehaviorTrackerUserRoleGroup.BehaviorTrackerRoleGroup.BehaviorTrackerRoleGroupRoles
+                        .Select(
+                            roleGroupRole => roleGroupRole.BehaviorTrackerRole),
                     RoleGroup = user.BehaviorTrackerUserRoleGroup.BehaviorTrackerRoleGroup
                 })
                 .AsEnumerable();

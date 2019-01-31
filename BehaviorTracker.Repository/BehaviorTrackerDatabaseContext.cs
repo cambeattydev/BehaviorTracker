@@ -1,4 +1,5 @@
 using BehaviorTracker.Repository.DatabaseModels;
+using BehaviorTracker.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace BehaviorTracker.Repository
@@ -37,16 +38,7 @@ namespace BehaviorTracker.Repository
             modelBuilder.Entity<BehaviorTrackerRoleGroupRole>().HasData(SeedData.RoleGroupRoles);
             modelBuilder.Entity<BehaviorTrackerUserRoleGroup>().HasData(SeedData.UserRoleGroups);
 
-            //TODO if I'm going to have to do this here. I might as well make all the class have there own configuration method
-            modelBuilder.Entity<BehaviorTrackerUserManager>()
-                .HasOne(userManager => userManager.ManagerBehaviorTrackerUser)
-                .WithMany(user => user.MangedBehaviorTrackerUsers)
-                .HasForeignKey(userManager => userManager.ManagerBehaviorTrackerUserKey);
-
-            modelBuilder.Entity<BehaviorTrackerUserManager>()
-                .HasOne(userManager => userManager.BehaviorTrackerUser)
-                .WithMany(user => user.BehaviorTrackerUserManagers)
-                .HasForeignKey(userManager => userManager.BehaviorTrackerUserKey);
+            modelBuilder.AddEntityConfigurationsFromAssembly(GetType().Assembly);
 
 //#if DEBUG
 //            modelBuilder.Entity<Student>().HasData(SeedData.Testing.Students);

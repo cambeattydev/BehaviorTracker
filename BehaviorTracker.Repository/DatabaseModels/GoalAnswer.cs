@@ -1,11 +1,9 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace BehaviorTracker.Repository.DatabaseModels
 {
     public class GoalAnswer
     {
-        [Key]
         public long GoalAnswerKey { get; set; }
         public long GoalKey { get; set; }
         public string Answer { get; set; }
