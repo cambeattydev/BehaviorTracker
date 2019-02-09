@@ -19,6 +19,8 @@ namespace BehaviorTracker.Repository.DatabaseMappings
                 .HasForeignKey(userManager => userManager.BehaviorTrackerUserKey);
 
             builder.HasKey(userManager => userManager.BehaviorTrackerUserManagerKey);
+
+            builder.Property(userManager => userManager.BehaviorTrackerUserManagerKey).ValueGeneratedOnAdd();
         }
     }
 }

@@ -17,6 +17,9 @@ namespace BehaviorTracker.Repository.DatabaseMappings
             builder.HasOne(userRoleGroup => userRoleGroup.BehaviorTrackerRoleGroup)
                 .WithMany(roleGroup => roleGroup.BehaviorTrackerUserRoleGroups)
                 .HasForeignKey(roleGroup => roleGroup.BehaviorTrackerRoleGroupKey);
+
+            builder.HasIndex(userRoleGroup => userRoleGroup.BehaviorTrackerUserKey);
+            builder.HasIndex(userRoleGroup => userRoleGroup.BehaviorTrackerRoleGroupKey);
         }
     }
 }

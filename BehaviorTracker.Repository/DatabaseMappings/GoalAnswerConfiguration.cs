@@ -9,11 +9,14 @@ namespace BehaviorTracker.Repository.DatabaseMappings
         public void Configure(EntityTypeBuilder<GoalAnswer> builder)
         {
             builder.HasKey(goalAnswer => goalAnswer.GoalAnswerKey);
+            builder.Property(goalAnswer => goalAnswer.GoalAnswerKey).ValueGeneratedOnAdd();
             builder.Property(goalAnswer => goalAnswer.Answer).IsRequired();
 
             builder.HasOne(goalAnswer => goalAnswer.Goal)
                 .WithMany(goal => goal.GoalAnswers)
                 .HasForeignKey(goalAnswer => goalAnswer.GoalKey);
+
+            builder.HasIndex(goalAnswer => new {goalAnswer.GoalKey, goalAnswer.Date});
         }
     }
 }

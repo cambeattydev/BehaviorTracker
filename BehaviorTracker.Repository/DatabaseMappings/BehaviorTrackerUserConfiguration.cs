@@ -29,6 +29,9 @@ namespace BehaviorTracker.Repository.DatabaseMappings
             builder.HasMany(user => user.Goals)
                 .WithOne(goal => goal.BehaviorTrackerUser)
                 .HasForeignKey(goal => goal.BehaviorTrackerUserKey);
+
+
+            builder.HasIndex(user => user.Email);
         }
     }
 }
