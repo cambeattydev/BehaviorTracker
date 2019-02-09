@@ -9,10 +9,10 @@ namespace BehaviorTracker.Repository.DatabaseMappings
         public void Configure(EntityTypeBuilder<BehaviorTrackerUserRoleGroup> builder)
         {
             builder.HasKey(userRoleGroup => userRoleGroup.BehaviorTrackerUserRoleGroupKey);
+            builder.Property(userRoleGroup => userRoleGroup.BehaviorTrackerUserRoleGroupKey).ValueGeneratedOnAdd();
 
             builder.HasOne(userRoleGroup => userRoleGroup.BehaviorTrackerUser)
-                .WithOne(user => user.BehaviorTrackerUserRoleGroup)
-                .HasForeignKey<BehaviorTrackerUser>(user => user.BehaviorTrackerUserKey);
+                .WithOne(user => user.BehaviorTrackerUserRoleGroup);
 
             builder.HasOne(userRoleGroup => userRoleGroup.BehaviorTrackerRoleGroup)
                 .WithMany(roleGroup => roleGroup.BehaviorTrackerUserRoleGroups)

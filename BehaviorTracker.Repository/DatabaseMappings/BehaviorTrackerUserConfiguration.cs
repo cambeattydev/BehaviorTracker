@@ -9,6 +9,7 @@ namespace BehaviorTracker.Repository.DatabaseMappings
         public void Configure(EntityTypeBuilder<BehaviorTrackerUser> builder)
         {
             builder.HasKey(user => user.BehaviorTrackerUserKey);
+            builder.Property(user => user.BehaviorTrackerUserKey).ValueGeneratedOnAdd();
             builder.Property(user => user.FirstName).IsRequired();
             builder.Property(user => user.LastName).IsRequired();
             builder.Property(user => user.Email).IsRequired();

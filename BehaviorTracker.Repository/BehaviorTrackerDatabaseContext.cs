@@ -1,6 +1,8 @@
 using BehaviorTracker.Repository.DatabaseModels;
 using BehaviorTracker.Repository.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Debug;
 
 namespace BehaviorTracker.Repository
 {
@@ -27,6 +29,7 @@ namespace BehaviorTracker.Repository
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(ConnectionString);
+            optionsBuilder.UseLoggerFactory(new LoggerFactory(new[] {new DebugLoggerProvider()}));
         }
 
 

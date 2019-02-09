@@ -39,13 +39,13 @@ namespace BehaviorTracker.WebApi
             services.AddDbContext<Repository.BehaviorTrackerDatabaseContext>(options =>
                 options.UseSqlite(Repository.BehaviorTrackerDatabaseContext.ConnectionString));
 
+
             services.AddMvc(o =>
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
                 o.Filters.Add(new AuthorizeFilter(policy));
-                
             }).AddJsonOptions(options =>
             {
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -77,17 +77,18 @@ namespace BehaviorTracker.WebApi
                     options.SlidingExpiration = true;
                     options.Events.OnRedirectToLogin = context =>
                     {
-                        context.Response.StatusCode = 401;    
+                        context.Response.StatusCode = 401;
                         return Task.CompletedTask;
                     };
                     options.Events.OnRedirectToAccessDenied = context =>
                     {
-                        context.Response.StatusCode = 401;    
+                        context.Response.StatusCode = 401;
                         return Task.CompletedTask;
                     };
                 });
 
             IocConfiguration.ConfigureIoc(services);
+
 
             services.AddResponseCompression(options =>
             {
@@ -117,7 +118,7 @@ namespace BehaviorTracker.WebApi
 
             app.UseAuthentication();
             app.UseCookiePolicy();
-            
+
             app.UseResponseCompression();
 
             if (env.IsDevelopment())

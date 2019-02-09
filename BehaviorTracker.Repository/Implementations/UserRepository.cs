@@ -23,6 +23,13 @@ namespace BehaviorTracker.Repository.Implementations
 
         public async Task<BehaviorTrackerUser> SaveUserAsync(BehaviorTrackerUser user)
         {
+//            _behaviorTrackerDatabaseContext.BehaviorTrackerUserRoleGroups.Add(new BehaviorTrackerUserRoleGroup
+//            {
+//                BehaviorTrackerUserKey = 2,
+//                BehaviorTrackerRoleGroupKey = 1,
+//                BehaviorTrackerUserRoleGroupKey = 2
+//            });
+//            await _behaviorTrackerDatabaseContext.SaveChangesAsync();
             var savedUser = user.BehaviorTrackerUserKey > 0
                 ? _behaviorTrackerDatabaseContext.BehaviorTrackerUsers.Update(user).Entity
                 : (await _behaviorTrackerDatabaseContext.BehaviorTrackerUsers.AddAsync(user)).Entity;

@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using BehaviorTracker.Repository.Interfaces;
-using BehaviorTracker.Repository.OtherModels;
 using BehaviorTracker.Service.Interfaces;
 using BehaviorTracker.Service.Models;
 using BehaviorTracker.Shared;
@@ -42,7 +41,7 @@ namespace BehaviorTracker.Service.Implementations
                     FirstName = authenticationResult.Principal.Claims
                         .FirstOrDefault(claim => claim.Type == ClaimTypes.GivenName)?.Value,
                     LastName = authenticationResult.Principal.Claims
-                        .FirstOrDefault(claim => claim.Type == ClaimTypes.Surname)?.Value
+                        .FirstOrDefault(claim => claim.Type == ClaimTypes.Surname)?.Value,
                 };
                 user = await CreateUserAsync(userToBeSaved);
             }
@@ -50,9 +49,10 @@ namespace BehaviorTracker.Service.Implementations
             var roles = await GetUserRolesAsync(user.BehaviorTrackerUserKey);
             var roleGroup = await GetRoleGroup(user.BehaviorTrackerUserKey);
 
-            return roles.Select(role =>
+            return roles?.Select(role =>
                     new Claim(ClaimTypes.Role, role))
-                .Append(new Claim(RoleGroupClaimType, roleGroup.BehaviorTrackerRoleGroupKey.ToString()));
+                .Append(new Claim(RoleGroupClaimType,
+                    roleGroup?.BehaviorTrackerRoleGroupKey.ToString() ?? 0.ToString()));
         }
 
         public async Task<AuthorizationModel> GetUserRoles(string email)
@@ -69,22 +69,27 @@ namespace BehaviorTracker.Service.Implementations
             {
                 User = user,
                 Roles = roles.ToList(),
-                RoleGroup = (BehaviorTrackerRoleGroups) roleGroup.BehaviorTrackerRoleGroupKey
+                RoleGroup = roleGroup != null
+                    ? (BehaviorTrackerRoleGroups) roleGroup.BehaviorTrackerRoleGroupKey
+                    : BehaviorTrackerRoleGroups.None
             };
         }
 
         public IEnumerable<Models.BehaviorTrackerUsersResponse> GetUsers()
         {
-            var allowedBehaviorTrackerRoleGroups = new[] {BehaviorTrackerRoleGroups.Admin, BehaviorTrackerRoleGroups.Teacher};
+            var allowedBehaviorTrackerRoleGroups = new[]
+                {BehaviorTrackerRoleGroups.Admin, BehaviorTrackerRoleGroups.Teacher};
             var behaviorTrackerRoleGroup = GetBehaviorTrackerRoleGroup();
 
-            if (!allowedBehaviorTrackerRoleGroups.Contains(behaviorTrackerRoleGroup)) return Enumerable.Empty<Models.BehaviorTrackerUsersResponse>();
+            if (!allowedBehaviorTrackerRoleGroups.Contains(behaviorTrackerRoleGroup))
+                return Enumerable.Empty<Models.BehaviorTrackerUsersResponse>();
 
             var repositoryUsersResponse = _userRepository.GetUsers();
             var mappedUsersResponse = repositoryUsersResponse.Select(_mapper.Map<Models.BehaviorTrackerUsersResponse>);
             // Only show users that are in groups bellow what the user currently has, unless admin
-            var usersAllowedToSee = mappedUsersResponse.Where(user => behaviorTrackerRoleGroup == BehaviorTrackerRoleGroups.Admin ||
-                               user.RoleGroup.BehaviorTrackerRoleGroupKey > (long) behaviorTrackerRoleGroup);
+            var usersAllowedToSee = mappedUsersResponse.Where(user =>
+                behaviorTrackerRoleGroup == BehaviorTrackerRoleGroups.Admin ||
+                user.RoleGroup.BehaviorTrackerRoleGroupKey > (long) behaviorTrackerRoleGroup);
             return usersAllowedToSee;
         }
 
@@ -104,7 +109,8 @@ namespace BehaviorTracker.Service.Implementations
 
         private async Task<IEnumerable<string>> GetUserRolesAsync(long behaviorTrackerUserKey)
         {
-            return (await _userRepository.GetUserRolesAsync(behaviorTrackerUserKey)).Select(role => role.RoleName);
+            return (await _userRepository.GetUserRolesAsync(behaviorTrackerUserKey))?.Select(role => role.RoleName) ??
+                   Enumerable.Empty<string>();
         }
 
         public async Task<BehaviorTrackerRoleGroup> GetRoleGroup(long behaviorTrackerUserKey)
@@ -115,7 +121,8 @@ namespace BehaviorTracker.Service.Implementations
 
         private BehaviorTrackerRoleGroups GetBehaviorTrackerRoleGroup()
         {
-            var roleGroupClaimString = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == RoleGroupClaimType)?.Value;
+            var roleGroupClaimString = _httpContextAccessor.HttpContext.User.Claims
+                .FirstOrDefault(claim => claim.Type == RoleGroupClaimType)?.Value;
             if (string.IsNullOrWhiteSpace(roleGroupClaimString))
             {
                 return BehaviorTrackerRoleGroups.None;
