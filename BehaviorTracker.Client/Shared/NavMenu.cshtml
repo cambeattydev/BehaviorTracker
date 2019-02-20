@@ -7,33 +7,44 @@
 
 <div class=@(collapseNavMenu ? "collapse" : null) onclick=@ToggleNavMenu>
     <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match=NavLinkMatch.All>
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <ul class="nav flex-column px-3">
-                <li class="nav-item">
-                    <a class="btn-link disabled" style="color: #d7d7d7;">Admin</a>
-                    <div class="dropdown-divider"></div>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="/Admin/Goals" Match=NavLinkMatch.All>
-                        <span class="oi oi-cog" aria-hidden="true"></span> Goals
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="/Admin/Users" Match=NavLinkMatch.All>
-                        <span class="oi oi-people" aria-hidden="true"></span> Users
-                    </NavLink>
-                </li>
-            </ul>
-        </li>
+        @if (_authorizationService.IsInRole(BehaviorTrackerRoles.GoalAnswerWrite))
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match=NavLinkMatch.All>
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                </NavLink>
+            </li>
+        }
+        @if (_authorizationService.IsInRole(BehaviorTrackerRoles.AddAdmin) ||
+             _authorizationService.IsInRole(BehaviorTrackerRoles.AddGoalAnswerWriter))
+        {
+            <li class="nav-item px-3">
+                <ul class="nav flex-column px-3">
+                    <li class="nav-item">
+                        <a class="btn-link disabled" style="color: #d7d7d7;">Admin</a>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="/Admin/Goals" Match=NavLinkMatch.All>
+                            <span class="oi oi-cog" aria-hidden="true"></span> Goals
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="/Admin/Users" Match=NavLinkMatch.All>
+                            <span class="oi oi-people" aria-hidden="true"></span> Users
+                        </NavLink>
+                    </li>
+                </ul>
+            </li>
+        }
     </ul>
 </div>
 
 @functions {
+
+    [Inject]
+    protected AuthorizationService _authorizationService { get; set; }
+
     bool collapseNavMenu = true;
 
     void ToggleNavMenu()

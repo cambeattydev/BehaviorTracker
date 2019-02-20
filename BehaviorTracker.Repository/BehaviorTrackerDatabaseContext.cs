@@ -1,9 +1,3 @@
-using BehaviorTracker.Repository.DatabaseModels;
-using BehaviorTracker.Repository.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Debug;
-
 namespace BehaviorTracker.Repository
 {
     public class BehaviorTrackerDatabaseContext : DbContext
@@ -29,7 +23,9 @@ namespace BehaviorTracker.Repository
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(ConnectionString);
+#if DEBUG
             optionsBuilder.UseLoggerFactory(new LoggerFactory(new[] {new DebugLoggerProvider()}));
+#endif
         }
 
 
@@ -43,18 +39,17 @@ namespace BehaviorTracker.Repository
 
             modelBuilder.AddEntityConfigurationsFromAssembly(GetType().Assembly);
 
-//#if DEBUG
-//            modelBuilder.Entity<Student>().HasData(SeedData.Testing.Students);
-//            modelBuilder.Entity<Goal>().HasData(SeedData.Testing.Goals);
-//            modelBuilder.Entity<GoalAvailableAnswer>().HasData(SeedData.Testing.AvailableAnswers);
-//            //Creates goalAnswer test data for the time you are testing
-//            var currentHour = DateTime.Now.Hour > 15 ? 15 : DateTime.Now.Hour < 8 ? 8 : DateTime.Now.Hour;
-//            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, currentHour,
-//                currentHour >= 15 || currentHour == 8 ? 30 : DateTime.Now.Minute >= 30 ? 30 : 0, 0);
-//            modelBuilder.Entity<GoalAnswer>().HasData(SeedData.Testing.ListOfGoalAnswers(date));
-//            modelBuilder.Entity<BehaviorTrackerUser>().HasData(SeedData.Testing.Users);
-//            modelBuilder.Entity<BehaviorTrackerUserRoleGroup>().HasData(SeedData.Testing.UserRoleGroups);
-//#endif
+#if DEBUG
+            modelBuilder.Entity<BehaviorTrackerUser>().HasData(SeedData.Testing.Users);
+            modelBuilder.Entity<BehaviorTrackerUserRoleGroup>().HasData(SeedData.Testing.UserRoleGroups);
+            modelBuilder.Entity<Goal>().HasData(SeedData.Testing.Goals);
+            modelBuilder.Entity<GoalAvailableAnswer>().HasData(SeedData.Testing.AvailableAnswers);
+            //Creates goalAnswer test data for the time you are testing
+            var currentHour = DateTime.Now.Hour > 15 ? 15 : DateTime.Now.Hour < 8 ? 8 : DateTime.Now.Hour;
+            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, currentHour,
+                currentHour >= 15 || currentHour == 8 ? 30 : DateTime.Now.Minute >= 30 ? 30 : 0, 0);
+            modelBuilder.Entity<GoalAnswer>().HasData(SeedData.Testing.ListOfGoalAnswers(date));
+#endif
         }
     }
 }

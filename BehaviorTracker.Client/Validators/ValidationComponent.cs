@@ -1,21 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentValidation;
-using FluentValidation.Internal;
-using FluentValidation.Results;
-using Microsoft.AspNetCore.Blazor.Components;
-
 namespace BehaviorTracker.Client.Validators
 {
     public class ValidationComponent<T> : BlazorComponent
     {
-        [Inject] protected IValidatorFactory _validatorFactory { get; set; }
-
         private IValidator<T> _validator;
 
         protected IDictionary<string, IEnumerable<string>> Errors;
+        [Inject] protected AuthorizationService _authorizationService { get; set; }
+        [Inject] protected IValidatorFactory _validatorFactory { get; set; }
 
 
         [Parameter] protected T Model { get; set; }
@@ -41,8 +32,8 @@ namespace BehaviorTracker.Client.Validators
             Errors.ContainsKey(propertyName) ? Errors[propertyName] : new string[0];
 
         //protected string ValidationHasHappened => _wasValidated ? "was-validated" : "";
-        
-        
+
+
         protected async Task<ValidationResult> ValidateAsync(string propertyName)
         {
             var context = new ValidationContext<T>(Model, new PropertyChain(),
@@ -78,6 +69,7 @@ namespace BehaviorTracker.Client.Validators
                     Errors[propertyName] = new string[0];
                 }
             }
+
             Console.WriteLine($"After setting Errors ValidationResult.IsValid:{validationResult.IsValid}");
             return validationResult;
         }
